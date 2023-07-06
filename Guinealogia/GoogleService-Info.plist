@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>880260787416-s2pst3o23f9tfb8v2kmec1g5061ouo5l.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.880260787416-s2pst3o23f9tfb8v2kmec1g5061ouo5l</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>880260787416-l85cs268a5m6gqni4t9gm7rlk92sbkkl.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCuGr-pn9hHyqxTvBU5PxXpX51xyjhguYw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>880260787416</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.iniviativaselebi.guinealogia</string>
+	<key>PROJECT_ID</key>
+	<string>trivial-guineologia</string>
+	<key>STORAGE_BUCKET</key>
+	<string>trivial-guineologia.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:880260787416:ios:194a83be2fe0a5f0917bad</string>
+	<key>DATABASE_URL</key>
+	<string>https://trivial-guineologia-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

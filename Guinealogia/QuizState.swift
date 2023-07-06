@@ -21,21 +21,35 @@ class QuizState: ObservableObject {
     @Published var displayMessage = ""
     @Published var isOptionSelected = false
     private var timer: Timer?
+    @Published var mistakes = 0
+    @Binding var player: AVAudioPlayer?
     
+    init(player: Binding<AVAudioPlayer?>) {
+        self._player = player
+        randomQuestions = dbHelper.getRandomQuestions(count: 10)
+        rightSoundEffect = loadSoundEffect(named: "right")
+        wrongSoundEffect = loadSoundEffect(named: "notright")
+    }
+
     lazy var currentQuestion: QuizQuestion = {
         // Reset text color to black when assigning a new question
         var question = randomQuestions[currentQuestionIndex]
         question.textColor = .black
         return question
     }()
-    
     init() {
-        randomQuestions = dbHelper.getRandomQuestions(count: 10)
-        rightSoundEffect = loadSoundEffect(named: "right")
-        wrongSoundEffect = loadSoundEffect(named: "notright")
-    }
+        self.randomQuestions = dbHelper.getRandomQuestions(count: 10)
+        self._player = Binding<AVAudioPlayer?>(get: { nil }, set: { _ in })
         
-        func startCountdownTimer() {
+        loadSoundEffects(player: $player)
+    }
+
+    func startCountdownTimer() {
+        timer?.invalidate() // Invalidate any existing timer
+        
+        // Check if there are questions left
+        if currentQuestionIndex < randomQuestions.count {
+            timeRemaining = 15
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                 if self.timeRemaining > 0 {
                     self.timeRemaining -= 1
@@ -46,6 +60,8 @@ class QuizState: ObservableObject {
                 }
             }
         }
+    }
+
         
         internal func checkAnswer() {
             if !isAnswered {
@@ -64,18 +80,17 @@ class QuizState: ObservableObject {
                     rightSoundEffect?.play()
                     
                     // Set currentQuestion text to "RESPUESTA CORRECTA"
-                    currentQuestion.question = "RESPUESTA CORRECTA"
-                    currentQuestion.textColor = Color.green
-                } else {
-                    // Play wrong sound effect
-                    wrongSoundEffect?.play()
-                    
-                    // Set currentQuestion text to "RESPUESTA INCORRECTA"
-                    currentQuestion.question = "RESPUESTA INCORRECTA"
-                    currentQuestion.textColor = Color.red
-                }
-                
-                preguntaCounter += 1
+                                currentQuestion.question = "RESPUESTA CORRECTA"
+                                currentQuestion.textColor = Color(hue: 0.315, saturation: 0.953, brightness: 0.335)
+                            } else {
+                                mistakes += 1
+                                wrongSoundEffect?.play()
+
+                                // Set currentQuestion text to "RESPUESTA INCORRECTA"
+                                currentQuestion.question = "RESPUESTA INCORRECTA"
+                                currentQuestion.textColor = Color(hue: 1.0, saturation: 0.984, brightness: 0.699)
+                            }
+
                 
                 if selectedOptionIndex == -1 {
                     // No option selected
@@ -105,7 +120,8 @@ class QuizState: ObservableObject {
                 buttonText = "CONFIRMAR"
                 isAnswered = false
                 selectedOptionIndex = -1
-                currentQuestion = randomQuestions[currentQuestionIndex] // Set the currentQuestion to the next question from the database
+                currentQuestion = randomQuestions[currentQuestionIndex]
+                preguntaCounter += 1
                 startCountdownTimer()
                 timeRemaining = 15
             } else {
@@ -124,31 +140,43 @@ class QuizState: ObservableObject {
             }
         }
         
-        private func finishQuiz() {
-            let aciertos = score
-            let puntuacion = totalScore
-            
-            // Save the aciertos and puntuacion to UserDefaults
-            UserDefaults.standard.set(aciertos, forKey: "aciertos")
-            UserDefaults.standard.set(puntuacion, forKey: "puntuacion")
-            
-            // Navigate to the Resultado view
-            // Assuming you're using NavigationLink or sheet for navigation
-            isShowingResultadoView = true
+    func finishQuiz() {
+        let aciertos = score
+        let puntuacion = totalScore
+        let errores = mistakes
+        
+        // Save the aciertos and puntuacion to UserDefaults
+        UserDefaults.standard.set(aciertos, forKey: "aciertos")
+        UserDefaults.standard.set(puntuacion, forKey: "puntuacion")
+        UserDefaults.standard.set(errores, forKey: "errores")
+        
+        // Navigate to the Resultado view
+        let resultadoView = ResultadoView(aciertos: aciertos, puntuacion: puntuacion, errores: errores)
+
+        // Use NavigationLink to navigate to the ResultadoView class
+        NavigationLink(destination: resultadoView) {
+            EmptyView()
+        }
+    }
+        
+    private func loadSoundEffects(player: Binding<AVAudioPlayer?>) {
+            rightSoundEffect = loadSoundEffect(named: "right")
+            wrongSoundEffect = loadSoundEffect(named: "notright")
+            self.player = player.wrappedValue
         }
         
     private func loadSoundEffect(named name: String) -> AVAudioPlayer? {
-            if let path = Bundle.main.path(forResource: name, ofType: "wav") {
-                let url = URL(fileURLWithPath: path)
-                do {
-                    let soundEffect = try AVAudioPlayer(contentsOf: url)
-                    soundEffect.prepareToPlay()
-                    return soundEffect
-                } catch {
-                    print("Error loading sound effect: \(error.localizedDescription)")
-                }
-            }
-            return nil
-        }
-    }
+           if let path = Bundle.main.path(forResource: name, ofType: "wav") {
+               let url = URL(fileURLWithPath: path)
+               do {
+                   let soundEffect = try AVAudioPlayer(contentsOf: url)
+                   soundEffect.prepareToPlay()
+                   return soundEffect
+               } catch {
+                   print("Error loading sound effect: \(error.localizedDescription)")
+               }
+           }
+           return nil
+       }
+   }
 

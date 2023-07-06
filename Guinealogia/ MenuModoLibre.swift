@@ -1,10 +1,21 @@
 import SwiftUI
+import AVFAudio
 
 struct MenuModoLibre: View {
-    @State private var playerName = ""
-    @State private var showAlert = false
-    @State private var isPresented = false
-    @State private var jugarModoLibreActive = false
+    @State private var playerName: String = ""
+    @State private var jugadorGuardado: String = ""
+    @State private var jugarModoLibreActive: Bool = false
+    @State private var highScore: Int = 0
+    @State private var colorIndex: Int = 0
+    @State private var showMenuPrincipal = false
+    
+    private let playerNameKey = "PlayerName"
+    private let highScoreKey = "HighScore"
+    
+    init() {
+        loadPlayerName()
+        loadHighScore()
+    }
     
     var body: some View {
         ZStack {
@@ -19,18 +30,36 @@ struct MenuModoLibre: View {
                     .padding(.top, 15)
                     .frame(width: 200, height: 150)
                 
-                TextField("INTRODUCE TU NOMBRE", text: $playerName)
-                    .foregroundColor(.black)
-                    .font(.system(size: 8))
-                    .frame(width: 200, height: 50)
-                    .padding(.top, 50)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                if jugadorGuardado.isEmpty {
+                    TextField("INTRODUCE TU NOMBRE", text: $playerName)
+                        .foregroundColor(.black)
+                        .font(.system(size: 10))
+                        .frame(width: 200, height: 50)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.bottom, 20)
+                } else {
+                    Text("HOLA \(jugadorGuardado)")
+                        .foregroundColor(.black)
+                        .font(.headline)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 80)
+                }
+                
+                Text("El record actual es de \(highScore) puntos")
+                    .foregroundColor(getFlashingColor())
+                    .font(.headline)
+                    .padding(.horizontal, 20)
+                    .padding(.top, -10)
+                    .onAppear {
+                        startFlashing()
+                    }
                 
                 Button(action: {
                     savePlayerName()
-                    showAlert = true
+                    jugadorGuardado = playerName
+                    playerName = ""
                 }) {
-                    Text("GUARDAR")
+                    Text(jugadorGuardado.isEmpty ? "GUARDAR" : "CAMBIAR JUGADOR")
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(width: 200, height: 50)
@@ -41,12 +70,6 @@ struct MenuModoLibre: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.black, lineWidth: 3)
                         )
-                }
-                .alert(isPresented: $showAlert) {
-                    Alert(
-                        title: Text("Bienvenid@ \(playerName)"),
-                        dismissButton: .default(Text("OK"))
-                    )
                 }
                 
                 Button(action: {
@@ -68,11 +91,11 @@ struct MenuModoLibre: View {
                     jugarModoLibreActive.toggle()
                 }
                 .sheet(isPresented: $jugarModoLibreActive, content: {
-                    JugarModoLibre()
+                    JugarModoLibre(player: .constant(nil))
                 })
                 
                 Button(action: {
-                    isPresented.toggle()
+                    showMenuPrincipal = true
                 }) {
                     Text("SALIR")
                         .font(.headline)
@@ -86,17 +109,63 @@ struct MenuModoLibre: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-                .sheet(isPresented: $isPresented, content: {
-                    MenuPrincipal()
-                })
+                .sheet(isPresented: $showMenuPrincipal) {
+                    MenuPrincipal(player: .constant(nil))
+                }
+
+
                 
                 Spacer()
             }
         }
+        .onAppear {
+            loadPlayerName()
+            loadHighScore()
+        }
     }
     
     private func savePlayerName() {
-        // Save player name logic
+        UserDefaults.standard.set(playerName, forKey: playerNameKey)
+    }
+    
+    private func loadPlayerName() {
+        if let savedPlayerName = UserDefaults.standard.string(forKey: playerNameKey) {
+            jugadorGuardado = savedPlayerName
+        }
+    }
+    
+    private func clearPlayerName() {
+        playerName = ""
+        UserDefaults.standard.removeObject(forKey: playerNameKey)
+    }
+    
+    private func loadHighScore() {
+        highScore = UserDefaults.standard.integer(forKey: highScoreKey)
+    }
+    
+    private func getFlashingColor() -> Color {
+        let colors: [Color] = [.red, .blue, .green, .white]
+        return colors[colorIndex]
+    }
+    
+    private func startFlashing() {
+        let flashingColors: [Color] = [.red, .blue, .green, .white]
+        
+        let flashingAnimation = Animation
+            .linear(duration: 0.5)
+            .repeatForever(autoreverses: true)
+        
+        withAnimation(flashingAnimation) {
+            colorIndex = 0
+        }
+        
+        for (index, _) in flashingColors.enumerated() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.5) {
+                withAnimation(flashingAnimation) {
+                    colorIndex = index
+                }
+            }
+        }
     }
 }
 
@@ -105,3 +174,4 @@ struct MenuModoLibre_Previews: PreviewProvider {
         MenuModoLibre()
     }
 }
+

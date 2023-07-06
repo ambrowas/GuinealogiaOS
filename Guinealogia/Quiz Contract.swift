@@ -1,10 +1,4 @@
-//
-//  Quiz Contract.swift
-//  Guinealogia
-//
-//  Created by ELEBI on 5/29/23.
-//
-
+import Foundation
 import SwiftUI
 
 struct QuizQuestion {
@@ -14,7 +8,7 @@ struct QuizQuestion {
     var option3: String
     var answerNr: Int
     var textColor: Color // New property for text color
-
+    
     init(question: String, option1: String, option2: String, option3: String, answerNr: Int, textColor: Color = .black) {
         self.question = question
         self.option1 = option1
@@ -24,7 +18,6 @@ struct QuizQuestion {
         self.textColor = textColor
     }
 }
-
 
 struct QuizContract {
     struct QuestionsTable {

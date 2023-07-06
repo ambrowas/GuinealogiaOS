@@ -44,8 +44,19 @@ class QuizDBHelper {
                 let option3 = row[option3Column]
                 let answerNr = row[answerNrColumn]
                 
-                let question = QuizQuestion(question: questionText, option1: option1, option2: option2, option3: option3, answerNr: answerNr)
-                questionList.append(question)
+                var options = [option1, option2, option3]
+                let correctOption = options[answerNr - 1] // Get the correct option based on answerNr
+                
+                options.shuffle()
+                
+                // Find the new index of the correct option after shuffling
+                guard let newAnswerNr = options.firstIndex(of: correctOption) else {
+                    fatalError("Failed to find the new index of the correct option.")
+                }
+                
+                let shuffledQuestion = QuizQuestion(question: questionText, option1: options[0], option2: options[1], option3: options[2], answerNr: newAnswerNr + 1)
+                
+                questionList.append(shuffledQuestion)
             }
         } catch {
             print("Failed to fetch questions: \(error.localizedDescription)")

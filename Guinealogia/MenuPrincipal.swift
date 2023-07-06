@@ -1,29 +1,33 @@
-//
-//  MenuPrincipal.swift
-//  Guinealogia
-//
-//  Created by ELEBI on 5/28/23.
-//
-
 import SwiftUI
+import AVFAudio
 
 struct MenuPrincipal: View {
     @State private var showMenuModoLibre = false
-    
+    @State private var showMenuModoCompeticion = false
+    @State private var playerName: String = ""
+    @Binding var player: AVAudioPlayer?
+    @State private var showContactanosView = false
+    private var playerBinding: Binding<AVAudioPlayer?> {
+        Binding<AVAudioPlayer?>(
+            get: { self.player },
+            set: { self.player = $0 }
+        )
+    }
+
     var body: some View {
         ZStack {
             Image("coolbackground")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
-            
+
             VStack(spacing: 10) {
                 Image("logotrivial")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 300, height: 250)
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     showMenuModoLibre = true
                 }) {
@@ -39,9 +43,9 @@ struct MenuPrincipal: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-                
+
                 Button(action: {
-                    // Handle Modo Competición button tap
+                    showMenuModoCompeticion = true
                 }) {
                     Text("MODO COMPETICION")
                         .font(.headline)
@@ -55,9 +59,15 @@ struct MenuPrincipal: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-                
+                .sheet(isPresented: $showMenuModoCompeticion) {
+                    MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
+                }
+
+
+
+
                 Button(action: {
-                    // Handle Contactanos button tap
+                    showContactanosView = true
                 }) {
                     Text("CONTACTANOS")
                         .font(.headline)
@@ -71,14 +81,19 @@ struct MenuPrincipal: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-                
+                .sheet(isPresented: $showContactanosView) {
+                    ContactanosView(player: .constant(nil))
+                }
+
+
+
                 Spacer()
-                
+
                 Text("2023.INICIATIVAS ELEBI")
                     .foregroundColor(.black)
                     .font(.subheadline)
                     .fontWeight(.bold)
-                
+
                 Text("TODOS LOS DERECHOS RESERVADOS")
                     .foregroundColor(.black)
                     .font(.subheadline)
@@ -90,12 +105,15 @@ struct MenuPrincipal: View {
         .sheet(isPresented: $showMenuModoLibre) {
             MenuModoLibre()
         }
+
+
     }
-    
-    
+
     struct MenuPrincipal_Previews: PreviewProvider {
         static var previews: some View {
-            MenuPrincipal()
+            MenuPrincipal(player: .constant(nil))
         }
     }
 }
+
+    
