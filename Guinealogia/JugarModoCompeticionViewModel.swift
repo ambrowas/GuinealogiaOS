@@ -1,7 +1,8 @@
-import SwiftUI
-import AVFoundation
-import FirebaseFirestore
-import FirebaseDatabase
+    import SwiftUI
+    import AVFoundation
+    import FirebaseFirestore
+    import FirebaseDatabase
+    import FirebaseAuth
 
 class JugarModoCompeticionViewModel: ObservableObject {
     @Published var currentQuestion: String = ""
@@ -32,6 +33,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
     var userId: String
     private var dbRef = Database.database().reference()
     @ObservedObject var userData: UserData
+    @Published var shouldNavigateToGameOver: GameOverPresented? = nil
     
     var buttonConfirmar: String {
         buttonText
@@ -42,13 +44,13 @@ class JugarModoCompeticionViewModel: ObservableObject {
     }
     
     init(userId: String, userData: UserData) { // Modify the initializer
-            self.userId = userId
-            self.userData = userData
-            prepareCountdownSound()
-            loadSoundEffects()
-            optionSelections = Array(repeating: false, count: options.count)
-            prepareCountdownSound()
-            loadSoundEffects()
+        self.userId = userId
+        self.userData = userData
+        prepareCountdownSound()
+        loadSoundEffects()
+        optionSelections = Array(repeating: false, count: options.count)
+        prepareCountdownSound()
+        loadSoundEffects()
         
         // Initialize button background colors with the default color
         buttonBackgroundColors = Array(repeating: Color(hue: 0.664, saturation: 0.935, brightness: 0.604), count: 3)
@@ -56,14 +58,20 @@ class JugarModoCompeticionViewModel: ObservableObject {
     
     func terminar(completion: @escaping () -> Void) {
         // Call the update functions
-        updateCurrentGameValues(userId: userId, aciertos: score, fallos: mistakes, puntuacion: totalScore)
-        updateAccumulatedValues(userId: userId, newAciertos: score, newFallos: mistakes, newPuntuacion: totalScore)
-        updateHighestScore(userId: userId, newScore: totalScore)
-        let newPosition = calculateNewPosition()
-        updateLeaderboardPosition(userId: userId, newPosition: newPosition)
+        updateCurrentGameValues(aciertos: score, fallos: mistakes, puntuacion: totalScore)
+        updateAccumulatedValues(newAciertos: score, newFallos: mistakes, newPuntuacion: totalScore)
+        updateHighestScore(newScore: totalScore)
+       
+       
         
-        completion() // Notify the view to navigate to the result view
+        // After all the updates are done, set shouldNavigateToGameOver to true and call the completion handler
+        shouldNavigateToGameOver = GameOverPresented()
+        print("terminar function completed")
+        completion()
     }
+    
+    
+    
     func calculateNewPosition() -> Int {
         let sortedUsers = userData.users.sorted { $0.accumulatedPuntuacion > $1.accumulatedPuntuacion }
         if let currentUserIndex = sortedUsers.firstIndex(where: { $0.id == userId }) {
@@ -71,9 +79,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
         }
         return 0 // Return 0 if the current user is not found in the sorted array
     }
-
-
-
+    
     
     func fetchQuestion() {
         firestore.collection("PREGUNTAS").getDocuments { [weak self] snapshot, error in
@@ -220,17 +226,10 @@ class JugarModoCompeticionViewModel: ObservableObject {
         buttonText = "CONFIRMAR"
         buttonBackgroundColors = Array(repeating: Color(hue: 0.664, saturation: 0.935, brightness: 0.604), count: options.count)
     }
+  
     
-    func updateLeaderboardPosition(userId: String, newPosition: Int) {
-           let userRef = dbRef.child("user").child(userId)
-           userRef.child("leaderboardPosition").setValue(newPosition) { (error, _) in
-               if let error = error {
-                   print("Error updating leaderboard position: \(error.localizedDescription)")
-               } else {
-                   print("Successfully updated leaderboard position.")
-               }
-           }
-       }
+    
+    
     func updateButtonBackgroundColors() {
         var colors = [Color]()
         for index in options.indices {
@@ -244,9 +243,8 @@ class JugarModoCompeticionViewModel: ObservableObject {
     }
     
     
-    func updateCurrentGameValues(userId: String, aciertos: Int, fallos: Int, puntuacion: Int) {
-        let dbRef = Database.database().reference()
-        
+    func updateCurrentGameValues(aciertos: Int, fallos: Int, puntuacion: Int) {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
         let userRef = dbRef.child("user").child(userId)
         
         let gameStats: [String: Any] = [
@@ -264,75 +262,53 @@ class JugarModoCompeticionViewModel: ObservableObject {
         }
     }
     
-    func updateAccumulatedValues(userId: String, newAciertos: Int, newFallos: Int, newPuntuacion: Int) {
-           let userRef = dbRef.child("user").child(userId)
-           
-           userRef.observeSingleEvent(of: .value) { [weak self] (snapshot) in
-               var updatedAciertos = newAciertos
-               var updatedFallos = newFallos
-               var updatedPuntuacion = newPuntuacion
-               
-               if let accumulatedAciertos = snapshot.childSnapshot(forPath: "accumulatedAciertos").value as? Int {
-                   updatedAciertos += accumulatedAciertos
-               }
-               if let accumulatedFallos = snapshot.childSnapshot(forPath: "accumulatedFallos").value as? Int {
-                   updatedFallos += accumulatedFallos
-               }
-               if let accumulatedPuntuacion = snapshot.childSnapshot(forPath: "accumulatedPuntuacion").value as? Int {
-                   updatedPuntuacion += accumulatedPuntuacion
-               }
-               
-               let updates: [String: Any] = [
-                   "accumulatedAciertos": updatedAciertos,
-                   "accumulatedFallos": updatedFallos,
-                   "accumulatedPuntuacion": updatedPuntuacion
-               ]
-               
-               userRef.updateChildValues(updates) { (error, dbRef) in
-                   if let error = error {
-                       print("Error updating values: \(error)")
-                   } else {
-                       print("Successfully updated values")
-                   }
-               }
-               
-               self?.updateUserData(userId: userId, updatedAciertos: updatedAciertos, updatedFallos: updatedFallos, updatedPuntuacion: updatedPuntuacion)
-           }
-       }
-       
-       func updateUserData(userId: String, updatedAciertos: Int, updatedFallos: Int, updatedPuntuacion: Int) {
-           let userRef = dbRef.child("user").child(userId)
-           
-           let userData: [String: Any] = [
-               "aciertos": updatedAciertos,
-               "fallos": updatedFallos,
-               "puntuacion": updatedPuntuacion
-           ]
-           
-           userRef.updateChildValues(userData) { (error, _) in
-               if let error = error {
-                   print("Error updating user data: \(error.localizedDescription)")
-               } else {
-                   print("Successfully updated user data.")
-               }
-           }
-       }
-       
-       func updateHighestScore(userId: String, newScore: Int) {
-           let userRef = dbRef.child("user").child(userId)
-           
-           userRef.observeSingleEvent(of: .value) { (snapshot) in
-               let currentHighestScore = snapshot.childSnapshot(forPath: "highestScore").value as? Int ?? 0
-               
-               if newScore > currentHighestScore {
-                   userRef.child("highestScore").setValue(newScore) { (error, _) in
-                       if let error = error {
-                           print("Error updating highest score: \(error.localizedDescription)")
-                       } else {
-                           print("Successfully updated highest score.")
-                       }
-                   }
-               }
-           }
-       }
-   }
+    func updateAccumulatedValues(newAciertos: Int, newFallos: Int, newPuntuacion: Int) {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        let userRef = dbRef.child("user").child(userId)
+
+        userRef.observeSingleEvent(of: .value) { (snapshot) in
+            if let userData = snapshot.value as? [String: Any],
+               let currentAciertos = userData["accumulatedAciertos"] as? Int,
+               let currentFallos = userData["accumulatedFallos"] as? Int,
+               let currentPuntuacion = userData["accumulatedPuntuacion"] as? Int {
+
+                let updatedAciertos = currentAciertos + newAciertos
+                let updatedFallos = currentFallos + newFallos
+                let updatedPuntuacion = currentPuntuacion + newPuntuacion
+                
+                let updates: [String: Any] = [
+                    "accumulatedAciertos": updatedAciertos,
+                    "accumulatedFallos": updatedFallos,
+                    "accumulatedPuntuacion": updatedPuntuacion
+                ]
+                
+                userRef.updateChildValues(updates) { (error, dbRef) in
+                    if let error = error {
+                        print("Error updating values: \(error)")
+                    } else {
+                        print("Successfully updated values")
+                    }
+                }
+            }
+        }
+    }
+
+    func updateHighestScore(newScore: Int) {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        let userRef = dbRef.child("user").child(userId)
+        
+        userRef.child("highestScore").observeSingleEvent(of: .value) { (snapshot) in
+            if let highestScore = snapshot.value as? Int, newScore > highestScore {
+                userRef.updateChildValues([
+                    "highestScore": newScore
+                ]) { (error, _) in
+                    if let error = error {
+                        print("Error updating highest score: \(error.localizedDescription)")
+                    } else {
+                        print("Successfully updated highest score.")
+                    }
+                }
+            }
+        }
+    }
+}

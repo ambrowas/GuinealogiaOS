@@ -11,7 +11,7 @@ struct GuinealogiaApp: App {
 
     init() {
         FirebaseApp.configure()
-        testDatabaseAccess()
+        
     }
     func sanitize(input: String) -> String {
         let invalidCharacters = CharacterSet(charactersIn: ".#$[]")

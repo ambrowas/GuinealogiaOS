@@ -3,6 +3,7 @@ import Firebase
 import FirebaseDatabase
 import FirebaseAuth
 
+
 class RegistrarUsuarioViewModel: ObservableObject {
     @Published var fullname: String = ""
     @Published var email: String = ""
@@ -15,7 +16,7 @@ class RegistrarUsuarioViewModel: ObservableObject {
     @Published var isUserRegistered = false
     @Published var userData: UserData = UserData(fullname: "", highestScore: 0)
     @Published var showProfile = false
-    
+    @Published var alertDismissed = false
     
     
     struct UserData {
@@ -80,14 +81,20 @@ class RegistrarUsuarioViewModel: ObservableObject {
                     let userData = ["fullname": self.fullname, "email": self.email, "telefono": self.telefono, "barrio": self.barrio, "ciudad": self.ciudad, "pais": self.pais, "highestScore": 0] as [String : Any]
                     Database.database().reference().child("user").child(uid).setValue(userData)
                     
-                    DispatchQueue.main.async {
-                        self.alert.alertUsuarioCreado = true
-                        self.alert.showAlert = true // Set showAlert to true here as well
-                        
-                        self.fetchUserData(userId: uid)
-                        completion()
-                        
-                        self.showProfile = true // Set showProfile to true after successful registration
+                    self.fetchUserData(userId: uid)
+                    
+                    Auth.auth().signIn(withEmail: self.email, password: self.password) { authResult, error in
+                        if let error = error {
+                            // Handle error here.
+                            print("Error signing in: \(error)")
+                        } else {
+                            print("User logged in.")
+                            DispatchQueue.main.async {
+                                self.alert.alertUsuarioCreado = true
+                                self.alert.showAlert = true // Set showAlert to true here as well
+                                completion() // Call the completion closure here
+                            }
+                        }
                     }
                 }
             }

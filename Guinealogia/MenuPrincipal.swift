@@ -105,6 +105,7 @@ struct MenuPrincipal: View {
         .sheet(isPresented: $showMenuModoLibre) {
             MenuModoLibre()
         }
+        .navigationBarHidden(true)
 
 
     }

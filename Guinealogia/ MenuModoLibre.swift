@@ -29,21 +29,7 @@ struct MenuModoLibre: View {
                     .aspectRatio(contentMode: .fit)
                     .padding(.top, 15)
                     .frame(width: 200, height: 150)
-                
-                if jugadorGuardado.isEmpty {
-                    TextField("INTRODUCE TU NOMBRE", text: $playerName)
-                        .foregroundColor(.black)
-                        .font(.system(size: 10))
-                        .frame(width: 200, height: 50)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.bottom, 20)
-                } else {
-                    Text("HOLA \(jugadorGuardado)")
-                        .foregroundColor(.black)
-                        .font(.headline)
-                        .padding(.horizontal, 20)
-                        .padding(.top, 80)
-                }
+                    .padding(.bottom, 150)
                 
                 Text("El record actual es de \(highScore) puntos")
                     .foregroundColor(getFlashingColor())
@@ -53,6 +39,25 @@ struct MenuModoLibre: View {
                     .onAppear {
                         startFlashing()
                     }
+                
+                if jugadorGuardado.isEmpty {
+                    TextField("           INTRODUCE TU NOMBRE", text: $playerName)
+                        .foregroundColor(.black)
+                        .font(.system(size: 10))
+                        .frame(width: 200, height: 50)
+                       
+                        .background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.black, lineWidth: 2))
+                            .background(RoundedRectangle(cornerRadius: 1).fill(Color.white))
+                        
+                } else {
+                    Text("HOLA \(jugadorGuardado)")
+                        .foregroundColor(.black)
+                        .font(.headline)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 80)
+                }
+                
+             
                 
                 Button(action: {
                     savePlayerName()

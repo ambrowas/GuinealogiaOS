@@ -173,28 +173,30 @@ struct ClasificacionView: View {
                             }) {
                                 ForEach(userData.users) { user in
                                     NavigationLink(
-                                        destination: LeadersProfile(userId: user.id),
-                                        tag: user.id,
-                                        selection: $selectedUserId
+                                        destination: LeadersProfile(userId: user.id)
                                     ) {
                                         HStack {
-                                            FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == selectedUserId)
+                                            FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
+                                                .font(.system(size: 12)) // adjust the size as per your needs
                                             Spacer()
-                                            FlashingText(text: user.fullname, shouldFlash: user.id == selectedUserId)
+                                            FlashingText(text: user.fullname, shouldFlash: user.id == userId)
+                                                .font(.system(size: 12)) // adjust the size as per your needs
                                             Spacer()
-                                            FlashingText(text: user.ciudad, shouldFlash: user.id == selectedUserId)
+                                            FlashingText(text: user.ciudad, shouldFlash: user.id == userId)
+                                                .font(.system(size: 12)) // adjust the size as per your needs
                                             Spacer()
-                                            FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == selectedUserId)
+                                            FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
+                                                .font(.system(size: 12)) // adjust the size as per your needs
                                         }
                                     }
-                                    .tag(user.id)
                                 }
+
                             }
                         }
                         .listStyle(InsetGroupedListStyle())
                         .onAppear {
                             userData.fetchUsers()
-                            selectedUserId = userId
+                          
                         }
                     }
                 }

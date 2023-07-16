@@ -1,44 +1,43 @@
 import SwiftUI
-import AVFoundation
 
 struct GameOver: View {
     @State private var scale: CGFloat = 1.0
     @State private var rotation: Double = 0.0
-    @State private var player: AVAudioPlayer?
     @State private var isAnimating: Bool = false
-    @Environment(\.presentationMode) var presentationMode
-    @Binding var shouldNavigateToResultado: Bool
-
+    @State private var shouldPresentResultado: Bool = false
+    var userId: String
+    
     var body: some View {
-        NavigationView {
-            ZStack {
-                Image("mimosa")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .edgesIgnoringSafeArea(.all)
-                
-                VStack {
-                    Spacer()
+        ZStack {
+            Image("mimosa")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .edgesIgnoringSafeArea(.all)
 
-                    NavigationLink(destination: ResultadoCompeticion(userId: "defaultUserId")) {
-                        Text("GAME OVER")
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .scaleEffect(scale)
-                            .scaleEffect(isAnimating ? 1.1 : 1.0)
-                    }
-                    .onTapGesture {
-                        presentationMode.wrappedValue.dismiss()
-                    }
+            VStack {
+                Spacer()
 
-
-                    
-                    Spacer()
+                Button(action: {
+                    print("Presenting Resultado screen")
+                    self.shouldPresentResultado = true
+                }) {
+                    Text("GAME OVER")
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .scaleEffect(scale)
+                        .scaleEffect(isAnimating ? 1.1 : 1.0)
                 }
+                .sheet(isPresented: $shouldPresentResultado) {
+                    ResultadoCompeticion(userId: userId)
+                }
+
+                Spacer()
             }
-            .navigationBarHidden(true)
         }
+        .navigationBarHidden(true)
         .onAppear {
+            print("GameOver screen appeared")
+
             withAnimation(Animation.easeInOut(duration: 3.0)) {
                 self.scale = 3.0
             }
@@ -60,24 +59,19 @@ struct GameOver: View {
                     }
                 }
             }
-
-            if let url = Bundle.main.url(forResource: "gameover", withExtension: "mp3") {
-                do {
-                    self.player = try AVAudioPlayer(contentsOf: url)
-                    self.player?.play()
-                } catch {
-                    print("Could not create AVAudioPlayer: \(error)")
-                }
-            } else {
-                print("Could not find URL for audio file")
-            }
         }
+        .onDisappear {
+            print("GameOver screen disappeared")
+        }
+        .navigationBarBackButtonHidden(true)
     }
 }
+
+
 
 struct GameOver_Previews: PreviewProvider {
     static var previews: some View {
-        GameOver(shouldNavigateToResultado: .constant(false)) // Add the missing parameter
-            .previewDevice("iPhone 14")
+        GameOver(userId: "dummyUserId")
     }
 }
+

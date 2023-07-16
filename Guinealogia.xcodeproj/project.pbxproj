@@ -30,6 +30,8 @@
 		7557A7D92A2578D8007C2A07 /* ResultadoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7D82A2578D8007C2A07 /* ResultadoView.swift */; };
 		7557A7DC2A257FC7007C2A07 /* right.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7557A7DA2A257FC7007C2A07 /* right.wav */; };
 		7557A7DD2A257FC7007C2A07 /* notright.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7557A7DB2A257FC7007C2A07 /* notright.wav */; };
+		7565B5442A5F4AF30020E6E1 /* CheckCodigo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7565B5432A5F4AF30020E6E1 /* CheckCodigo.swift */; };
+		756F9BDF2A62089100B9CEEC /* WhatsApp Image 2023-05-17 at 7.21.33 PM.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 756F9BDE2A62089100B9CEEC /* WhatsApp Image 2023-05-17 at 7.21.33 PM.jpeg */; };
 		757BC2B02A27E8F600CA7A16 /* QuizState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC2AF2A27E8F600CA7A16 /* QuizState.swift */; };
 		757BC2B22A27E91400CA7A16 /* JugarModoLibre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC2B12A27E91400CA7A16 /* JugarModoLibre.swift */; };
 		757BC2B52A2989CB00CA7A16 /* mixkit.wav in Resources */ = {isa = PBXBuildFile; fileRef = 757BC2B32A2989CA00CA7A16 /* mixkit.wav */; };
@@ -124,6 +126,8 @@
 		7557A7D82A2578D8007C2A07 /* ResultadoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultadoView.swift; sourceTree = "<group>"; };
 		7557A7DA2A257FC7007C2A07 /* right.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = right.wav; sourceTree = "<group>"; };
 		7557A7DB2A257FC7007C2A07 /* notright.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = notright.wav; sourceTree = "<group>"; };
+		7565B5432A5F4AF30020E6E1 /* CheckCodigo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckCodigo.swift; sourceTree = "<group>"; };
+		756F9BDE2A62089100B9CEEC /* WhatsApp Image 2023-05-17 at 7.21.33 PM.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "WhatsApp Image 2023-05-17 at 7.21.33 PM.jpeg"; sourceTree = "<group>"; };
 		757BC2AF2A27E8F600CA7A16 /* QuizState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizState.swift; sourceTree = "<group>"; };
 		757BC2B12A27E91400CA7A16 /* JugarModoLibre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JugarModoLibre.swift; sourceTree = "<group>"; };
 		757BC2B32A2989CA00CA7A16 /* mixkit.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = mixkit.wav; sourceTree = "<group>"; };
@@ -204,6 +208,7 @@
 		7557A7842A2400D4007C2A07 = {
 			isa = PBXGroup;
 			children = (
+				7565B5432A5F4AF30020E6E1 /* CheckCodigo.swift */,
 				753536392A54B231006A3779 /* LeadersProfile.swift */,
 				757BC30A2A37B2D800CA7A16 /* Packages */,
 				7557A7CD2A251778007C2A07 /* Guinealogia.db */,
@@ -247,6 +252,7 @@
 				7557A7CB2A2516BB007C2A07 /* Quiz Contract.swift */,
 				7557A7D12A251D6C007C2A07 /* QuizDBHelper.swift */,
 				7557A7D82A2578D8007C2A07 /* ResultadoView.swift */,
+				756F9BDE2A62089100B9CEEC /* WhatsApp Image 2023-05-17 at 7.21.33 PM.jpeg */,
 				757BC2AF2A27E8F600CA7A16 /* QuizState.swift */,
 				757BC2B12A27E91400CA7A16 /* JugarModoLibre.swift */,
 				757BC2BB2A2E86CD00CA7A16 /* Contactanos.swift */,
@@ -444,6 +450,7 @@
 				757BC2B82A2989DA00CA7A16 /* hallelujah.mp3 in Resources */,
 				7557A7CE2A25190B007C2A07 /* Guinealogia.db in Resources */,
 				7557A7C22A242B90007C2A07 /* maeledjidalot.mp3 in Resources */,
+				756F9BDF2A62089100B9CEEC /* WhatsApp Image 2023-05-17 at 7.21.33 PM.jpeg in Resources */,
 				7557A7992A2400D6007C2A07 /* Preview Assets.xcassets in Resources */,
 				7557A7DC2A257FC7007C2A07 /* right.wav in Resources */,
 				757BC2C02A2FF97E00CA7A16 /* GoogleService-Info.plist in Resources */,
@@ -497,6 +504,7 @@
 				752EB76A2A462B5200013A73 /* AuthService.swift in Sources */,
 				753536382A549EDE006A3779 /* Clasificacion.swift in Sources */,
 				7557A7912A2400D4007C2A07 /* GuinealogiaApp.swift in Sources */,
+				7565B5442A5F4AF30020E6E1 /* CheckCodigo.swift in Sources */,
 				75D44C3B2A40C19D00E16F86 /* CodigoQR.swift in Sources */,
 				752EB76C2A478ED500013A73 /* UserManager.swift in Sources */,
 				7557A7D22A251D6C007C2A07 /* QuizDBHelper.swift in Sources */,

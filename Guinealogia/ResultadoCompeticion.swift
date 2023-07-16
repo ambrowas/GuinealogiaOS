@@ -38,13 +38,14 @@ struct ResultadoCompeticion: View {
                     Image("logotrivial")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .padding(.trailing, 10.0)
+                        .padding(.top, -50)
                         .frame(width: 100, height: 150)
                     
                     Text("Resultados de \(userViewModel.fullname)")
                         .foregroundColor(.black)
                         .font(.subheadline)
                         .fontWeight(.bold)
+                        .padding(.top, -20)
                     
                     List {
                         TextRowView(title: "ACIERTOS", value: "\(userViewModel.currentGameAciertos)")
@@ -112,6 +113,7 @@ struct ResultadoCompeticion: View {
                         }
                     }
                     .onAppear {
+                        print("ResultadoCompeticion view appeared")
                         if let userId = Auth.auth().currentUser?.uid {
                             self.userViewModel.fetchUserData(userId: userId)
                         }
@@ -119,7 +121,9 @@ struct ResultadoCompeticion: View {
                 }
             }
         }
+        .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
+        
     }
 }
 
