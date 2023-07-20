@@ -22,6 +22,7 @@ struct LeadersProfile: View {
                     if let profileImageData = viewModel.profileImageData {
                         Image(uiImage: UIImage(data: profileImageData)!)
                             .resizable()
+                    
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 200, height: 150)
                             .border(Color.black, width: 3)
