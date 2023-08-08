@@ -11,9 +11,9 @@ struct JugarModoCompeticion: View {
     @State private var navigationTag: Int? = nil
     @State private var userId: String = ""
     @ObservedObject private var userData: UserData
-    @State private var shouldPresentGameOver: GameOverPresented? = nil
-
-
+    @State private var shouldPresentGameOver: GameOverPresented? = nil //changes
+    
+    
     
     enum ActiveAlert: Identifiable {
         case showAlert, showEndGameAlert, showGameOverAlert, showManyMistakesAlert
@@ -33,8 +33,13 @@ struct JugarModoCompeticion: View {
     }
     
     init(userId: String, userData: UserData) {
+        
         _viewModel = StateObject(wrappedValue: JugarModoCompeticionViewModel(userId: userId, userData: userData))
         self.userData = userData
+        
+        //        _viewModel = StateObject(wrappedValue: JugarModoCompeticionViewModel(userId: userId, userData: userData))
+        //        self.userData = userData
+        
     }
     
     var body: some View {
@@ -174,6 +179,7 @@ struct JugarModoCompeticion: View {
                 if viewModel.buttonConfirmar == "SIGUIENTE" {
                     Button(action: {
                         self.activeAlert = .showEndGameAlert
+                        print("============\(activeAlert)=============")
                     }) {
                         Text("TERMINAR")
                             .font(.headline)
@@ -189,8 +195,39 @@ struct JugarModoCompeticion: View {
                     }
                 }
             }
-            .padding(.bottom, 20)
+            if viewModel.answerChecked {
+                if viewModel.answerIsCorrect ?? false {
+                    Image(systemName: "checkmark")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.green)
+                        .frame(width: 100, height: 100)
+                        .transition(.asymmetric(insertion: .scale, removal: .opacity))
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                withAnimation {
+                                    viewModel.answerChecked = false
+                                }
+                            }
+                        }
+                } else {
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.red)
+                        .frame(width: 100, height: 100)
+                        .transition(.asymmetric(insertion: .scale, removal: .opacity))
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                withAnimation {
+                                    viewModel.answerChecked = false
+                                }
+                            }
+                        }
+                }
+            }
         }
+        
         .onAppear(perform: viewModel.fetchQuestion)
         .alert(item: $activeAlert) { item in
             switch item {
@@ -198,19 +235,23 @@ struct JugarModoCompeticion: View {
                 return Alert(title: Text("ATENCION"), message: Text("Sin miedo, escoge una opción."), dismissButton: .default(Text("OK")))
                 
             case .showEndGameAlert:
+                print("Show End Game Alert")
                 return Alert(
                     title: Text("Confirmación"),
                     message: Text("¿Seguro que quieres terminar la partida?"),
                     primaryButton: .destructive(Text("SI")) {
                         viewModel.terminar {
+                            self.shouldPresentGameOver = GameOverPresented()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // Adding a delay of 0.5 seconds
-                                self.shouldPresentGameOver = GameOverPresented() // Activate the navigation
+                                //                                self.shouldPresentGameOver = GameOverPresented() // Activate the navigation
+                                print(shouldPresentGameOver)
                             }
                         }
                     },
                     secondaryButton: .cancel(Text("NO"))
                 )
-
+                
+                
             case .showGameOverAlert:
                 return Alert(
                     title: Text("Game Over"),
@@ -223,7 +264,7 @@ struct JugarModoCompeticion: View {
                         }
                     }
                 )
-
+                
                 
             case .showManyMistakesAlert:
                 return Alert(title: Text("Cuidado"), message: Text("Llevas 4 fallos. Uno más y la partida se acaba."), dismissButton: .default(Text("OK")))
@@ -232,17 +273,18 @@ struct JugarModoCompeticion: View {
         .sheet(item: $shouldPresentGameOver, onDismiss: {
             shouldPresentGameOver = nil
         }) { _ in
+            
             GameOver(userId: userId)
         }
-
-
+        
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
     }
 }
+ 
 
 struct GameOverPresented: Identifiable {
-    var id = UUID()
+    var id = UUID() // changes
 }
 
 struct JugarModoCompeticion_Previews: PreviewProvider {

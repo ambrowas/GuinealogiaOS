@@ -133,7 +133,7 @@ struct MenuModoCompeticion: View {
                                 )
                         }
                         .sheet(isPresented: $jugarModoCompeticionActive) {
-                            JugarModoCompeticion(userId: userId, userData: userData)
+                            JugarModoCompeticion(userId: userId, userData: userData)// can you mention the userid you have logged into the simulator? eleelavm@gmail.com/ Victor Manuel Ele Ela
                         }
                     }
                     

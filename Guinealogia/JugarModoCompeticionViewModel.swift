@@ -1,8 +1,8 @@
-    import SwiftUI
-    import AVFoundation
-    import FirebaseFirestore
-    import FirebaseDatabase
-    import FirebaseAuth
+import SwiftUI
+import AVFoundation
+import FirebaseFirestore
+import FirebaseDatabase
+import FirebaseAuth
 
 class JugarModoCompeticionViewModel: ObservableObject {
     @Published var currentQuestion: String = ""
@@ -34,6 +34,10 @@ class JugarModoCompeticionViewModel: ObservableObject {
     private var dbRef = Database.database().reference()
     @ObservedObject var userData: UserData
     @Published var shouldNavigateToGameOver: GameOverPresented? = nil
+    @Published var showManyMistakesAlert: Bool = false
+    @Published var showGameOverAlert: Bool = false
+    @Published var answerChecked = false
+    @Published var answerIsCorrect: Bool?
     
     var buttonConfirmar: String {
         buttonText
@@ -61,8 +65,8 @@ class JugarModoCompeticionViewModel: ObservableObject {
         updateCurrentGameValues(aciertos: score, fallos: mistakes, puntuacion: totalScore)
         updateAccumulatedValues(newAciertos: score, newFallos: mistakes, newPuntuacion: totalScore)
         updateHighestScore(newScore: totalScore)
-       
-       
+        
+        
         
         // After all the updates are done, set shouldNavigateToGameOver to true and call the completion handler
         shouldNavigateToGameOver = GameOverPresented()
@@ -124,23 +128,46 @@ class JugarModoCompeticionViewModel: ObservableObject {
         }
     }
     
+    func fetchNextQuestion() {
+        selectedOptionIndex = nil // Clear the selected option
+        fetchQuestion()
+        buttonText = "CONFIRMAR"
+        buttonBackgroundColors = Array(repeating: Color(hue: 0.664, saturation: 0.935, brightness: 0.604), count: options.count)
+    }
+    
     func checkAnswer() {
+        // Initially set answerChecked to false
+        answerChecked = false
+
+        // Check if an option has been selected
         if let selectedOptionIndex = selectedOptionIndex {
             let selectedOption = options[selectedOptionIndex]
             if selectedOption == correctAnswer {
+                // If the answer is correct, play the right sound effect, increment the score and totalScore
                 self.playRightSoundEffect()
                 self.score += 1
                 self.totalScore += 500
+
+                // Indicate that an answer has been checked and it's correct
+                answerIsCorrect = true
+                answerChecked = true
             } else {
+                // If the answer is incorrect, play the wrong sound effect, increment the mistakes and decrease the totalScore
                 self.playWrongSoundEffect()
                 self.mistakes += 1
                 self.totalScore -= 500
+
+                // If mistakes reach 5, call the terminar function and return
                 if self.mistakes >= 5 {
                     self.terminar {
                         
                     }
                     return
                 }
+
+                // Indicate that an answer has been checked and it's incorrect
+                answerIsCorrect = false
+                answerChecked = true
             }
             resetTimer()
             buttonText = "SIGUIENTE"
@@ -148,25 +175,58 @@ class JugarModoCompeticionViewModel: ObservableObject {
             showAlert = true
             return
         }
-        
+
         // Reset the selected option after checking the answer
         self.selectedOptionIndex = nil
         self.shouldShowTerminar = true
     }
+
     
     private func startTimer() {
-        timeRemaining = 15
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
-            self.timeRemaining -= 1
-            if self.timeRemaining == 0 {
-                self.timer?.invalidate() // Stop the timer
-                self.playWrongSoundEffect() // Play the "not right" sound effect
-                
-                self.mistakes += 1
-                self.totalScore -= 500
-                self.selectedOptionIndex = nil
+            timeRemaining = 15
+            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+                guard let self = self else { return }
+                self.timeRemaining -= 1
+
+                // Play countdown sound when timeRemaining is between 1 and 5
+                if self.timeRemaining <= 5 && self.timeRemaining > 0 {
+                    self.playCountdownSound()
+                }
+
+                if self.timeRemaining == 0 {
+                    self.timer?.invalidate() // Stop the timer
+                    self.playWrongSoundEffect() // Play the "not right" sound effect
+
+                    self.buttonText = "SIGUIENTE"  // Change the button text to "SIGUIENTE"
+                    self.mistakes += 1
+                    self.totalScore -= 500
+                    self.selectedOptionIndex = nil
+                        
+                    // Show alerts based on the number of mistakes
+                    if self.mistakes == 4 {
+                        // Show ManyMistakesAlert
+                        // You'll have to implement this yourself according to your application's design
+                        self.showManyMistakesAlert = true
+                    } else if self.mistakes == 5 {
+                        // Show GameOverAlert
+                        // You'll have to implement this yourself according to your application's design
+                        self.showGameOverAlert = true
+                    }
+                }
             }
+        }
+
+    
+    private func playCountdownSound() {
+        guard let url = Bundle.main.url(forResource: "countdown", withExtension: "wav") else {
+            fatalError("Countdown sound file not found")
+        }
+        
+        do {
+            countdownSound = try AVAudioPlayer(contentsOf: url)
+            countdownSound?.play()
+        } catch {
+            print("Failed to play countdown sound: \(error)")
         }
     }
     
@@ -220,16 +280,6 @@ class JugarModoCompeticionViewModel: ObservableObject {
         buttonBackgroundColors = Array(repeating: defaultButtonColor, count: options.count)
     }
     
-    func fetchNextQuestion() {
-        selectedOptionIndex = nil // Clear the selected option
-        fetchQuestion()
-        buttonText = "CONFIRMAR"
-        buttonBackgroundColors = Array(repeating: Color(hue: 0.664, saturation: 0.935, brightness: 0.604), count: options.count)
-    }
-  
-    
-    
-    
     func updateButtonBackgroundColors() {
         var colors = [Color]()
         for index in options.indices {
@@ -241,7 +291,6 @@ class JugarModoCompeticionViewModel: ObservableObject {
         }
         buttonBackgroundColors = colors
     }
-    
     
     func updateCurrentGameValues(aciertos: Int, fallos: Int, puntuacion: Int) {
         guard let userId = Auth.auth().currentUser?.uid else { return }
@@ -265,13 +314,13 @@ class JugarModoCompeticionViewModel: ObservableObject {
     func updateAccumulatedValues(newAciertos: Int, newFallos: Int, newPuntuacion: Int) {
         guard let userId = Auth.auth().currentUser?.uid else { return }
         let userRef = dbRef.child("user").child(userId)
-
+        
         userRef.observeSingleEvent(of: .value) { (snapshot) in
             if let userData = snapshot.value as? [String: Any],
                let currentAciertos = userData["accumulatedAciertos"] as? Int,
                let currentFallos = userData["accumulatedFallos"] as? Int,
                let currentPuntuacion = userData["accumulatedPuntuacion"] as? Int {
-
+                
                 let updatedAciertos = currentAciertos + newAciertos
                 let updatedFallos = currentFallos + newFallos
                 let updatedPuntuacion = currentPuntuacion + newPuntuacion
@@ -292,7 +341,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
             }
         }
     }
-
+    
     func updateHighestScore(newScore: Int) {
         guard let userId = Auth.auth().currentUser?.uid else { return }
         let userRef = dbRef.child("user").child(userId)

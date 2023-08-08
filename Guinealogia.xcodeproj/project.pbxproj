@@ -208,6 +208,8 @@
 		7557A7842A2400D4007C2A07 = {
 			isa = PBXGroup;
 			children = (
+				7565B5432A5F4AF30020E6E1 /* CheckCodigo.swift */,
+				753536392A54B231006A3779 /* LeadersProfile.swift */,
 				757BC30A2A37B2D800CA7A16 /* Packages */,
 				7557A7CD2A251778007C2A07 /* Guinealogia.db */,
 				7557A78F2A2400D4007C2A07 /* Guinealogia */,
@@ -230,8 +232,6 @@
 		7557A78F2A2400D4007C2A07 /* Guinealogia */ = {
 			isa = PBXGroup;
 			children = (
-				7565B5432A5F4AF30020E6E1 /* CheckCodigo.swift */,
-				753536392A54B231006A3779 /* LeadersProfile.swift */,
 				7557A7D32A251DAD007C2A07 /* Sources */,
 				7557A7902A2400D4007C2A07 /* GuinealogiaApp.swift */,
 				7557A7922A2400D4007C2A07 /* ContentView.swift */,

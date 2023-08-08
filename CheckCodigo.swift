@@ -20,6 +20,110 @@ struct CheckCodigo: View {
     @FocusState private var isInput4Active: Bool
     @State private var showSheet = false
     
+    
+    func checkCodigo() {
+        guard let input = Int("\(input1)\(input2)\(input3)\(input4)") else {
+            showAlert4 = true
+            showAlert = true
+            return
+        }
+        
+        let gameCodesRef = Database.database().reference().child("gamecodes")
+        gameCodesRef.observeSingleEvent(of: .value) { snapshot in
+            var codeExists = false
+            var codeUsed = false
+            var keyToUpdate: String?
+            var isStaticCode = false
+            
+            for child in snapshot.children {
+                let snap = child as! DataSnapshot
+                if let value = snap.value as? [String: Any] {
+                    if let code = value["code"] as? Int {
+                        if input == code {
+                            codeExists = true
+                            keyToUpdate = snap.key
+                            if let used = value["used"] as? Bool {
+                                codeUsed = used
+                            }
+                            if value["StaticCode"] != nil {
+                                isStaticCode = true
+                            }
+                            break
+                        }
+                    }
+                }
+            }
+            
+            if !codeExists {
+                showAlert3 = true
+                showAlert = true
+                clearInputs()
+                isInput1Active = true
+            } else if isStaticCode {
+                showAlertPromotionValid = true
+                showAlert = true
+                clearInputs()
+                isInput1Active = true
+                
+                
+                // Update the game data
+                if let user = Auth.auth().currentUser {
+                    let gameData: [String: Any] = ["currentGameAciertos": 0,
+                                                   "currentGameFallos": 0,
+                                                   "currentGamePuntuacion": 0]
+                    let userRef = Database.database().reference().child("user").child(user.uid)
+                    userRef.updateChildValues(gameData) { (error, reference) in
+                        if let error = error {
+                            print("Failed to update game data. Error: \(error)")
+                            return
+                        }
+                    }
+                }
+                
+            } else if codeUsed {
+                showAlert2 = true
+                showAlert = true
+                clearInputs()
+                isInput1Active = true
+            } else {
+                showAlert1 = true
+                showAlert = true
+                clearInputs()
+                isInput1Active = true
+                
+                if let user = Auth.auth().currentUser, let key = keyToUpdate {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "dd/MM/yy HH:mm"
+                    let timestamp = dateFormatter.string(from: Date())
+                    let updateValue: [String: Any] = ["used": true,
+                                                      "usedByUserID": user.uid,
+                                                      "usedByfullname": viewModel.fullname,
+                                                      "usedTimestamp": timestamp]
+                    gameCodesRef.child(key).updateChildValues(updateValue) { (error, reference) in
+                        if let error = error {
+                            print("Failed to update value. Error: \(error)")
+                            return
+                        }
+                    }
+                }
+                
+                // Navigate to MenuModoCompeticion
+                showAlertPromotionValid = false
+                showAlert = false
+                showSheet = true
+            }
+        }
+    }
+    
+    
+    func clearInputs() {
+        input1 = ""
+        input2 = ""
+        input3 = ""
+        input4 = ""
+    }
+    
+    
     var body: some View {
         ZStack {
             Image("coolbackground")
@@ -117,6 +221,7 @@ struct CheckCodigo: View {
                 .padding(.bottom, 10)
             }
         }
+        
         .sheet(isPresented: $showSheet) {
             MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
         }
@@ -180,119 +285,25 @@ struct CheckCodigo: View {
                     }
                 )
             } else if showAlertPromotionValid {
-                return Alert(title: Text("Código promocional validado. Suerte"))
-            } else {
                 return Alert(
-                    title: Text("Unexpected Error"),
-                    message: Text("An unexpected error occurred."),
-                    dismissButton: .default(Text("OK"))
+                    title: Text("Código promocional validado. Suerte"),
+                    dismissButton: .default(Text("OK")) {
+                        showAlertPromotionValid = false
+                        showAlert = false
+                        showSheet = true
+                    }
+                )
+            } else {
+                // Default alert
+                return Alert(
+                    title: Text("Unknown error"),
+                    message: Text("An unknown error occurred.")
                 )
             }
         }
+        
     }
 
-    func checkCodigo() {
-        guard let input = Int("\(input1)\(input2)\(input3)\(input4)") else {
-            showAlert4 = true
-            showAlert = true
-            return
-        }
-        
-        let gameCodesRef = Database.database().reference().child("gamecodes")
-        gameCodesRef.observeSingleEvent(of: .value) { snapshot in
-            var codeExists = false
-            var codeUsed = false
-            var keyToUpdate: String?
-            var isStaticCode = false
-            
-            for child in snapshot.children {
-                let snap = child as! DataSnapshot
-                if let value = snap.value as? [String: Any] {
-                    if let code = value["code"] as? Int {
-                        if input == code {
-                            codeExists = true
-                            keyToUpdate = snap.key
-                            if let used = value["used"] as? Bool {
-                                codeUsed = used
-                            }
-                            if value["StaticCode"] != nil {
-                                isStaticCode = true
-                            }
-                            break
-                        }
-                    }
-                }
-            }
-            
-            if !codeExists {
-                showAlert3 = true
-                showAlert = true
-                clearInputs()
-                isInput1Active = true
-            } else if isStaticCode {
-                showAlertPromotionValid = true
-                showAlert = true
-                clearInputs()
-                isInput1Active = true
-             
-                
-                // Update the game data
-                if let user = Auth.auth().currentUser {
-                    let gameData: [String: Any] = ["currentGameAciertos": 0,
-                                                   "currentGameFallos": 0,
-                                                   "currentGamePuntuacion": 0]
-                    let userRef = Database.database().reference().child("user").child(user.uid)
-                    userRef.updateChildValues(gameData) { (error, reference) in
-                        if let error = error {
-                            print("Failed to update game data. Error: \(error)")
-                            return
-                        }
-                    }
-                }
-
-            } else if codeUsed {
-                showAlert2 = true
-                showAlert = true
-                clearInputs()
-                isInput1Active = true
-            } else {
-                showAlert1 = true
-                showAlert = true
-                clearInputs()
-                isInput1Active = true
-            
-                if let user = Auth.auth().currentUser, let key = keyToUpdate {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "dd/MM/yy HH:mm"
-                    let timestamp = dateFormatter.string(from: Date())
-                    let updateValue: [String: Any] = ["used": true,
-                                                      "usedByUserID": user.uid,
-                                                      "usedByfullname": viewModel.fullname,
-                                                      "usedTimestamp": timestamp]
-                    gameCodesRef.child(key).updateChildValues(updateValue) { (error, reference) in
-                        if let error = error {
-                            print("Failed to update value. Error: \(error)")
-                            return
-                        }
-                    }
-                }
-                
-                // Navigate to MenuModoCompeticion
-                              showAlertPromotionValid = false
-                              showAlert = false
-                              showSheet = true
-            }
-        }
-    }
-  
-        
-        func clearInputs() {
-            input1 = ""
-            input2 = ""
-            input3 = ""
-            input4 = ""
-        }
-        
         struct InputModifier: ViewModifier {
             func body(content: Content) -> some View {
                 content
@@ -303,7 +314,7 @@ struct CheckCodigo: View {
                     .border(Color.black, width: 2)
             }
         }
-    }
+    
     
     
     struct CheckCodigo_Previews: PreviewProvider {
@@ -311,4 +322,5 @@ struct CheckCodigo: View {
             CheckCodigo()
         }
     }
-
+    
+}
