@@ -28,9 +28,7 @@ struct MenuPrincipal: View {
 
                 Spacer()
 
-                Button(action: {
-                    showMenuModoLibre = true
-                }) {
+                NavigationLink(destination: MenuModoLibre()){
                     Text("MODO LIBRE")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -43,10 +41,8 @@ struct MenuPrincipal: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-
-                Button(action: {
-                    showMenuModoCompeticion = true
-                }) {
+                
+                NavigationLink(destination: MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())) {
                     Text("MODO COMPETICION")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -59,11 +55,6 @@ struct MenuPrincipal: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-                .sheet(isPresented: $showMenuModoCompeticion) {
-                    MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
-                }
-
-
 
 
                 Button(action: {
@@ -102,12 +93,7 @@ struct MenuPrincipal: View {
             }
             .padding()
         }
-        .sheet(isPresented: $showMenuModoLibre) {
-            MenuModoLibre()
-        }
         .navigationBarHidden(true)
-
-
     }
 
     struct MenuPrincipal_Previews: PreviewProvider {

@@ -4,7 +4,8 @@ struct GameOver: View {
     @State private var scale: CGFloat = 1.0
     @State private var rotation: Double = 0.0
     @State private var isAnimating: Bool = false
-    @State private var shouldPresentResultado: Bool = false
+    @Environment(\.presentationMode) var presentationMode
+
     var userId: String
     
     var body: some View {
@@ -18,17 +19,13 @@ struct GameOver: View {
                 Spacer()
 
                 Button(action: {
-                    print("Presenting Resultado screen")
-                    self.shouldPresentResultado = true
+                    presentationMode.wrappedValue.dismiss()
                 }) {
                     Text("GAME OVER")
                         .scaledToFit()
                         .frame(width: 100, height: 100)
                         .scaleEffect(scale)
                         .scaleEffect(isAnimating ? 1.1 : 1.0)
-                }
-                .sheet(isPresented: $shouldPresentResultado) {
-                    ResultadoCompeticion(userId: userId)
                 }
 
                 Spacer()
