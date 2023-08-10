@@ -4,6 +4,8 @@ import FirebaseAuth
 struct ResultadoCompeticion: View {
  @StateObject var userViewModel = UserViewModel()
  @State private var currentUserID = ""
+@Environment(\.presentationMode) var presentationMode
+
  let userId: String
     
     struct TextRowView: View {
@@ -97,8 +99,9 @@ struct ResultadoCompeticion: View {
                                           }
 
 
-                        
-                        NavigationLink(destination: MenuModoCompeticion(userId: Auth.auth().currentUser?.uid ?? "defaultId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())) {
+                        Button {
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
                             Text("MENU PRINCIPAL")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -110,7 +113,9 @@ struct ResultadoCompeticion: View {
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.black, lineWidth: 3)
                                 )
+
                         }
+
                     }
                     .onAppear {
                         print("ResultadoCompeticion view appeared")

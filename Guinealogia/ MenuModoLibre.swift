@@ -7,7 +7,7 @@ struct MenuModoLibre: View {
     @State private var jugarModoLibreActive: Bool = false
     @State private var highScore: Int = 0
     @State private var colorIndex: Int = 0
-    @State private var showMenuPrincipal = false
+    @Environment(\.presentationMode) var presentationMode
     
     private let playerNameKey = "PlayerName"
     private let highScoreKey = "HighScore"
@@ -100,7 +100,7 @@ struct MenuModoLibre: View {
                 })
                 
                 Button(action: {
-                    showMenuPrincipal = true
+                    presentationMode.wrappedValue.dismiss()
                 }) {
                     Text("SALIR")
                         .font(.headline)
@@ -114,10 +114,6 @@ struct MenuModoLibre: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-                .sheet(isPresented: $showMenuPrincipal) {
-                    MenuPrincipal(player: .constant(nil))
-                }
-
 
                 
                 Spacer()

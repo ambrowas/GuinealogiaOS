@@ -21,9 +21,9 @@ struct MenuModoCompeticion: View {
     @ObservedObject var viewModel: RegistrarUsuarioViewModel
     @State private var alertMessage = ""
     @State private var showAlert = false
-    @State private var shouldShowMenuPrincipal = false
-    
-   
+    @Environment(\.presentationMode) var presentationMode
+    @State private var shouldPresentGameOver: Bool = false
+    @State private var shouldPresentResultado: Bool = false
 
     private func fetchCurrentUserData() {
         if let user = Auth.auth().currentUser {
@@ -112,14 +112,20 @@ struct MenuModoCompeticion: View {
                             CheckCodigo()
                         }
                     } else {
-                        Button(action: {
-                            if Auth.auth().currentUser != nil {
-                                jugarModoCompeticionActive = true
-                            } else {
-                                alertMessage = "Debes iniciar sesión para poder jugar."
-                                showAlert = true
-                            }
-                        }) {
+                        NavigationLink {
+                            JugarModoCompeticion(userId: userId, userData: userData)// can you mention the userid you have logged into the simulator? eleelavm@gmail.com/ Victor Manuel Ele Ela
+                                .onSubmit {
+                                    if Auth.auth().currentUser != nil {
+                                        jugarModoCompeticionActive = true
+                                    } else {
+                                        alertMessage = "Debes iniciar sesión para poder jugar."
+                                        showAlert = true
+                                    }
+                                }
+                                .onDisappear{
+                                    shouldPresentGameOver = true
+                                }
+                        } label: {
                             Text("JUGAR")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -132,11 +138,20 @@ struct MenuModoCompeticion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
-                        .sheet(isPresented: $jugarModoCompeticionActive) {
-                            JugarModoCompeticion(userId: userId, userData: userData)// can you mention the userid you have logged into the simulator? eleelavm@gmail.com/ Victor Manuel Ele Ela
+                        .sheet(isPresented: $shouldPresentGameOver) {
+                            GameOver(userId: userId)
+                                .onDisappear{
+                                    shouldPresentResultado = true
+                                }
                         }
+                        .sheet(isPresented: $shouldPresentResultado) {
+                            ResultadoCompeticion(userId: userId)
+                                .onDisappear{
+                                    presentationMode.wrappedValue.dismiss()
+                                }
+                        }
+
                     }
-                    
                     Button(action: {
                         if Auth.auth().currentUser != nil {
                             showClasificacion = true
@@ -223,21 +238,22 @@ struct MenuModoCompeticion: View {
                         IniciarSesion(loggedInUserName: $userFullName, showIniciarSesion: $showIniciarSesion)
                     }
 
-
-                    NavigationLink(destination: MenuPrincipal(player: .constant(nil))) {
-                        Text("VOLVER")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(width: 300, height: 55)
-                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
-                            .cornerRadius(10)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.black, lineWidth: 3)
-                            )
+                        Button {
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            Text("VOLVER")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 300, height: 55)
+                                .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
+                        }
                     }
-                }
                    .alert(isPresented: $showAlert) {
                        Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                    }
@@ -248,12 +264,12 @@ struct MenuModoCompeticion: View {
         }
     }
     
-    private func getFlashingColor() -> Color {
+     func getFlashingColor() -> Color {
         let colors: [Color] = [.red, .blue, .green, .white]
         return colors[colorIndex]
     }
 
-    private func startFlashing() {
+     func startFlashing() {
         let flashingColors: [Color] = [.red, .blue, .green, .white]
 
         let flashingAnimation = Animation
