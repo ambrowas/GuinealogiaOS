@@ -12,7 +12,7 @@ struct JugarModoCompeticion: View {
     @State private var userId: String = ""
     @ObservedObject private var userData: UserData
     @State private var shouldPresentGameOver: GameOverPresented? = nil //changes
-    
+    @Environment(\.presentationMode) var presentationMode
     
     
     enum ActiveAlert: Identifiable {
@@ -241,11 +241,7 @@ struct JugarModoCompeticion: View {
                     message: Text("¿Seguro que quieres terminar la partida?"),
                     primaryButton: .destructive(Text("SI")) {
                         viewModel.terminar {
-                            self.shouldPresentGameOver = GameOverPresented()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // Adding a delay of 0.5 seconds
-                                //                                self.shouldPresentGameOver = GameOverPresented() // Activate the navigation
-                                print(shouldPresentGameOver)
-                            }
+                            presentationMode.wrappedValue.dismiss()
                         }
                     },
                     secondaryButton: .cancel(Text("NO"))
@@ -272,6 +268,7 @@ struct JugarModoCompeticion: View {
         }
         .sheet(item: $shouldPresentGameOver, onDismiss: {
             shouldPresentGameOver = nil
+            
         }) { _ in
             
             GameOver(userId: userId)
