@@ -17,7 +17,7 @@
           let dismissAction: () -> Void
           @State private var shouldShowMenuModoCompeticion = false
           @State private var profileData: [(title: String, value: String)] = []
-        
+        @Environment(\.presentationMode) var presentationMode
 
         
         init(userViewModel: UserViewModel, leaderboardPosition: Int, dismissAction: @escaping () -> Void) {
@@ -99,7 +99,7 @@
 
                         
                         Button(action: {
-                            shouldShowMenuModoCompeticion = true
+                            presentationMode.wrappedValue.dismiss()
                         }) {
                             Text("VOLVER")
                                 .font(.headline)
@@ -123,9 +123,6 @@
             .sheet(isPresented: $isImagePickerDisplayed) {
                 ImagePicker(selectedImage: $profileImage, showSuccessAlert: $showSuccessAlert, storageRef: storageRef, ref: ref)
 
-            }
-            .sheet(isPresented: $shouldShowMenuModoCompeticion) {
-                MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
             }
 
         }

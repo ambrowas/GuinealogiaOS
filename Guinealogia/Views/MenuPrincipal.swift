@@ -56,10 +56,7 @@ struct MenuPrincipal: View {
                         )
                 }
 
-
-                Button(action: {
-                    showContactanosView = true
-                }) {
+                NavigationLink(destination: ContactanosView(player: .constant(nil))) {
                     Text("CONTACTANOS")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -72,10 +69,6 @@ struct MenuPrincipal: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-                .sheet(isPresented: $showContactanosView) {
-                    ContactanosView(player: .constant(nil))
-                }
-
 
 
                 Spacer()

@@ -4,7 +4,8 @@ struct RegistrarUsuario: View {
     @StateObject private var viewModel = RegistrarUsuarioViewModel()
     @State private var showProfileView = false
     @State private var alertType: AlertType?
-    
+    @Environment(\.presentationMode) var presentationMode
+
     enum AlertType: Identifiable {
         case userCreated, error
         
@@ -17,8 +18,6 @@ struct RegistrarUsuario: View {
             }
         }
     }
-    
-    
     
     var body: some View {
         NavigationView {
@@ -42,12 +41,44 @@ struct RegistrarUsuario: View {
                                     barrio: $viewModel.barrio,
                                     ciudad: $viewModel.ciudad,
                                     pais: $viewModel.pais)
-                    ButtonsView(registerAction: {
-                        viewModel.registerUser {
-                            // Set the alertType to .userCreated after successful registration and login
-                            alertType = .userCreated
+                    VStack {
+                        Button(action: {
+                            viewModel.registerUser {
+                                // Set the alertType to .userCreated after successful registration and login
+                                alertType = .userCreated
+                            }
+                        }) {
+                            Text("REGISTRAR")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 300, height: 75)
+                                .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
                         }
-                    }, viewModel: viewModel)
+                        
+                        Button(action: {
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Text("VOLVER")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 300, height: 55)
+                                .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
+                        }
+                        .padding(.bottom, 10)
+                    }
+                    .padding(.horizontal, 40)
 
                 }.padding(.top, 10)
             }
@@ -75,12 +106,7 @@ struct RegistrarUsuario: View {
             ProfileView(userViewModel: UserViewModel(), leaderboardPosition: 1, dismissAction: {})
             
         }
-        
-        
     }
-    
-    
-    
     
     struct InputFieldsView: View {
         @Binding var fullname: String
@@ -149,54 +175,7 @@ struct RegistrarUsuario: View {
                 .padding(.bottom, 10)
         }
     }
-    
-    struct ButtonsView: View {
-        var registerAction: () -> Void
-        @State private var shouldShowMenuModoCompeticion = false
-        var viewModel: RegistrarUsuarioViewModel // <-- Change to this
-        
-        var body: some View {
-            VStack {
-                Button(action: {
-                    registerAction()
-                }) {
-                    Text("REGISTRAR")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
-                }
-                
-                Button(action: {
-                    shouldShowMenuModoCompeticion = true
-                }) {
-                    Text("VOLVER")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 300, height: 55)
-                        .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
-                }
-                .padding(.bottom, 10)
-            }
-            .padding(.horizontal, 40)
-            .sheet(isPresented: $shouldShowMenuModoCompeticion) {
-                MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
-            }
-            
-        }
-    }
+
     
     struct RegistrarUsuario_Previews: PreviewProvider {
         static var previews: some View {

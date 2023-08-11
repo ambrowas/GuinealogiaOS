@@ -5,7 +5,8 @@ struct GameOver: View {
     @State private var rotation: Double = 0.0
     @State private var isAnimating: Bool = false
     @Environment(\.presentationMode) var presentationMode
-
+    @State private var shouldShowResults: Bool = false
+    
     var userId: String
     
     var body: some View {
@@ -19,13 +20,19 @@ struct GameOver: View {
                 Spacer()
 
                 Button(action: {
-                    presentationMode.wrappedValue.dismiss()
+                    shouldShowResults = true
                 }) {
                     Text("GAME OVER")
                         .scaledToFit()
                         .frame(width: 100, height: 100)
                         .scaleEffect(scale)
                         .scaleEffect(isAnimating ? 1.1 : 1.0)
+                }
+                .fullScreenCover(isPresented: $shouldShowResults) {
+                    ResultadoCompeticion(userId: userId)
+                        .onDisappear{
+                            presentationMode.wrappedValue.dismiss()
+                        }
                 }
 
                 Spacer()

@@ -11,7 +11,7 @@ struct JugarModoCompeticion: View {
     @State private var navigationTag: Int? = nil
     @State private var userId: String = ""
     @ObservedObject private var userData: UserData
-    @State private var shouldPresentGameOver: GameOverPresented? = nil //changes
+    @State private var shouldPresentGameOver: Bool = false
     @Environment(\.presentationMode) var presentationMode
     
     
@@ -227,7 +227,8 @@ struct JugarModoCompeticion: View {
                 }
             }
         }
-        
+        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
         .onAppear(perform: viewModel.fetchQuestion)
         .alert(item: $activeAlert) { item in
             switch item {
@@ -241,7 +242,7 @@ struct JugarModoCompeticion: View {
                     message: Text("¿Seguro que quieres terminar la partida?"),
                     primaryButton: .destructive(Text("SI")) {
                         viewModel.terminar {
-                            presentationMode.wrappedValue.dismiss()
+                            shouldPresentGameOver = true
                         }
                     },
                     secondaryButton: .cancel(Text("NO"))
@@ -254,9 +255,7 @@ struct JugarModoCompeticion: View {
                     message: Text("Has cometido 5 errores. Fin de la partida."),
                     dismissButton: .default(Text("OK")) {
                         viewModel.terminar {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // Adding a delay of 0.5 seconds
-                                self.shouldPresentGameOver = GameOverPresented()
-                            }
+                            shouldPresentGameOver = true
                         }
                     }
                 )
@@ -266,16 +265,12 @@ struct JugarModoCompeticion: View {
                 return Alert(title: Text("Cuidado"), message: Text("Llevas 4 fallos. Uno más y la partida se acaba."), dismissButton: .default(Text("OK")))
             }
         }
-        .sheet(item: $shouldPresentGameOver, onDismiss: {
-            shouldPresentGameOver = nil
-            
-        }) { _ in
-            
+        .fullScreenCover(isPresented: $shouldPresentGameOver){
             GameOver(userId: userId)
+                .onDisappear{
+                    presentationMode.wrappedValue.dismiss()
+                }
         }
-        
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
     }
 }
  

@@ -119,6 +119,7 @@ struct MenuModoLibre: View {
                 Spacer()
             }
         }
+        .navigationBarBackButtonHidden(true)
         .onAppear {
             loadPlayerName()
             loadHighScore()

@@ -123,7 +123,7 @@ struct MenuModoCompeticion: View {
                                     }
                                 }
                                 .onDisappear{
-                                    shouldPresentGameOver = true
+                                    presentationMode.wrappedValue.dismiss()
                                 }
                         } label: {
                             Text("JUGAR")
@@ -138,19 +138,6 @@ struct MenuModoCompeticion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
-                        .sheet(isPresented: $shouldPresentGameOver) {
-                            GameOver(userId: userId)
-                                .onDisappear{
-                                    shouldPresentResultado = true
-                                }
-                        }
-                        .sheet(isPresented: $shouldPresentResultado) {
-                            ResultadoCompeticion(userId: userId)
-                                .onDisappear{
-                                    presentationMode.wrappedValue.dismiss()
-                                }
-                        }
-
                     }
                     Button(action: {
                         if Auth.auth().currentUser != nil {
@@ -172,7 +159,7 @@ struct MenuModoCompeticion: View {
                                     .stroke(Color.black, lineWidth: 3)
                             )
                     }
-                    .sheet(isPresented: $showClasificacion) {
+                    .fullScreenCover(isPresented: $showClasificacion) {
                         if let currentUser = Auth.auth().currentUser {
                             ClasificacionView(userId: currentUser.uid)
                         } else {
@@ -200,7 +187,7 @@ struct MenuModoCompeticion: View {
                                     .stroke(Color.black, lineWidth: 3)
                             )
                     }
-                    .sheet(isPresented: $showProfile) {
+                    .fullScreenCover(isPresented: $showProfile) {
                         let userViewModel = UserViewModel()
                         ProfileView(userViewModel: userViewModel, leaderboardPosition: 1, dismissAction: {
                             showProfile = false
@@ -234,8 +221,11 @@ struct MenuModoCompeticion: View {
                                     .stroke(Color.black, lineWidth: 3)
                             )
                     }
-                    .sheet(isPresented: $showIniciarSesion) {
+                    .fullScreenCover(isPresented: $showIniciarSesion) {
                         IniciarSesion(loggedInUserName: $userFullName, showIniciarSesion: $showIniciarSesion)
+                            .onDisappear{
+                                fetchCurrentUserData()
+                            }
                     }
 
                         Button {
@@ -262,6 +252,7 @@ struct MenuModoCompeticion: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
     
      func getFlashingColor() -> Color {

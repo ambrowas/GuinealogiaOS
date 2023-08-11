@@ -148,7 +148,7 @@ extension User {
                                 .padding(.top, 35)
                             
                             Button(action: {
-                                shouldShowMenuModoCompeticion = true
+                                presentationMode.wrappedValue.dismiss()
                             }) {
                                 Text("VOLVER")
                                     .font(.headline)
@@ -203,9 +203,7 @@ extension User {
                         }
                     }
                 }
-            }
-            .sheet(isPresented: $shouldShowMenuModoCompeticion) {
-                MenuModoCompeticion(userId: userId, userData: userData, viewModel: RegistrarUsuarioViewModel())
+                .navigationBarBackButtonHidden(true)
             }
         }
     }

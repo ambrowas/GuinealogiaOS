@@ -28,6 +28,7 @@ struct IniciarSesion: View {
     @State private var showMenuModoCompeticion = false
     @State private var shouldShowMenuModoCompeticion = false
     @State private var navigateToMenuModoCompeticion: MenuModoCompeticionNavigation?
+    @Environment(\.presentationMode) var presentationMode
 
 
     enum AlertType: Identifiable {
@@ -111,7 +112,7 @@ struct IniciarSesion: View {
                                     title: Text("Exito"),
                                     message: Text("Usuario Conectado"),
                                     dismissButton: .default(Text("OK")) {
-                                        self.navigateToMenuModoCompeticion = MenuModoCompeticionNavigation() // This triggers navigation
+                                        presentationMode.wrappedValue.dismiss()
                                     }
                                 )
                             case .incorrectPassword:
@@ -156,7 +157,7 @@ struct IniciarSesion: View {
                                 )
                         }
                         Button(action: {
-                            shouldShowMenuModoCompeticion = true
+                            presentationMode.wrappedValue.dismiss()
                         }) {
                             Text("VOLVER")
                                 .font(.headline)
@@ -170,8 +171,11 @@ struct IniciarSesion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
-                        .sheet(isPresented: $navigateToRegistrarUsuario) {
+                        .fullScreenCover(isPresented: $navigateToRegistrarUsuario) {
                             RegistrarUsuario()
+                                .onDisappear{
+                                    presentationMode.wrappedValue.dismiss()
+                                }
                         }
                     } else {
                         Button(action: {
@@ -194,12 +198,6 @@ struct IniciarSesion: View {
                 }
             }
             
-        }
-        .sheet(isPresented: $shouldShowMenuModoCompeticion) {
-            MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
-        }
-        .fullScreenCover(item: $navigateToMenuModoCompeticion) { item in
-            MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
         }
     }
 
