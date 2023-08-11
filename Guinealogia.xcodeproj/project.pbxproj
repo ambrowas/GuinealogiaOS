@@ -205,6 +205,76 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1797DB712A85E17100E69C72 /* ModoCompeticion */ = {
+			isa = PBXGroup;
+			children = (
+				1797DB732A85E1C000E69C72 /* Database */,
+				757BC2BD2A2FB65800CA7A16 /* MenuModoCompeticion.swift */,
+				757BC2FC2A31176000CA7A16 /* JugarModoCompeticion.swift */,
+				75D44C3E2A40E9C000E16F86 /* GameOver.swift */,
+				757BC3042A33FDD500CA7A16 /* ResultadoCompeticion.swift */,
+			);
+			path = ModoCompeticion;
+			sourceTree = "<group>";
+		};
+		1797DB722A85E1A700E69C72 /* Modo Libre */ = {
+			isa = PBXGroup;
+			children = (
+				7557A7C72A24548E007C2A07 /*  MenuModoLibre.swift */,
+				757BC2B12A27E91400CA7A16 /* JugarModoLibre.swift */,
+				7557A7D82A2578D8007C2A07 /* ResultadoView.swift */,
+			);
+			path = "Modo Libre";
+			sourceTree = "<group>";
+		};
+		1797DB732A85E1C000E69C72 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				757BC2F82A3006CA00CA7A16 /* RegistrarUsuario.swift */,
+				757BC2FA2A3014C900CA7A16 /* IniciarSesion.swift */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
+		1797DB742A85E1F700E69C72 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7557A7922A2400D4007C2A07 /* ContentView.swift */,
+				7557A7C32A2446C8007C2A07 /* MenuPrincipal.swift */,
+				75D44C3A2A40C19D00E16F86 /* CodigoQR.swift */,
+				757BC3082A37A9C700CA7A16 /* Profile.swift */,
+				757BC2BB2A2E86CD00CA7A16 /* Contactanos.swift */,
+				1797DB712A85E17100E69C72 /* ModoCompeticion */,
+				1797DB722A85E1A700E69C72 /* Modo Libre */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1797DB752A85E20A00E69C72 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				753536332A4DF932006A3779 /* RegistrarUsuarioViewModel.swift */,
+				75D44C382A3D1AC400E16F86 /* ImagePicker.swift */,
+				757BC3062A37997000CA7A16 /* UserViewModel.swift */,
+				757BC2AF2A27E8F600CA7A16 /* QuizState.swift */,
+				7557A7CB2A2516BB007C2A07 /* Quiz Contract.swift */,
+				757BC3002A316F5800CA7A16 /* JugarModoCompeticionViewModel.swift */,
+			);
+			path = Objects;
+			sourceTree = "<group>";
+		};
+		1797DB762A85E23300E69C72 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				757BC2FE2A315C6000CA7A16 /* QuizContract2.swift */,
+				753536372A549EDE006A3779 /* Clasificacion.swift */,
+				752EB7692A462B5200013A73 /* AuthService.swift */,
+				752EB76B2A478ED500013A73 /* UserManager.swift */,
+				7557A7D12A251D6C007C2A07 /* QuizDBHelper.swift */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
 		7557A7842A2400D4007C2A07 = {
 			isa = PBXGroup;
 			children = (
@@ -234,9 +304,6 @@
 			children = (
 				7557A7D32A251DAD007C2A07 /* Sources */,
 				7557A7902A2400D4007C2A07 /* GuinealogiaApp.swift */,
-				7557A7922A2400D4007C2A07 /* ContentView.swift */,
-				7557A7C32A2446C8007C2A07 /* MenuPrincipal.swift */,
-				7557A7C72A24548E007C2A07 /*  MenuModoLibre.swift */,
 				7557A7942A2400D6007C2A07 /* Assets.xcassets */,
 				7557A7C12A242B90007C2A07 /* maeledjidalot.mp3 */,
 				7557A7DB2A257FC7007C2A07 /* notright.wav */,
@@ -249,29 +316,10 @@
 				7557A7962A2400D6007C2A07 /* Guinealogia.entitlements */,
 				757BC2BF2A2FF97E00CA7A16 /* GoogleService-Info.plist */,
 				7557A7972A2400D6007C2A07 /* Preview Content */,
-				7557A7CB2A2516BB007C2A07 /* Quiz Contract.swift */,
-				7557A7D12A251D6C007C2A07 /* QuizDBHelper.swift */,
-				7557A7D82A2578D8007C2A07 /* ResultadoView.swift */,
 				756F9BDE2A62089100B9CEEC /* WhatsApp Image 2023-05-17 at 7.21.33 PM.jpeg */,
-				757BC2AF2A27E8F600CA7A16 /* QuizState.swift */,
-				757BC2B12A27E91400CA7A16 /* JugarModoLibre.swift */,
-				757BC2BB2A2E86CD00CA7A16 /* Contactanos.swift */,
-				757BC2BD2A2FB65800CA7A16 /* MenuModoCompeticion.swift */,
-				757BC2F82A3006CA00CA7A16 /* RegistrarUsuario.swift */,
-				757BC2FA2A3014C900CA7A16 /* IniciarSesion.swift */,
-				757BC2FC2A31176000CA7A16 /* JugarModoCompeticion.swift */,
-				757BC2FE2A315C6000CA7A16 /* QuizContract2.swift */,
-				757BC3002A316F5800CA7A16 /* JugarModoCompeticionViewModel.swift */,
-				757BC3042A33FDD500CA7A16 /* ResultadoCompeticion.swift */,
-				757BC3062A37997000CA7A16 /* UserViewModel.swift */,
-				757BC3082A37A9C700CA7A16 /* Profile.swift */,
-				75D44C382A3D1AC400E16F86 /* ImagePicker.swift */,
-				75D44C3A2A40C19D00E16F86 /* CodigoQR.swift */,
-				75D44C3E2A40E9C000E16F86 /* GameOver.swift */,
-				752EB7692A462B5200013A73 /* AuthService.swift */,
-				752EB76B2A478ED500013A73 /* UserManager.swift */,
-				753536332A4DF932006A3779 /* RegistrarUsuarioViewModel.swift */,
-				753536372A549EDE006A3779 /* Clasificacion.swift */,
+				1797DB742A85E1F700E69C72 /* Views */,
+				1797DB752A85E20A00E69C72 /* Objects */,
+				1797DB762A85E23300E69C72 /* Database */,
 			);
 			path = Guinealogia;
 			sourceTree = "<group>";
