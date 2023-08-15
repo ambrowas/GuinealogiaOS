@@ -38,6 +38,7 @@ struct CodigoQR: View {
     @State var qrCodeKey = ""
     @State private var isShowingAlert = false
     @State private var alertMessage = ""
+    @Environment (\.presentationMode) var presentationMode
     
     var body: some View {
         NavigationView {
@@ -73,7 +74,9 @@ struct CodigoQR: View {
                                 )
                         }
                         
-                        NavigationLink(destination: ResultadoCompeticion(userId: "defaultUserId")) {
+                        Button {
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
                             Text("VOLVER")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -85,26 +88,6 @@ struct CodigoQR: View {
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.black, lineWidth: 3)
                                 )
-                        }
-                        
-                        Button(action: {
-                            // Action for button 3
-                            // You can navigate to MenuModoCompeticion here
-                        }) {
-                            NavigationLink(destination: MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())) {
-
-                                Text("MENU PRINCIPAL")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 300, height: 55)
-                                    .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
-                                    .cornerRadius(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color.black, lineWidth: 3)
-                                    )
-                            }
                         }
                     }
                 }
