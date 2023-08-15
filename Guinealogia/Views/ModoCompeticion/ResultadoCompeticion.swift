@@ -2,11 +2,12 @@ import SwiftUI
 import FirebaseAuth
 
 struct ResultadoCompeticion: View {
- @StateObject var userViewModel = UserViewModel()
- @State private var currentUserID = ""
-@Environment(\.presentationMode) var presentationMode
+    @StateObject var userViewModel = UserViewModel()
+    @State private var currentUserID = ""
+    @Environment(\.presentationMode) var presentationMode
 
- let userId: String
+    let userId: String
+    @State var showCodigo: Bool = false
     
     struct TextRowView: View {
         var title: String
@@ -68,7 +69,9 @@ struct ResultadoCompeticion: View {
                     )
                     
                     VStack(spacing: 10) {
-                        NavigationLink(destination: CodigoQR()) {
+                        Button {
+                            showCodigo = true
+                        } label: {
                             Text("GENERAR COBRO")
                                 .font(.headline)
                                 .foregroundColor(.black)
@@ -80,6 +83,8 @@ struct ResultadoCompeticion: View {
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.black, lineWidth: 3)
                                 )
+                        }.sheet(isPresented: $showCodigo) {
+                            CodigoQR()
                         }
                         
                         if let currentUser = Auth.auth().currentUser {
