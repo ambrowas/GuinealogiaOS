@@ -24,6 +24,7 @@ struct MenuModoCompeticion: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var shouldPresentGameOver: Bool = false
     @State private var shouldPresentResultado: Bool = false
+    @State private var goToMenuPrincipal = false
 
     private func fetchCurrentUserData() {
         if let user = Auth.auth().currentUser {
@@ -227,21 +228,18 @@ struct MenuModoCompeticion: View {
                                 fetchCurrentUserData()
                             }
                     }
+                    NavigationLink("", destination: MenuPrincipal(player: .constant(nil)), isActive: $goToMenuPrincipal).hidden()
 
                         Button {
-                            presentationMode.wrappedValue.dismiss()
+                            goToMenuPrincipal = true
                         } label: {
                             Text("VOLVER")
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                                 .padding()
                                 .frame(width: 300, height: 55)
-                                .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
                                 .cornerRadius(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.black, lineWidth: 3)
-                                )
+                                
                         }
                     }
                    .alert(isPresented: $showAlert) {

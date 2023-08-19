@@ -1,4 +1,5 @@
 import SwiftUI
+import AVFoundation
 
 struct GameOver: View {
     @State private var scale: CGFloat = 1.0
@@ -8,6 +9,9 @@ struct GameOver: View {
     @State private var shouldShowResults: Bool = false
     
     var userId: String
+    
+    // Add a property for the audio player
+    @State private var audioPlayer: AVAudioPlayer?
     
     var body: some View {
         ZStack {
@@ -24,6 +28,7 @@ struct GameOver: View {
                 }) {
                     Text("GAME OVER")
                         .scaledToFit()
+                        .foregroundColor(Color.black)
                         .frame(width: 100, height: 100)
                         .scaleEffect(scale)
                         .scaleEffect(isAnimating ? 1.1 : 1.0)
@@ -41,6 +46,9 @@ struct GameOver: View {
         .navigationBarHidden(true)
         .onAppear {
             print("GameOver screen appeared")
+            
+            // Play the game over sound
+            playSound()
 
             withAnimation(Animation.easeInOut(duration: 3.0)) {
                 self.scale = 3.0
@@ -68,6 +76,18 @@ struct GameOver: View {
             print("GameOver screen disappeared")
         }
         .navigationBarBackButtonHidden(true)
+    }
+    
+    func playSound() {
+        if let path = Bundle.main.path(forResource: "gameover", ofType: "mp3") {
+            let url = URL(fileURLWithPath: path)
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+                audioPlayer?.play()
+            } catch {
+                print("Couldn't load file")
+            }
+        }
     }
 }
 

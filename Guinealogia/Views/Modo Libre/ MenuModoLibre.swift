@@ -29,17 +29,9 @@ struct MenuModoLibre: View {
                     .aspectRatio(contentMode: .fit)
                     .padding(.top, 15)
                     .frame(width: 200, height: 150)
-                    .padding(.bottom, 150)
+                    .padding(.bottom, 50)
                 
-                Text("El record actual es de \(highScore) puntos")
-                    .foregroundColor(getFlashingColor())
-                    .font(.headline)
-                    .padding(.horizontal, 20)
-                    .padding(.top, -10)
-                    .onAppear {
-                        startFlashing()
-                    }
-                
+
                 if jugadorGuardado.isEmpty {
                     TextField("           INTRODUCE TU NOMBRE", text: $playerName)
                         .foregroundColor(.black)
@@ -56,6 +48,16 @@ struct MenuModoLibre: View {
                         .padding(.horizontal, 20)
                         .padding(.top, 80)
                 }
+            
+                Text("El record actual es de \(highScore) puntos")
+                    .foregroundColor(getFlashingColor())
+                    .font(.headline)
+                    .padding(.horizontal, 20)
+                    .padding(.top, -10)
+                    .onAppear {
+                        startFlashing()
+                    }
+                
                 
              
                 

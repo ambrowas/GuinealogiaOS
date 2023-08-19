@@ -5,6 +5,8 @@ struct ResultadoCompeticion: View {
     @StateObject var userViewModel = UserViewModel()
     @State private var currentUserID = ""
     @Environment(\.presentationMode) var presentationMode
+    @State private var goToMenuModoCompeticion: Bool = false
+
 
     let userId: String
     @State var showCodigo: Bool = false
@@ -57,7 +59,7 @@ struct ResultadoCompeticion: View {
                         TextRowView(title: "GANANCIAS", value: "\(userViewModel.currentGamePuntuacion) Fcfas")
                         TextRowView(title: "RANKING GLOBAL", value: "\(userViewModel.positionInLeaderboard)")
                         TextRowView(title: "RECORD", value: "\(userViewModel.highestScore)")
-                        TextRowView(title: "TOTAL GANANCIAS", value: "\(userViewModel.highestScore)")
+                        TextRowView(title: "GANANCIAS TOT.", value: "\(userViewModel.accumulatedPuntuacion) Fcfas")
                     }
                     .listStyle(PlainListStyle())
                     .frame(width: 300, height: 310)
@@ -102,10 +104,11 @@ struct ResultadoCompeticion: View {
                                                       )
                                               }
                                           }
+                        NavigationLink("", destination: MenuModoCompeticion(userId:"DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()), isActive: $goToMenuModoCompeticion).hidden()
 
 
                         Button {
-                            presentationMode.wrappedValue.dismiss()
+                            goToMenuModoCompeticion = true
                         } label: {
                             Text("MENU PRINCIPAL")
                                 .font(.headline)

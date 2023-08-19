@@ -132,7 +132,7 @@ struct CodigoQR: View {
             "lastGamePuntuacion": 1000,
             "lastGameScore": 2,
             "qrCodeKey": qrCodeKey,
-            "timestamp": "18-05-2023 14:43:52",
+            "timestamp": generateCurrentTimestamp(),
             "userId": userId,
             "fullname": userViewModel.fullname
         ]
@@ -154,7 +154,7 @@ struct CodigoQR: View {
             "lastGamePuntuacion": 1000,
             "lastGameScore": 2,
             "qrCodeKey": qrCodeKey,
-            "timestamp": "18-05-2023 14:43:52",
+            "timestamp": generateCurrentTimestamp(),
             "userId": userId,
             "fullname": userViewModel.fullname
         ]
@@ -170,11 +170,17 @@ struct CodigoQR: View {
             }
         }
     }
-}
-
-struct CodigoQR_Previews: PreviewProvider {
-    static var previews: some View {
-        CodigoQR()
+    
+    func generateCurrentTimestamp() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
+        return dateFormatter.string(from: Date())
     }
+    
+    struct CodigoQR_Previews: PreviewProvider {
+        static var previews: some View {
+            CodigoQR()
+        }
+    }
+    
 }
-
