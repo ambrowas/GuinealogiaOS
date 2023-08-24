@@ -104,8 +104,8 @@ struct ResultadoCompeticion: View {
                                                       )
                                               }
                                           }
-                        NavigationLink("", destination: MenuModoCompeticion(userId:"DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()), isActive: $goToMenuModoCompeticion).hidden()
 
+                        NavigationLink("", destination: MenuModoCompeticion(userId: userId, userData: UserData(), viewModel: RegistrarUsuarioViewModel()), isActive: $goToMenuModoCompeticion).hidden()
 
                         Button {
                             goToMenuModoCompeticion = true

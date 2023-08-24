@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7506F4932A943AF800C77915 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7506F4922A943AF700C77915 /* AlertTypes.swift */; };
 		752EB76A2A462B5200013A73 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB7692A462B5200013A73 /* AuthService.swift */; };
 		752EB76C2A478ED500013A73 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB76B2A478ED500013A73 /* UserManager.swift */; };
 		753536342A4DF932006A3779 /* RegistrarUsuarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536332A4DF932006A3779 /* RegistrarUsuarioViewModel.swift */; };
@@ -100,6 +101,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7506F4922A943AF700C77915 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
 		752EB7692A462B5200013A73 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		752EB76B2A478ED500013A73 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		753536332A4DF932006A3779 /* RegistrarUsuarioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrarUsuarioViewModel.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				757BC2F82A3006CA00CA7A16 /* RegistrarUsuario.swift */,
+				7506F4922A943AF700C77915 /* AlertTypes.swift */,
 				757BC2FA2A3014C900CA7A16 /* IniciarSesion.swift */,
 			);
 			path = Database;
@@ -535,6 +538,7 @@
 			files = (
 				757BC2BC2A2E86CD00CA7A16 /* Contactanos.swift in Sources */,
 				757BC2BE2A2FB65800CA7A16 /* MenuModoCompeticion.swift in Sources */,
+				7506F4932A943AF800C77915 /* AlertTypes.swift in Sources */,
 				7535363A2A54B231006A3779 /* LeadersProfile.swift in Sources */,
 				75D44C392A3D1AC400E16F86 /* ImagePicker.swift in Sources */,
 				757BC2FB2A3014CA00CA7A16 /* IniciarSesion.swift in Sources */,
@@ -715,6 +719,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Guinealogia/Preview Content\"";
+				DEVELOPMENT_TEAM = B5X8QR4N34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -751,6 +756,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Guinealogia/Preview Content\"";
+				DEVELOPMENT_TEAM = B5X8QR4N34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;

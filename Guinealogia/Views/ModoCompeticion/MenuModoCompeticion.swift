@@ -113,20 +113,16 @@ struct MenuModoCompeticion: View {
                             CheckCodigo()
                         }
                     } else {
-                        NavigationLink {
-                            JugarModoCompeticion(userId: userId, userData: userData)// can you mention the userid you have logged into the simulator? eleelavm@gmail.com/ Victor Manuel Ele Ela
-                                .onSubmit {
-                                    if Auth.auth().currentUser != nil {
-                                        jugarModoCompeticionActive = true
-                                    } else {
-                                        alertMessage = "Debes iniciar sesión para poder jugar."
-                                        showAlert = true
-                                    }
-                                }
-                                .onDisappear{
-                                    presentationMode.wrappedValue.dismiss()
-                                }
-                        } label: {
+                        Button(action: {
+                            if Auth.auth().currentUser != nil {
+                                print("User is authenticated. Setting jugarModoCompeticionActive to true.")
+                                jugarModoCompeticionActive = true
+                            } else {
+                                print("No authenticated user found. Showing alert.")
+                                alertMessage = "Debes iniciar sesión para poder jugar."
+                                showAlert = true
+                            }
+                        }) {
                             Text("JUGAR")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -139,7 +135,15 @@ struct MenuModoCompeticion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
+                        .alert(isPresented: $showAlert) {
+                            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                        }
+                        .fullScreenCover(isPresented: $jugarModoCompeticionActive) {
+                            // Your destination view here, for example:
+                            JugarModoCompeticion(userId: userId, userData: userData)
+                        }
                     }
+
                     Button(action: {
                         if Auth.auth().currentUser != nil {
                             showClasificacion = true
@@ -285,7 +289,8 @@ struct MenuModoCompeticionNavigation: Identifiable {
 
 struct MenuModoCompeticion_Previews: PreviewProvider {
     static var previews: some View {
-        MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
+        MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()
+            )
     }
 }
 

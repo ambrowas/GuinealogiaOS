@@ -51,6 +51,8 @@ class JugarModoCompeticionViewModel: ObservableObject {
       var gameOverAlertPublisher = PassthroughSubject<Void, Never>()
       private var shownQuestionIDs: Set<String> = []
       @Published var isAlertBeingDisplayed: Bool = false
+      @Published var showAnswerStatus: Bool = false
+      let timeExpired = PassthroughSubject<Bool, Never>()
      
 
 
@@ -266,11 +268,12 @@ class JugarModoCompeticionViewModel: ObservableObject {
         answerChecked = true
         answerIsCorrect = false
         mistakes += 1
+        timeExpired.send(true) // Modified line
         questionProcessed = true
 
         buttonText = "SIGUIENTE"
 
-            // Check the number of mistakes and trigger the appropriate alert
+        // Check the number of mistakes and trigger the appropriate alert
         if self.mistakes == 4 {
             // If the user is on 4 mistakes, display the Many Mistakes Alert
             self.triggerManyMistakesAlert()
@@ -281,14 +284,14 @@ class JugarModoCompeticionViewModel: ObservableObject {
             self.triggerGameOverAlert()
             print("Triggered Game Over Alert")
         }
-      }
+    }
 
       func triggerGameOverAlert() {
-        print("Triggering Game Overalert...")
-        isAlertBeingDisplayed = true
-        activeAlert = .showGameOverAlert
-        objectWillChange.send() // If needed, trigger a manual view update
-      }
+            print("Triggering Game Overalert...")
+            isAlertBeingDisplayed = true
+            activeAlert = .showGameOverAlert
+            objectWillChange.send() // If needed, trigger a manual view update
+          }
 
       func triggerManyMistakesAlert() {
         print("Triggering many mistakes alert...")

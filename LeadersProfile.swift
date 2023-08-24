@@ -5,6 +5,8 @@ import FirebaseStorage
 struct LeadersProfile: View {
     @ObservedObject private var viewModel: LeadersProfileViewModel
     @State private var shouldShowMenuModoCompeticion = false
+    @Environment(\.presentationMode) var presentationMode
+
     
     
     init(userId: String) {
@@ -69,7 +71,6 @@ struct LeadersProfile: View {
                             TextRowView(title: "BARRIO", value: user.barrio)
                             TextRowView(title: "CIUDAD", value: user.ciudad)
                             TextRowView(title: "PAIS", value: user.pais)
-                        
                             TextRowView(title: "PUNTUACIÓN ACUMULADA", value: "\(user.accumulatedPuntuacion)")
                             TextRowView(title: "ACIERTOS ACUMULADOS", value: "\(user.accumulatedAciertos)")
                             TextRowView(title: "FALLOS ACUMULADOS", value: "\(user.accumulatedFallos)")
@@ -87,6 +88,7 @@ struct LeadersProfile: View {
                 // Volver Button
                 Button(action: {
                     shouldShowMenuModoCompeticion = true
+                    self.presentationMode.wrappedValue.dismiss()
                 }) {
                     Text("VOLVER")
                         .font(.headline)
@@ -109,6 +111,8 @@ struct LeadersProfile: View {
             .sheet(isPresented: $shouldShowMenuModoCompeticion) {
                 MenuModoCompeticion(userId: "hardCodedUserId", userData:UserData(), viewModel: RegistrarUsuarioViewModel())
             }
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
         }
     }
     

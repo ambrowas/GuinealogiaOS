@@ -2,22 +2,11 @@ import SwiftUI
 
 struct RegistrarUsuario: View {
     @StateObject private var viewModel = RegistrarUsuarioViewModel()
-    @State private var showProfileView = false
-    @State private var alertType: AlertType?
+    @State private var navigateToProfile: Bool = false
     @Environment(\.presentationMode) var presentationMode
+    @State private var goToMenuModoCompeticion: Bool = false
+    
 
-    enum AlertType: Identifiable {
-        case userCreated, error
-        
-        var id: Int {
-            switch self {
-            case .userCreated:
-                return 1
-            case .error:
-                return 2
-            }
-        }
-    }
     
     var body: some View {
         NavigationView {
@@ -27,12 +16,12 @@ struct RegistrarUsuario: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 10) {
+               
                     Image("logotrivial")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .padding(.trailing, 10.0)
                         .frame(width: 200, height: 150)
-                    
                     
                     InputFieldsView(fullname: $viewModel.fullname,
                                     email: $viewModel.email,
@@ -41,11 +30,16 @@ struct RegistrarUsuario: View {
                                     barrio: $viewModel.barrio,
                                     ciudad: $viewModel.ciudad,
                                     pais: $viewModel.pais)
+                    
                     VStack {
+                        
+                        NavigationLink("", destination: ProfileView(userViewModel: UserViewModel(),
+                           leaderboardPosition: 1,
+                        dismissAction: { self.navigateToProfile = false }
+                            ), isActive: $viewModel.shouldNavigateToProfile).hidden()
                         Button(action: {
                             viewModel.registerUser {
-                                // Set the alertType to .userCreated after successful registration and login
-                                alertType = .userCreated
+                               
                             }
                         }) {
                             Text("REGISTRAR")
@@ -61,8 +55,12 @@ struct RegistrarUsuario: View {
                                 )
                         }
                         
+                        NavigationLink("", destination: MenuModoCompeticion(userId:"DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()), isActive: $goToMenuModoCompeticion).hidden()
+                        
                         Button(action: {
-                            presentationMode.wrappedValue.dismiss()
+                            goToMenuModoCompeticion = true
+                         
+                                
                         }) {
                             Text("VOLVER")
                                 .font(.headline)
@@ -79,108 +77,99 @@ struct RegistrarUsuario: View {
                         .padding(.bottom, 10)
                     }
                     .padding(.horizontal, 40)
-
-                }.padding(.top, 10)
-            }
-            .alert(item: $alertType) { type in
-                switch type {
-                case .userCreated:
-                    return Alert(
-                        title: Text("Usuario Creado"),
-                        message: Text("Completa tu perfil agregando una foto"),
-                        dismissButton: .default(Text("OK")) {
-                            showProfileView = true // This triggers navigation
+                   
                         }
-                    )
-                case .error:
-                    return Alert(
-                        title: Text("Error"),
-                        message: Text(viewModel.alert.alertMessage),
-                        dismissButton: .default(Text("OK"))
-                    )
+                .alert(isPresented: $viewModel.alert.showAlert) {
+                        Alert(title: Text(viewModel.alert.title),
+                              message: Text(viewModel.alert.message),
+                              dismissButton: .default(Text("OK"), action: {
+                                  viewModel.alert.primaryAction?()
+                              }))
+                    }
+                    }
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
+        
+
                 }
             }
-        }
-        
-        .fullScreenCover(isPresented: $showProfileView) {
-            ProfileView(userViewModel: UserViewModel(), leaderboardPosition: 1, dismissAction: {})
             
         }
-    }
-    
-    struct InputFieldsView: View {
-        @Binding var fullname: String
-        @Binding var email: String
-        @Binding var password: String
-        @Binding var telefono: String
-        @Binding var barrio: String
-        @Binding var ciudad: String
-        @Binding var pais: String
-        
-        var body: some View {
-            VStack {
-                SingleInputFieldView(text: $fullname, placeholder: "Nombre")
-                    .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
-                    .textContentType(.name)
-                
-                SingleInputFieldView(text: $email, placeholder: "Email")
-                    .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.none)
-                    .autocorrectionDisabled()
-                    .textContentType(/*@START_MENU_TOKEN@*/.emailAddress/*@END_MENU_TOKEN@*/)
-                
-                
-                SecureInputFieldView(text: $password, placeholder: "Contraseña")
-                    .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
-                    .autocorrectionDisabled()
-                    .textContentType(.password)
-                
-                SingleInputFieldView(text: $telefono, placeholder: "Teléfono")
-                    .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
-                    .textContentType(.telephoneNumber)
-                SingleInputFieldView(text: $barrio, placeholder: "Barrio")
-                    .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
-                    .autocorrectionDisabled()
-                SingleInputFieldView(text: $ciudad, placeholder: "Ciudad")
-                    .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
-                    .autocorrectionDisabled()
-                SingleInputFieldView(text: $pais, placeholder: "País")
-                    .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
-                    .autocorrectionDisabled()
-            }
-            .padding(.horizontal, 40)
-        }
-    }
-    
-    
-    struct SingleInputFieldView: View {
-        @Binding var text: String
-        var placeholder: String
-        
-        var body: some View {
-            TextField(placeholder, text: $text)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.bottom, 1)
-        }
-    }
-    
-    struct SecureInputFieldView: View {
-        @Binding var text: String
-        var placeholder: String
-        
-        var body: some View {
-            SecureField(placeholder, text: $text)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.bottom, 10)
-        }
-    }
 
-    
-    struct RegistrarUsuario_Previews: PreviewProvider {
-        static var previews: some View {
-            RegistrarUsuario()
+        
+        struct InputFieldsView: View {
+            @Binding var fullname: String
+            @Binding var email: String
+            @Binding var password: String
+            @Binding var telefono: String
+            @Binding var barrio: String
+            @Binding var ciudad: String
+            @Binding var pais: String
+            
+            var body: some View {
+                VStack {
+                    SingleInputFieldView(text: $fullname, placeholder: "Nombre")
+                        .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
+                        .textContentType(.name)
+                    
+                    SingleInputFieldView(text: $email, placeholder: "Email")
+                        .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.none)
+                        .textContentType(/*@START_MENU_TOKEN@*/.emailAddress/*@END_MENU_TOKEN@*/)
+                    
+                    
+                    SecureInputFieldView(text: $password, placeholder: "Contraseña")
+                        .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
+                        .autocorrectionDisabled()
+                        .textContentType(.password)
+                    
+                    SingleInputFieldView(text: $telefono, placeholder: "Teléfono")
+                        .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
+                        .textContentType(.telephoneNumber)
+                    SingleInputFieldView(text: $barrio, placeholder: "Barrio")
+                        .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
+                        .autocorrectionDisabled()
+                    SingleInputFieldView(text: $ciudad, placeholder: "Ciudad")
+                        .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
+                        .autocorrectionDisabled()
+                    SingleInputFieldView(text: $pais, placeholder: "País")
+                        .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
+                        .autocorrectionDisabled()
+                }
+                .padding(.horizontal, 40)
+            }
+             
         }
-    }
-    
-}
+
+        
+        struct SingleInputFieldView: View {
+            @Binding var text: String
+            var placeholder: String
+            
+            var body: some View {
+                TextField(placeholder, text: $text)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.bottom, 1)
+            }
+        }
+        
+        struct SecureInputFieldView: View {
+            @Binding var text: String
+            var placeholder: String
+            
+            var body: some View {
+                SecureField(placeholder, text: $text)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.bottom, 10)
+            }
+        }
+
+        
+        struct RegistrarUsuario_Previews: PreviewProvider {
+            static var previews: some View {
+                RegistrarUsuario()
+            }
+        }
+        
+

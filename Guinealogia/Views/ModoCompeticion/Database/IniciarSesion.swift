@@ -29,6 +29,9 @@ struct IniciarSesion: View {
     @State private var shouldShowMenuModoCompeticion = false
     @State private var navigateToMenuModoCompeticion: MenuModoCompeticionNavigation?
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var registrarViewModel = RegistrarUsuarioViewModel()
+    @State private var isShowingRegistrarUsuario = false
+
 
 
     enum AlertType: Identifiable {
@@ -141,8 +144,16 @@ struct IniciarSesion: View {
                             }
                         }
                         
+                        NavigationLink(
+                            destination: RegistrarUsuario(),
+                            isActive: $isShowingRegistrarUsuario,
+                            label: {
+                                EmptyView()
+                            }
+                        )
+
                         Button(action: {
-                            navigateToRegistrarUsuario = true
+                            isShowingRegistrarUsuario = true
                         }) {
                             Text("REGISTRAR NUEVO USUARIO")
                                 .font(.headline)
@@ -193,6 +204,8 @@ struct IniciarSesion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
+                        .navigationBarHidden(true)
+                        .navigationBarBackButtonHidden(true)
                         
                     }
                 }

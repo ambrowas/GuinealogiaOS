@@ -17,7 +17,8 @@
           let dismissAction: () -> Void
           @State private var shouldShowMenuModoCompeticion = false
           @State private var profileData: [(title: String, value: String)] = []
-        @Environment(\.presentationMode) var presentationMode
+          @Environment(\.presentationMode) var presentationMode
+          @State private var goToMenuModoCompeticion: Bool = false
 
         
         init(userViewModel: UserViewModel, leaderboardPosition: Int, dismissAction: @escaping () -> Void) {
@@ -97,9 +98,10 @@
                         .frame(width: 300, height: 310)
                         .padding(.horizontal, 5)
 
+                        NavigationLink("", destination: MenuModoCompeticion(userId:"DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()), isActive: $goToMenuModoCompeticion).hidden()
                         
                         Button(action: {
-                            presentationMode.wrappedValue.dismiss()
+                            goToMenuModoCompeticion = true
                         }) {
                             Text("VOLVER")
                                 .font(.headline)
@@ -124,6 +126,8 @@
                 ImagePicker(selectedImage: $profileImage, showSuccessAlert: $showSuccessAlert, storageRef: storageRef, ref: ref)
 
             }
+            .navigationBarBackButtonHidden(true)
+        
 
         }
         

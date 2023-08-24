@@ -25,18 +25,18 @@ import FirebaseDatabase
                 .queryOrdered(byChild: "accumulatedPuntuacion")
                 .queryLimited(toLast: 25)
                 .observe(.value) { (snapshot) in
-                    print("Number of snapshots fetched: \(snapshot.childrenCount)")
+                   //print("Number of snapshots fetched: \(snapshot.childrenCount)")
                     var newUsers = [User]()
                     for child in snapshot.children {
                         if let snapshot = child as? DataSnapshot,
                            let user = User(snapshot: snapshot) {
                             newUsers.append(user)
                         } else {
-                           print("Failed to parse snapshot: \(child)")
+                          // print("Failed to parse snapshot: \(child)")
                                         }
                                     }
                                     
-                        print("Number of users parsed: \(newUsers.count)")
+                        //print("Number of users parsed: \(newUsers.count)")
                     
                     DispatchQueue.main.async {
                         // First, sort the users array by `accumulatedPuntuacion`
@@ -125,6 +125,8 @@ extension User {
         @State private var shouldShowMenuModoCompeticion = false
         @State private var selectedUserId: String? = nil
         let userId: String
+       
+
         
         var body: some View {
             NavigationView {
@@ -148,7 +150,7 @@ extension User {
                                 .padding(.top, 35)
                             
                             Button(action: {
-                                presentationMode.wrappedValue.dismiss()
+                                self.presentationMode.wrappedValue.dismiss()
                             }) {
                                 Text("VOLVER")
                                     .font(.headline)
@@ -203,6 +205,7 @@ extension User {
                         }
                     }
                 }
+                .navigationBarHidden(true)
                 .navigationBarBackButtonHidden(true)
             }
         }
