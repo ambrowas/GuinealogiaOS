@@ -25,14 +25,18 @@ struct MenuModoCompeticion: View {
     @State private var shouldPresentGameOver: Bool = false
     @State private var shouldPresentResultado: Bool = false
     @State private var goToMenuPrincipal = false
+    @State private var shouldNavigateToProfile: Bool = false
+
 
     private func fetchCurrentUserData() {
+        print("Fetching current user data...")
         if let user = Auth.auth().currentUser {
-            // A user is logged in, fetch their data
+            print("User found: \(user.uid)")
             let ref = Database.database().reference().child("user").child(user.uid)
             
             ref.observeSingleEvent(of: .value, with: { snapshot in
                 if let dict = snapshot.value as? [String: Any],
+                   
                    let fullname = dict["fullname"] as? String,
                    let highestScore = dict["highestScore"] as? Int {
                     let currentGameFallos = dict["currentGameFallos"] as? Int ?? 0
@@ -66,7 +70,6 @@ struct MenuModoCompeticion: View {
         }
     }
 
-    
     private func validateCurrentGameFallos() -> Bool {
         return currentGameFallos >= 5
     }
@@ -94,6 +97,7 @@ struct MenuModoCompeticion: View {
                     }
                     
                     if validateCurrentGameFallos() {
+                        
                         Button(action: {
                             showCheckCodigo = true
                         }) {
@@ -146,8 +150,10 @@ struct MenuModoCompeticion: View {
 
                     Button(action: {
                         if Auth.auth().currentUser != nil {
+                            print("Authenticated user found. Setting showClasificacion to true.")
                             showClasificacion = true
                         } else {
+                            print("No authenticated user found. Showing alert for Clasificacion.")
                             alertMessage = "Debes iniciar sesión para poder acceder a la clasificación."
                             showAlert = true
                         }
@@ -194,16 +200,23 @@ struct MenuModoCompeticion: View {
                     }
                     .fullScreenCover(isPresented: $showProfile) {
                         let userViewModel = UserViewModel()
-                        ProfileView(userViewModel: userViewModel, leaderboardPosition: 1, dismissAction: {
-                            showProfile = false
-                        })
+                        ProfileView(
+                            userViewModel: userViewModel,
+                            leaderboardPosition: 1,
+                            shouldNavigateToProfile: $shouldNavigateToProfile,
+                            dismissAction: {
+                                showProfile = false
+                            }
+                        )
                     }
+
                     
                     Button(action: {
                         if userFullName.isEmpty {
+                            print("User full name is empty. Showing Iniciar Sesion.")
                             showIniciarSesion = true
                         } else {
-                            // Handle logout here
+                            print("Trying to logout user...")
                             do {
                                 try Auth.auth().signOut()
                                 userFullName = ""
@@ -246,10 +259,13 @@ struct MenuModoCompeticion: View {
                                 
                         }
                     }
-                   .alert(isPresented: $showAlert) {
-                       Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                .alert(isPresented: $showAlert) {
+                    () -> Alert in
+                    print("Showing alert with message: \(alertMessage)")
+                    return Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                    }
                 .onAppear {
+                    print("MenuModoCompeticion view appeared.")
                     fetchCurrentUserData()
                 }
             }

@@ -3,8 +3,15 @@ import Firebase
 import FirebaseDatabase
 import FirebaseAuth
 
+// Structure for user data
+struct UserDataRegister {
+    var fullname: String
+    var highestScore: Int
+}
+
 
 class RegistrarUsuarioViewModel: ObservableObject {
+    // Published properties for the view binding
     @Published var fullname: String = ""
     @Published var email: String = ""
     @Published var password: String = ""
@@ -14,15 +21,20 @@ class RegistrarUsuarioViewModel: ObservableObject {
     @Published var pais: String = ""
     @Published var alert: AlertModel = AlertModel()
     @Published var isUserRegistered = false
-    @Published var userData: UserData = UserData(fullname: "", highestScore: 0)
+    @Published var userDataRegister: UserDataRegister = UserDataRegister(fullname: "", highestScore: 0)
     @Published var showProfile = false
     @Published var alertDismissed = false
     @Published var alertType: AlertType?
     @Published var isUserSuccessfullyRegistered = false
     @Published var shouldNavigateToProfile: Bool = false
-
-
     
+    private let userService: UserService
+
+    init(userService: UserService = UserService()) {
+        self.userService = userService
+    }
+
+    // Alert types to distinguish between different alerts
     enum AlertType: Identifiable {
         case error
         case userCreated
@@ -37,13 +49,8 @@ class RegistrarUsuarioViewModel: ObservableObject {
         }
     }
 
-
-
-    struct UserData {
-        var fullname: String
-        var highestScore: Int
-    }
-    
+  
+    // Structure to handle alert display properties
     struct AlertModel {
         var showAlert: Bool = false
         var title: String = ""
@@ -52,121 +59,77 @@ class RegistrarUsuarioViewModel: ObservableObject {
         var primaryAction: (() -> Void)? = nil
     }
 
-    func fetchUserData(userId: String) {
-        let ref = Database.database().reference().child("user").child(userId)
-        
-        ref.observeSingleEvent(of: .value) { snapshot, error in
-            if let error = error {
-                print("Error fetching user data: \(error)")
-                
-                return
-            }
-            
-            if let dict = snapshot.value as? [String: Any],
-               let fullname = dict["fullname"] as? String,
-               let highestScore = dict["highestScore"] as? Int {
-                DispatchQueue.main.async {
-                    // Update the user data here
-                    self.userData.fullname = fullname
-                    self.userData.highestScore = highestScore
-                }
-            }
-        }
-    }
     
     func registerUser(completion: @escaping () -> Void) {
-        print("registerUser called")
-        
-    
-       
+        print("Starting registration...")
+
         // Field validation
         guard !fullname.isEmpty, !email.isEmpty, !password.isEmpty, !telefono.isEmpty, !barrio.isEmpty, !ciudad.isEmpty, !pais.isEmpty else {
+            print("Some fields are empty.")
             displayAlert(message: "Por favor completa todos los campos", type: .error)
             return
         }
 
         guard isValidEmail(email) else {
+            print("Email is not valid.")
             displayAlert(message: "Por favor ingrese un email válido", type: .error)
             return
         }
 
         guard password.count >= 6 else {
+            print("Password is too short.")
             displayAlert(message: "La contraseña debe tener al menos 6 caracteres", type: .error)
             return
         }
 
-        // Firebase authentication process
-        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-            print("createUser completed")
+        print("Attempting to create user...")
+        // Use UserService to register the user
+        userService.createUser(email: email, password: password, fullname: fullname, telefono: telefono, barrio: barrio, ciudad: ciudad, pais: pais) { [weak self] result in
+            switch result {
+            case .success(let uid):
+                print("User created with UID: \(uid)")
+                DispatchQueue.main.async {
+                    self?.alert.title = "Éxito"
+                    self?.alert.message = "Usuario creado correctamente. Completa tu perfil agregando una foto."
+                    self?.alert.primaryAction = {
+                        // Navigate to profile after dismissing the alert
+                        self?.shouldNavigateToProfile = true
+                    }
+                    self?.alert.showAlert = true
+                }
             
-            if let error = error {
+                print("Attempting to sign in user...")
+                // Assuming UserService will also handle signing in
+                self?.userService.signIn(email: self?.email ?? "", password: self?.password ?? "") { result in
+                    switch result {
+                    case .success:
+                        print("User signed in successfully.")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            self?.isUserSuccessfullyRegistered = true
+                            completion()
+                        }
+                    case .failure:
+                        print("User sign in failed.")
+                        self?.displayAlert(message: "Error al iniciar sesión", type: .error)
+                    }
+                }
+            case .failure(let error):
+                print("Error while registering: \(error.localizedDescription)")
                 if error.localizedDescription.contains("email address is already in use") {
-                    self.displayAlert(message: "Este email ya está registrado", type: .error)
+                    self?.displayAlert(message: "Este email ya está registrado", type: .error)
                 } else {
-                    self.displayAlert(message: "Error en el registro", type: .error)
-                }
-                return
-            }
-            
-            guard let user = authResult?.user else { return }
-            let uid = user.uid
-            let userData = [
-                "fullname": self.fullname,
-                "email": self.email,
-                "telefono": self.telefono,
-                "barrio": self.barrio,
-                "ciudad": self.ciudad,
-                "pais": self.pais,
-                "highestScore": 0
-            ] as [String: Any]
-
-            // Firebase database process
-            Database.database().reference().child("user").child(uid).setValue(userData) { error, _ in
-                if let error = error {
-                    self.displayAlert(message: "Error al guardar datos del usuario", type: .error)
-                    return
-                }
-                
-                self.addAccumulatedValuesForNewUser(userId: uid)
-                self.displayAlertAndNavigate(message: "Usuario creado. Completa tu perfil agregando una foto", type: .userCreated)
-            
-               
-                Auth.auth().signIn(withEmail: self.email, password: self.password) { _, error in
-                    if let error = error {
-                        self.displayAlert(message: "Error al iniciar sesión", type: .error)
-                        // Return here, so if there's an error, the success alert isn't shown.
-                        return
-                    }
-                    
-                    // Regardless of whether the sign-in is successful or not, display the success alert.
-                   
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        self.isUserSuccessfullyRegistered = true
-                        completion()
-                    }
+                    self?.displayAlert(message: "Error en el registro", type: .error)
                 }
             }
         }
     }
 
     func displayAlert(message: String, type: AlertType) {
+        print("Displaying alert of type \(type): \(message)")
         DispatchQueue.main.async {
             self.alert.title = type == .error ? "Error" : "Éxito"
             self.alert.message = message
             self.alertType = type
-            self.alert.showAlert = true
-        }
-    }
-
-    func displayAlertAndNavigate(message: String, type: AlertType) {
-        DispatchQueue.main.async {
-            self.alert.title = type == .error ? "Error" : "Éxito"
-            self.alert.message = message
-            self.alert.type = type
-            self.alert.primaryAction = {
-                // This closure will be executed when the alert is dismissed.
-                self.shouldNavigateToProfile = true
-            }
             self.alert.showAlert = true
         }
     }

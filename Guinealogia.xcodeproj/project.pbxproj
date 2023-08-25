@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7506F4932A943AF800C77915 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7506F4922A943AF700C77915 /* AlertTypes.swift */; };
+		7506F4952A97C26C00C77915 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7506F4942A97C26C00C77915 /* UserService.swift */; };
 		752EB76A2A462B5200013A73 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB7692A462B5200013A73 /* AuthService.swift */; };
 		752EB76C2A478ED500013A73 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB76B2A478ED500013A73 /* UserManager.swift */; };
 		753536342A4DF932006A3779 /* RegistrarUsuarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536332A4DF932006A3779 /* RegistrarUsuarioViewModel.swift */; };
@@ -102,6 +103,7 @@
 
 /* Begin PBXFileReference section */
 		7506F4922A943AF700C77915 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
+		7506F4942A97C26C00C77915 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		752EB7692A462B5200013A73 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		752EB76B2A478ED500013A73 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		753536332A4DF932006A3779 /* RegistrarUsuarioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrarUsuarioViewModel.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 		7557A7842A2400D4007C2A07 = {
 			isa = PBXGroup;
 			children = (
+				7506F4942A97C26C00C77915 /* UserService.swift */,
 				7565B5432A5F4AF30020E6E1 /* CheckCodigo.swift */,
 				753536392A54B231006A3779 /* LeadersProfile.swift */,
 				757BC30A2A37B2D800CA7A16 /* Packages */,
@@ -562,6 +565,7 @@
 				7557A7D22A251D6C007C2A07 /* QuizDBHelper.swift in Sources */,
 				757BC3012A316F5800CA7A16 /* JugarModoCompeticionViewModel.swift in Sources */,
 				757BC2FF2A315C6100CA7A16 /* QuizContract2.swift in Sources */,
+				7506F4952A97C26C00C77915 /* UserService.swift in Sources */,
 				757BC3092A37A9C700CA7A16 /* Profile.swift in Sources */,
 				757BC2B02A27E8F600CA7A16 /* QuizState.swift in Sources */,
 				757BC2B22A27E91400CA7A16 /* JugarModoLibre.swift in Sources */,

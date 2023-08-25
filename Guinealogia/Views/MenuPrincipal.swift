@@ -42,9 +42,8 @@ struct MenuPrincipal: View {
                         )
                 }
                 
-                let extractedExpr = RegistrarUsuarioViewModel()
-                NavigationLink(destination: MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: extractedExpr)) {
-                    Text("MODO COMPETICION")
+                NavigationLink(destination: MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())) {
+                    Text("MODO COMPETICION")    
                         .font(.headline)
                         .foregroundColor(.white)
                         .padding()

@@ -31,6 +31,7 @@ struct IniciarSesion: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var registrarViewModel = RegistrarUsuarioViewModel()
     @State private var isShowingRegistrarUsuario = false
+    @State private var goToMenuModoCompeticion: Bool = false
 
 
 
@@ -54,6 +55,9 @@ struct IniciarSesion: View {
     var body: some View {
         NavigationView {
             ZStack {
+                Color.clear.onAppear(perform: {
+                              print("View body is being redrawn.")
+                          })
                 Image("coolbackground")
                     .resizable()
                     .edgesIgnoringSafeArea(.all)
@@ -144,13 +148,6 @@ struct IniciarSesion: View {
                             }
                         }
                         
-                        NavigationLink(
-                            destination: RegistrarUsuario(),
-                            isActive: $isShowingRegistrarUsuario,
-                            label: {
-                                EmptyView()
-                            }
-                        )
 
                         Button(action: {
                             isShowingRegistrarUsuario = true
@@ -167,8 +164,10 @@ struct IniciarSesion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
+                        NavigationLink("", destination: MenuModoCompeticion(userId:"DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()), isActive: $goToMenuModoCompeticion).hidden()
+                        
                         Button(action: {
-                            presentationMode.wrappedValue.dismiss()
+                            goToMenuModoCompeticion = true
                         }) {
                             Text("VOLVER")
                                 .font(.headline)
@@ -182,9 +181,9 @@ struct IniciarSesion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
-                        .fullScreenCover(isPresented: $navigateToRegistrarUsuario) {
+                        .fullScreenCover(isPresented: $isShowingRegistrarUsuario) {
                             RegistrarUsuario()
-                                .onDisappear{
+                                .onDisappear {
                                     presentationMode.wrappedValue.dismiss()
                                 }
                         }
@@ -215,6 +214,8 @@ struct IniciarSesion: View {
     }
 
     func loginUser() {
+        print("loginUser called with email: \(email) and password: \(String(repeating: "*", count: password.count))") // <-- Print statement 2
+
         if email.isEmpty || password.isEmpty {
             self.alertType = .emptyFields
             return
@@ -223,6 +224,7 @@ struct IniciarSesion: View {
         Auth.auth().signIn(withEmail: email, password: password) { (authResult, error) in
             guard let user = authResult?.user, error == nil else {
                 if let error = error {
+                    print("Firebase sign-in error: \(error.localizedDescription)")
                     let errorCode = error.localizedDescription
                     self.errorMessage = self.getCustomErrorDescription(errorCode: errorCode)
 
@@ -255,11 +257,13 @@ struct IniciarSesion: View {
     }
 
     func signOutUser() {
+        print("signOutUser called.")
         do {
             try Auth.auth().signOut()
             loggedInUserName = ""
             userFullName = ""
             showAlertLogoutSuccess = true
+            print("User signed out successfully.")
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }
