@@ -104,8 +104,7 @@ struct ProfileView: View {
                     NavigationLink("", destination: MenuModoCompeticion(userId:"DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()), isActive: $goToMenuModoCompeticion).hidden()
                     
                     Button(action: {
-                       
-                        goToMenuModoCompeticion = true
+                        self.goToMenuModoCompeticion = true
                     }) {
                         Text("VOLVER")
                             .font(.headline)

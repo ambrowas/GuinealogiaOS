@@ -20,6 +20,7 @@ class RegistrarUsuarioViewModel: ObservableObject {
     @Published var ciudad: String = ""
     @Published var pais: String = ""
     @Published var alert: AlertModel = AlertModel()
+    @Published var showAlert: Bool = false
     @Published var isUserRegistered = false
     @Published var userDataRegister: UserDataRegister = UserDataRegister(fullname: "", highestScore: 0)
     @Published var showProfile = false
@@ -84,7 +85,7 @@ class RegistrarUsuarioViewModel: ObservableObject {
 
         print("Attempting to create user...")
         // Use UserService to register the user
-        userService.createUser(email: email, password: password, fullname: fullname, telefono: telefono, barrio: barrio, ciudad: ciudad, pais: pais) { [weak self] result in
+        return userService.createUser(email: email, password: password, fullname: fullname, telefono: telefono, barrio: barrio, ciudad: ciudad, pais: pais) { [weak self] result in
             switch result {
             case .success(let uid):
                 print("User created with UID: \(uid)")
@@ -92,27 +93,32 @@ class RegistrarUsuarioViewModel: ObservableObject {
                     self?.alert.title = "Éxito"
                     self?.alert.message = "Usuario creado correctamente. Completa tu perfil agregando una foto."
                     self?.alert.primaryAction = {
-                        // Navigate to profile after dismissing the alert
-                        self?.shouldNavigateToProfile = true
-                    }
-                    self?.alert.showAlert = true
-                }
-            
-                print("Attempting to sign in user...")
-                // Assuming UserService will also handle signing in
-                self?.userService.signIn(email: self?.email ?? "", password: self?.password ?? "") { result in
-                    switch result {
-                    case .success:
-                        print("User signed in successfully.")
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            self?.isUserSuccessfullyRegistered = true
-                            completion()
+                        
+//                        print("Attempting to sign in user...")
+                        // Assuming UserService will also handle signing in
+                        self?.userService.signIn(email: self?.email ?? "", password: self?.password ?? "") { result in
+                            switch result {
+                            case .success:
+                                print("User signed in successfully.")
+                                // Navigate to profile after dismissing the alert
+                                self?.shouldNavigateToProfile = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 60.5) {
+                                    self?.isUserSuccessfullyRegistered = true
+                                    completion()
+                                }
+                                return
+                            case .failure:
+                                print("User sign in failed.")
+                                // Navigate to profile after dismissing the alert
+                                self?.shouldNavigateToProfile = true
+                                self?.displayAlert(message: "Error al iniciar sesión", type: .error)
+                                return
+                            }
                         }
-                    case .failure:
-                        print("User sign in failed.")
-                        self?.displayAlert(message: "Error al iniciar sesión", type: .error)
                     }
                 }
+                self?.alert.showAlert = true
+                return
             case .failure(let error):
                 print("Error while registering: \(error.localizedDescription)")
                 if error.localizedDescription.contains("email address is already in use") {
@@ -120,6 +126,7 @@ class RegistrarUsuarioViewModel: ObservableObject {
                 } else {
                     self?.displayAlert(message: "Error en el registro", type: .error)
                 }
+                return
             }
         }
     }
@@ -159,3 +166,4 @@ class RegistrarUsuarioViewModel: ObservableObject {
    
 
 }
+
