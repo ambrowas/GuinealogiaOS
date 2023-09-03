@@ -6,6 +6,9 @@ struct LeadersProfile: View {
     @ObservedObject private var viewModel: LeadersProfileViewModel
     @State private var shouldShowMenuModoCompeticion = false
     @Environment(\.presentationMode) var presentationMode
+    @State private var userData: UserData = UserData()
+    @State private var showSheet: Bool = false
+    @State private var goToMenuCompeticion: Bool = false
 
     
     
@@ -108,8 +111,9 @@ struct LeadersProfile: View {
                 self.viewModel.fetchUserDataFromRealtimeDatabase()
 
             }
-            .sheet(isPresented: $shouldShowMenuModoCompeticion) {
-                MenuModoCompeticion(userId: "hardCodedUserId", userData:UserData(), viewModel: RegistrarUsuarioViewModel())
+            .sheet(isPresented: $showSheet) {
+                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()
+                )
             }
             .navigationBarHidden(true)
             .navigationBarBackButtonHidden(true)

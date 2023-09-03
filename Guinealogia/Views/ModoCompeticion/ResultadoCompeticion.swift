@@ -1,13 +1,17 @@
 import SwiftUI
 import FirebaseAuth
 
+
+
 struct ResultadoCompeticion: View {
     @StateObject var userViewModel = UserViewModel()
     @State private var currentUserID = ""
     @Environment(\.presentationMode) var presentationMode
     @State private var goToMenuModoCompeticion: Bool = false
-
-
+    @State private var userData: UserData = UserData()
+    @State private var goToMenuPrincipal: Bool = false
+    
+    
     let userId: String
     @State var showCodigo: Bool = false
     
@@ -56,10 +60,10 @@ struct ResultadoCompeticion: View {
                         TextRowView(title: "ACIERTOS", value: "\(userViewModel.currentGameAciertos)")
                         TextRowView(title: "ERRORES", value: "\(userViewModel.currentGameFallos)")
                         TextRowView(title: "PUNTOS", value: "\(userViewModel.currentGamePuntuacion)")
-                        TextRowView(title: "GANANCIAS", value: "\(userViewModel.currentGamePuntuacion) Fcfas")
+                        TextRowView(title: "GANANCIAS", value: "\(userViewModel.currentGamePuntuacion) FCFA")
                         TextRowView(title: "RANKING GLOBAL", value: "\(userViewModel.positionInLeaderboard)")
                         TextRowView(title: "RECORD", value: "\(userViewModel.highestScore)")
-                        TextRowView(title: "GANANCIAS TOT.", value: "\(userViewModel.accumulatedPuntuacion) Fcfas")
+                        TextRowView(title: "GANANCIAS TOT.", value: "\(userViewModel.accumulatedPuntuacion) FCFA")
                     }
                     .listStyle(PlainListStyle())
                     .frame(width: 300, height: 310)
@@ -90,60 +94,56 @@ struct ResultadoCompeticion: View {
                         }
                         
                         if let currentUser = Auth.auth().currentUser {
-                                              NavigationLink(destination: ClasificacionView(userId: currentUser.uid)) {
-                                                  Text("RANKING")
-                                                      .font(.headline)
-                                                      .foregroundColor(.white)
-                                                      .padding()
-                                                      .frame(width: 300, height: 55)
-                                                      .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
-                                                      .cornerRadius(10)
-                                                      .overlay(
-                                                          RoundedRectangle(cornerRadius: 10)
-                                                              .stroke(Color.black, lineWidth: 3)
-                                                      )
-                                              }
-                                          }
-
-                        NavigationLink("", destination: MenuModoCompeticion(userId: userId, userData: UserData(), viewModel: RegistrarUsuarioViewModel()), isActive: $goToMenuModoCompeticion).hidden()
-
-                        Button {
-                            goToMenuModoCompeticion = true
-                        } label: {
-                            Text("MENU PRINCIPAL")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(width: 300, height: 55)
-                                .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
-                                .cornerRadius(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.black, lineWidth: 3)
-                                )
-
+                            NavigationLink(destination: ClasificacionView(userId: currentUser.uid)) {
+                                Text("RANKING")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(width: 300, height: 55)
+                                    .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.black, lineWidth: 3)
+                                    )
+                            }
+                        }
+                        NavigationLink(destination: MenuPrincipal(player: .constant(nil))) {
+                        Text("MENU PRINCIPAL")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 300, height: 55)
+                        .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
+                        .cornerRadius(10)
+                        .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.black, lineWidth: 3)
+                        )
                         }
 
-                    }
-                    .onAppear {
-                        print("ResultadoCompeticion view appeared")
-                        if let userId = Auth.auth().currentUser?.uid {
-                            self.userViewModel.fetchUserData(userId: userId)
+                                
+                            }
+                        .onAppear {
+                            print("ResultadoCompeticion view appeared")
+                            if let userId = Auth.auth().currentUser?.uid {
+                                self.userViewModel.fetchUserData(userId: userId)
+                            }
                         }
                     }
                 }
             }
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
+            
         }
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
-        
     }
-}
-
-struct ResultadoCompeticion_Previews: PreviewProvider {
-    static var previews: some View {
-        ResultadoCompeticion(userId: Auth.auth().currentUser?.uid ?? "")
-
+    
+    struct ResultadoCompeticion_Previews: PreviewProvider {
+        static var previews: some View {
+            ResultadoCompeticion(userId: Auth.auth().currentUser?.uid ?? "")
+            
+        }
     }
-}
+    
 

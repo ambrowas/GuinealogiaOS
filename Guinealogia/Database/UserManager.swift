@@ -7,6 +7,7 @@ import FirebaseDatabase
 class UserManager: ObservableObject {
     @Published var loggedInUserName: String = ""
     @Published var isUserLoggedIn: Bool = false
+    
 
     private var cancellables = Set<AnyCancellable>()
 

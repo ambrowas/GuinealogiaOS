@@ -30,16 +30,14 @@ struct ResultadoView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .padding(.top, -100.0)
-                        .padding(.top)
                         .frame(width: 300, height: 250)
                         .opacity(isShowingImage ? 1 : 0)
-                        .animation(.easeIn(duration: 2.0))
                         .onAppear {
-                            withAnimation {
+                            withAnimation(.easeIn(duration: 2.0)) {
                                 isShowingImage = true
                             }
                         }
-                    
+                   
                     Text(textFieldText)
                         .foregroundColor(.black)
                         .font(.subheadline)

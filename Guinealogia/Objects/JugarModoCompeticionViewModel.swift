@@ -34,7 +34,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
       var userId: String
       private var dbRef = Database.database().reference()
       @ObservedObject var userData: UserData
-      @Published var shouldNavigateToGameOver: GameOverPresented? = nil
+      @Published var shouldNavigateToGameOver: Bool = false
       @Published var showManyMistakesAlert: Bool = false
       @Published var showGameOverAlert: Bool = false
       @Published var answerChecked = false
@@ -56,7 +56,6 @@ class JugarModoCompeticionViewModel: ObservableObject {
      
 
 
-       
       enum ActiveAlert: Identifiable {
            case showAlert, showEndGameAlert, showGameOverAlert, showManyMistakesAlert
 
@@ -105,7 +104,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
         updateHighestScore(newScore: totalScore)
 
         // After all the updates are done, set shouldNavigateToGameOver to true and call the completion handler
-        shouldNavigateToGameOver = GameOverPresented()
+        shouldNavigateToGameOver = true
         print("terminar function completed")
         completion()
         }
@@ -132,7 +131,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
 
             // Filter out questions that have already been shown
             let unseenDocuments = documents.filter { document in
-                return !(self?.shownQuestionIDs.contains(document.documentID))! ?? true
+                return !(self?.shownQuestionIDs.contains(document.documentID))!
             }
 
             // If all questions have been shown, reset the list

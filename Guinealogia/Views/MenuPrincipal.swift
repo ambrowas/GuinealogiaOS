@@ -42,8 +42,8 @@ struct MenuPrincipal: View {
                         )
                 }
                 
-                NavigationLink(destination: MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())) {
-                    Text("MODO COMPETICION")    
+                NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())) {
+                    Text("MODO COMPETICION") 
                         .font(.headline)
                         .foregroundColor(.white)
                         .padding()

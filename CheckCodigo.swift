@@ -19,6 +19,9 @@ struct CheckCodigo: View {
     @FocusState private var isInput3Active: Bool
     @FocusState private var isInput4Active: Bool
     @State private var showSheet = false
+    @State private var userData: UserData = UserData()
+    @State private var goToMenuCompeticion: Bool = false
+
     
     
     func checkCodigo() {
@@ -223,7 +226,9 @@ struct CheckCodigo: View {
         }
         
         .sheet(isPresented: $showSheet) {
-            MenuModoCompeticion(userId: "hardCodedUserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())
+                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()
+
+            )
         }
         .alert(isPresented: $showAlert) {
             if showAlert1 {

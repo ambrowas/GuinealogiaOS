@@ -10,6 +10,7 @@ class CurrentUser: ObservableObject {
 }
 
 struct IniciarSesion: View {
+    @StateObject private var viewModel = IniciarSesionViewModel()
     @State private var email: String = ""
     @State private var password: String = ""
     @Binding var loggedInUserName: String
@@ -32,12 +33,12 @@ struct IniciarSesion: View {
     @ObservedObject var registrarViewModel = RegistrarUsuarioViewModel()
     @State private var isShowingRegistrarUsuario = false
     @State private var goToMenuModoCompeticion: Bool = false
-
-
-
+    
+    
+    
     enum AlertType: Identifiable {
         case loginSuccess, incorrectPassword, invalidEmail, emptyFields
-
+        
         var id: Int {
             switch self {
             case .loginSuccess:
@@ -56,8 +57,8 @@ struct IniciarSesion: View {
         NavigationView {
             ZStack {
                 Color.clear.onAppear(perform: {
-                              print("View body is being redrawn.")
-                          })
+                    print("View body is being redrawn.")
+                })
                 Image("coolbackground")
                     .resizable()
                     .edgesIgnoringSafeArea(.all)
@@ -82,6 +83,7 @@ struct IniciarSesion: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .frame(width: 300)
                         .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
                         .overlay(
                             RoundedRectangle(cornerRadius: 5)
                                 .stroke(Color.black, lineWidth: 3)
@@ -96,9 +98,9 @@ struct IniciarSesion: View {
                             RoundedRectangle(cornerRadius: 5)
                                 .stroke(Color.black, lineWidth: 3)
                         )
-                      
+                        
                         Button(action: {
-                            loginUser()
+                            viewModel.loginUser()
                         }) {
                             Text("INICIAR SESION")
                                 .font(.headline)
@@ -148,7 +150,7 @@ struct IniciarSesion: View {
                             }
                         }
                         
-
+                        
                         Button(action: {
                             isShowingRegistrarUsuario = true
                         }) {
@@ -189,7 +191,7 @@ struct IniciarSesion: View {
                         }
                     } else {
                         Button(action: {
-                            signOutUser()
+                            viewModel.signOutUser()
                         }) {
                             Text("CERRAR SESION")
                                 .font(.headline)
@@ -212,81 +214,12 @@ struct IniciarSesion: View {
             
         }
     }
-
-    func loginUser() {
-        print("loginUser called with email: \(email) and password: \(String(repeating: "*", count: password.count))") // <-- Print statement 2
-
-        if email.isEmpty || password.isEmpty {
-            self.alertType = .emptyFields
-            return
+    
+    
+    
+    struct IniciarSesion_Previews: PreviewProvider {
+        static var previews: some View {
+            IniciarSesion(loggedInUserName: .constant(""), showIniciarSesion: .constant(false))
         }
-
-        Auth.auth().signIn(withEmail: email, password: password) { (authResult, error) in
-            guard let user = authResult?.user, error == nil else {
-                if let error = error {
-                    print("Firebase sign-in error: \(error.localizedDescription)")
-                    let errorCode = error.localizedDescription
-                    self.errorMessage = self.getCustomErrorDescription(errorCode: errorCode)
-
-                    switch errorCode {
-                    case "The password is invalid or the user does not have a password.":
-                        self.alertType = .incorrectPassword
-                    case "There is no user record corresponding to this identifier. The user may have been deleted.",
-                         "The email address is badly formatted.":
-                        self.alertType = .invalidEmail
-                    default:
-                        self.alertType = nil
-                    }
-                }
-                return
-            }
-
-            let userId = user.uid
-            self.currentUser.userId = userId
-
-            let ref = Database.database().reference().child("user").child(userId)
-            ref.observeSingleEvent(of: .value) { snapshot in
-                let value = snapshot.value as? NSDictionary
-                let username = value?["userName"] as? String ?? ""
-                self.loggedInUserName = username
-                self.userFullName = username
-                self.showMenuModoCompeticion = true
-                self.alertType = .loginSuccess
-            }
-        }
-    }
-
-    func signOutUser() {
-        print("signOutUser called.")
-        do {
-            try Auth.auth().signOut()
-            loggedInUserName = ""
-            userFullName = ""
-            showAlertLogoutSuccess = true
-            print("User signed out successfully.")
-        } catch let signOutError as NSError {
-            print("Error signing out: %@", signOutError)
-        }
-    }
-
-    func getCustomErrorDescription(errorCode: String) -> String {
-        var customDescription = ""
-        switch errorCode {
-        case "The password is invalid or the user does not have a password.":
-            customDescription = "La contraseña es incorrecta. Inténtalo otra vez."
-        case "There is no user record corresponding to this identifier. The user may have been deleted.",
-             "The email address is badly formatted.":
-            customDescription = "Este email es incorrecto o no existe. Intentalo otra vez o crea una nueva cuenta."
-        default:
-            customDescription = "Ocurrió un error inesperado. Inténtalo otra vez."
-        }
-        return customDescription
     }
 }
-
-struct IniciarSesion_Previews: PreviewProvider {
-    static var previews: some View {
-        IniciarSesion(loggedInUserName: .constant(""), showIniciarSesion: .constant(false))
-    }
-}
-
