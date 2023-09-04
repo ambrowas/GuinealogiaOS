@@ -201,7 +201,7 @@ struct MenuModoCompeticion: View {
                     .fullScreenCover(isPresented: $showProfile) {
                         let userViewModel = UserViewModel()
                         Profile(
-                            userViewModel: userViewModel,
+                            //userViewModel: userViewModel,
                             leaderboardPosition: 1,
                             shouldNavigateToProfile: $shouldNavigateToProfile,
                             dismissAction: {

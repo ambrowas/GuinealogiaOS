@@ -27,11 +27,11 @@ struct InputFieldsView: View {
             
             SecureInputFieldView(text: $password, placeholder: "Contraseña")
                 .border(Color.black, width: 2)
-                .textContentType(.password)
+                //.textContentType(.password)
                 
             SingleInputFieldView(text: $telefono, placeholder: "Teléfono")
                 .border(Color.black, width: 2)
-                .textContentType(.telephoneNumber)
+              //  .textContentType(.telephoneNumber)
             
             SingleInputFieldView(text: $barrio, placeholder: "Barrio")
                 .border(Color.black, width: 2)

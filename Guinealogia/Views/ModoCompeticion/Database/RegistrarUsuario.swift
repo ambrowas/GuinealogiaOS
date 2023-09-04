@@ -5,6 +5,7 @@ struct RegistrarUsuario: View {
     @State private var shouldNavigate: Bool = false
     @State private var userId: String = ""
     @State private var userData: UserData = UserData()
+    @State private var goToMenuPrincipal = false
     
 
     var body: some View {
@@ -76,24 +77,24 @@ struct RegistrarUsuario: View {
                         )
                     }
                     
-                    NavigationLink(
-                                          destination: Profile(
-                                              userViewModel: UserViewModel(),
-                                              leaderboardPosition: 1,
-                                              shouldNavigateToProfile: $viewModel.shouldPresentProfile,
-                                              dismissAction: {
-                                                  viewModel.shouldPresentProfile = false
-                                              }
-                                          ),
-                                          isActive: $viewModel.navigateToProfile
-                                      ) {
+                    NavigationLink("", destination: MenuPrincipal(player: .constant(nil)), isActive: $goToMenuPrincipal).hidden()
+                    //                            destination: Profile(
+                    //                                              //userViewModel: UserViewModel(),
+                    //                                              leaderboardPosition: 1,
+                    //                                              shouldNavigateToProfile: Binding.constant(false), //$viewModel.shouldPresentProfile,
+                    //                                              dismissAction: {
+                    //                                                  viewModel.shouldPresentProfile = false
+                    //                                              }
+                    //                                   ),
+                    //                                isActive: $viewModel.navigateToProfile
+                     
                                           EmptyView()
                                       }
                                   }
                               } 
                           }
                       }
-                  }
+                  
 
                   struct RegistrarUsuario_Previews: PreviewProvider {
                       static var previews: some View {

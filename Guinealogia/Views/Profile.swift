@@ -4,8 +4,8 @@
     import FirebaseAuth
 
 struct Profile: View {
-    @ObservedObject var userViewModel: UserViewModel
     @StateObject var profileViewModel = ProfileViewModel.shared
+    @StateObject private var userViewModel: UserViewModel =  UserViewModel()
     @State private var profileImage: UIImage?
     @State private var shouldShowJugarModoCompeticion = false
     var storageRef = Storage.storage().reference(forURL: "gs://trivial-guineologia.appspot.com/images")
@@ -31,8 +31,8 @@ struct Profile: View {
         //... other cases
     }
     
-    init(userViewModel: UserViewModel, leaderboardPosition: Int, shouldNavigateToProfile: Binding<Bool>, dismissAction: @escaping () -> Void) {
-        self.userViewModel = userViewModel
+    init( leaderboardPosition: Int, shouldNavigateToProfile: Binding<Bool>, dismissAction: @escaping () -> Void) {
+     //   self.userViewModel = userViewModel
         self.leaderboardPosition = leaderboardPosition
         self._shouldNavigateToProfile = shouldNavigateToProfile
         self.dismissAction = dismissAction
@@ -54,6 +54,9 @@ struct Profile: View {
     
             
             var body: some View {
+       
+                    
+                
                 NavigationView {
                     ZStack {
                         Image("coolbackground")
@@ -61,34 +64,34 @@ struct Profile: View {
                             .edgesIgnoringSafeArea(.all)
                         
                         VStack(spacing: 10) {
-                            if let profileImage = profileImage {
-                                Image(uiImage: profileImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 200, height: 150)
-                                    .border(Color.black, width: 3)
-                                    .background(Color.white)
-                            } else {
-                                Image(systemName: "person.fill") // Use a system image for the placeholder
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 200, height: 150)
-                                    .border(Color.black, width: 3)
-                                    .foregroundColor(.gray)
-                                    .onTapGesture {
-                                        self.isImagePickerDisplayed = true
-                                    }
-                                    .overlay(
-                                        VStack {
-                                            Text("Foto de Perfil")
-                                                .font(.subheadline)
-                                                .foregroundColor(.black)
-                                        }
-                                    )
-                                    .alert(isPresented: $showSuccessAlert) {
-                                        Alert(title: Text("¡Foto de perfil actualizada!"), dismissButton: .default(Text("OK")))
-                                    }
-                            }
+//                            if let profileImage = profileImage {
+//                                Image(uiImage: profileImage)
+//                                    .resizable()
+//                                    .aspectRatio(contentMode: .fit)
+//                                    .frame(width: 200, height: 150)
+//                                    .border(Color.black, width: 3)
+//                                    .background(Color.white)
+//                            } else {
+//                                Image(systemName: "person.fill") // Use a system image for the placeholder
+//                                    .resizable()
+//                                    .aspectRatio(contentMode: .fit)
+//                                    .frame(width: 200, height: 150)
+//                                    .border(Color.black, width: 3)
+//                                    .foregroundColor(.gray)
+//                                    .onTapGesture {
+//                                        self.isImagePickerDisplayed = true
+//                                    }
+//                                    .overlay(
+//                                        VStack {
+//                                            Text("Foto de Perfil")
+//                                                .font(.subheadline)
+//                                                .foregroundColor(.black)
+//                                        }
+//                                    )
+//                                    .alert(isPresented: $showSuccessAlert) {
+//                                        Alert(title: Text("¡Foto de perfil actualizada!"), dismissButton: .default(Text("OK")))
+//                                  }
+  //                          }
                             Circle()
                                 .stroke(Color.black, lineWidth: 2) // black border
                                 .background(Circle().fill(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))) // red circle
@@ -203,7 +206,7 @@ struct Profile: View {
                 
                 static var previews: some View {
                     Profile(
-                        userViewModel: UserViewModel(),
+                        //userViewModel: UserViewModel(),
                         leaderboardPosition: 1,
                         shouldNavigateToProfile: $dummyShouldNavigateToProfile,
                         dismissAction: {}

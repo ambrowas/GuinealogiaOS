@@ -44,17 +44,20 @@ import Combine
                 return
             }
 
-            self.createUser(email: email, password: password, fullname: fullname, telefono: telefono, barrio: barrio, ciudad: ciudad, pais: pais) { result in
-                switch result {
-                case .success(let uid):
-                    print("User registered successfully with UID: \(uid)")
-                    
-                    self.addAccumulatedValuesForNewUser(userId: uid) { success in
+            self.createUser(email: email, password: password, fullname: fullname, telefono: telefono, barrio: barrio, ciudad: ciudad, pais: pais) {
+                result in
+              switch result {
+              case .success(let uid):
+               
+//                    print("User registered successfully with UID: \(uid)")
+//
+                 self.addAccumulatedValuesForNewUser(userId: uid) { success in
                         if success {
                             self.signIn(email: self.email, password: self.password) { result in
                                 switch result {
                                 case .success:
                                     print("User signed in successfully post registration.")
+                                
                                     self.displaySuccessAlert()   // Call the refactored method here
                                 case .failure(let error):
                                     print("Error signing in: \(error.localizedDescription)")
@@ -64,12 +67,12 @@ import Combine
                         } else {
                             print("Error: Couldn't add accumulated values for new user")
                         }
-                    }
-                    
-                case .failure(let error):
-                    print("Error registering user: \(error.localizedDescription)")
-                    self.displayAlert(message: "Error registrando al usuario: \(error.localizedDescription)", type: .error)
-                }
+                   }
+//
+             case .failure(let error):
+//                    print("Error registering user: \(error.localizedDescription)")
+                   self.displayAlert(message: "Error registrando al usuario: \(error.localizedDescription)", type: .error)
+            }
             }
         }
 
@@ -233,6 +236,7 @@ import Combine
 
         func handleNavigation() {
             // Logic to navigate to profile
+          //  self.navigateToProfile = true
             self.navigateToMenuPrincipal = true
             print("Just set navigateToProfile to true")
         }
