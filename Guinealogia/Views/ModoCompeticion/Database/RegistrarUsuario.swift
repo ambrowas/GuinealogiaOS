@@ -5,8 +5,6 @@ struct RegistrarUsuario: View {
     @State private var shouldNavigate: Bool = false
     @State private var userId: String = ""
     @State private var userData: UserData = UserData()
-   
-
     
 
     var body: some View {
@@ -15,14 +13,14 @@ struct RegistrarUsuario: View {
                 Image("coolbackground")
                     .resizable()
                     .edgesIgnoringSafeArea(.all)
-
+                
                 VStack(spacing: 10) {
                     Image("logotrivial")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .padding(.top, -90)
                         .frame(width: 200, height: 150)
-
+                    
                     InputFieldsView(fullname: $viewModel.fullname,
                                     email: $viewModel.email,
                                     password: $viewModel.password,
@@ -30,7 +28,7 @@ struct RegistrarUsuario: View {
                                     barrio: $viewModel.barrio,
                                     ciudad: $viewModel.ciudad,
                                     pais: $viewModel.pais)
-
+                    
                     Button(action: {
                         viewModel.registerUser()
                     }) {
@@ -47,7 +45,7 @@ struct RegistrarUsuario: View {
                             )
                     }
                     .padding(.bottom, 10)
-
+                    
                     NavigationLink(
                         destination: MenuModoCompeticion(
                             userId: userId,
@@ -77,27 +75,28 @@ struct RegistrarUsuario: View {
                             })
                         )
                     }
+                    
+                    NavigationLink(
+                                          destination: Profile(
+                                              userViewModel: UserViewModel(),
+                                              leaderboardPosition: 1,
+                                              shouldNavigateToProfile: $viewModel.shouldPresentProfile,
+                                              dismissAction: {
+                                                  viewModel.shouldPresentProfile = false
+                                              }
+                                          ),
+                                          isActive: $viewModel.navigateToProfile
+                                      ) {
+                                          EmptyView()
+                                      }
+                                  }
+                              } 
+                          }
+                      }
+                  }
 
-
-
-                } // End of the main VStack
-                .sheet(isPresented: $viewModel.shouldPresentProfile) {
-                    Profile(
-                        userViewModel: UserViewModel(),
-                        leaderboardPosition: 1,
-                        shouldNavigateToProfile: $viewModel.shouldPresentProfile,
-                        dismissAction: {
-                            viewModel.shouldPresentProfile = false
-                        }
-                    )
-                } // Sheet modifier attached here
-            }
-        }
-    }
-}
-
-struct RegistrarUsuario_Previews: PreviewProvider {
-    static var previews: some View {
-        RegistrarUsuario() // Removed userId parameter
-    }
-}
+                  struct RegistrarUsuario_Previews: PreviewProvider {
+                      static var previews: some View {
+                          RegistrarUsuario() // Removed userId parameter
+                      }
+                  }
