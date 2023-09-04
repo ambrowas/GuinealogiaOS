@@ -229,7 +229,7 @@ import Combine
 
             self.displayAlert(message: "¡Usuario creado! Completa tu perfil agregando una foto", type: .success) {
                 print("Alert dismiss action triggered!")
-                self.handleNavigation()
+                self.dismissAction = self.handleNavigation 
             }
         }
 

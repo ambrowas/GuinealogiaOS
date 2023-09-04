@@ -23,7 +23,7 @@ import FirebaseDatabase
         func fetchUsers() {
             db.child("user")
                 .queryOrdered(byChild: "accumulatedPuntuacion")
-                .queryLimited(toLast: 25)
+                .queryLimited(toLast: 10)
                 .observe(.value) { (snapshot) in
                    //print("Number of snapshots fetched: \(snapshot.childrenCount)")
                     var newUsers = [User]()
@@ -190,9 +190,9 @@ extension User {
                                                     .font(.system(size: 12)) // adjust the size as per your needs
                                                 Spacer()
                                                 FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
-                                                    .font(.system(size: 12)) // adjust the size as per your needs
+                                                        .font(.system(size: 12)) // adjust the size as per your needs
+                                                }
                                             }
-                                        }
                                     }
                                     
                                 }
