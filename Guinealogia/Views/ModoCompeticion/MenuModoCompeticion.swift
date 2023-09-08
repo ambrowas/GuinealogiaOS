@@ -17,8 +17,9 @@ struct MenuModoCompeticion: View {
     @State private var showIniciarSesion = false
     @State private var colorIndex: Int = 0
     var userId: String
+
     @ObservedObject var userData: UserData
-    @ObservedObject var viewModel: RegistrarUsuarioViewModel
+    @ObservedObject var viewModel: NuevoUsuarioViewModel
     @State private var alertMessage = ""
     @State private var showAlert = false
     @Environment(\.presentationMode) var presentationMode
@@ -26,6 +27,7 @@ struct MenuModoCompeticion: View {
     @State private var shouldPresentResultado: Bool = false
     @State private var goToMenuPrincipal = false
     @State private var shouldNavigateToProfile: Bool = false
+    
 
 
     private func fetchCurrentUserData() {
@@ -75,7 +77,7 @@ struct MenuModoCompeticion: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationView{
             ZStack {
                 Image("coolbackground")
                     .resizable()
@@ -199,18 +201,15 @@ struct MenuModoCompeticion: View {
                             )
                     }
                     .fullScreenCover(isPresented: $showProfile) {
-                        let userViewModel = UserViewModel()
                         Profile(
-                            //userViewModel: userViewModel,
+                            shouldNavigateToProfile: .constant(true),
                             leaderboardPosition: 1,
-                            shouldNavigateToProfile: $shouldNavigateToProfile,
                             dismissAction: {
                                 showProfile = false
                             }
                         )
                     }
 
-                    
                     Button(action: {
                         if userFullName.isEmpty {
                             print("User full name is empty. Showing Iniciar Sesion.")
@@ -305,7 +304,7 @@ struct MenuModoCompeticionNavigation: Identifiable {
 
 struct MenuModoCompeticion_Previews: PreviewProvider {
     static var previews: some View {
-            MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()
+            MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel()
                 )
     }
 }

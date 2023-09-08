@@ -112,7 +112,7 @@ struct LeadersProfile: View {
 
             }
             .sheet(isPresented: $showSheet) {
-                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()
+                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel()
                 )
             }
             .navigationBarHidden(true)

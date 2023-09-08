@@ -15,76 +15,78 @@ struct MenuPrincipal: View {
     }
 
     var body: some View {
-        ZStack {
-            Image("coolbackground")
-                .resizable()
-                .edgesIgnoringSafeArea(.all)
-
-            VStack(spacing: 10) {
-                Image("logotrivial")
+        NavigationView {
+            ZStack {
+                Image("coolbackground")
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 300, height: 250)
-
-                Spacer()
-
-                NavigationLink(destination: MenuModoLibre()){
-                    Text("MODO LIBRE")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
-                }
+                    .edgesIgnoringSafeArea(.all)
                 
-                NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel())) {
-                    Text("MODO COMPETICION") 
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
+                VStack(spacing: 10) {
+                    Image("logotrivial")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 300, height: 250)
+                    
+                    Spacer()
+                    
+                    NavigationLink(destination: MenuModoLibre()){
+                        Text("MODO LIBRE")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 300, height: 75)
+                            .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 3)
+                            )
+                    }
+                    
+                    NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel())) {
+                        Text("MODO COMPETICION")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 300, height: 75)
+                            .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 3)
+                            )
+                    }
+                    
+                    NavigationLink(destination: ContactanosView(player: .constant(nil))) {
+                        Text("CONTACTANOS")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 300, height: 75)
+                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 3)
+                            )
+                    }
+                    
+                    
+                    Spacer()
+                    
+                    Text("2023.INICIATIVAS ELEBI")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                    
+                    Text("TODOS LOS DERECHOS RESERVADOS")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .padding(.top, -10.0)
                 }
-
-                NavigationLink(destination: ContactanosView(player: .constant(nil))) {
-                    Text("CONTACTANOS")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 300, height: 75)
-                        .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
-                }
-
-
-                Spacer()
-
-                Text("2023.INICIATIVAS ELEBI")
-                    .foregroundColor(.black)
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-
-                Text("TODOS LOS DERECHOS RESERVADOS")
-                    .foregroundColor(.black)
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .padding(.top, -10.0)
+                .padding()
             }
-            .padding()
         }
         .navigationBarHidden(true)
     }

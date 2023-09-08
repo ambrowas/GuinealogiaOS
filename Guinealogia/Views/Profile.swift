@@ -1,136 +1,91 @@
     import SwiftUI
+    import Firebase
     import FirebaseDatabase
     import FirebaseStorage
     import FirebaseAuth
+    import UIKit
 
 struct Profile: View {
     @StateObject var profileViewModel = ProfileViewModel.shared
-    @StateObject private var userViewModel: UserViewModel =  UserViewModel()
-    @State private var profileImage: UIImage?
-    @State private var shouldShowJugarModoCompeticion = false
-    var storageRef = Storage.storage().reference(forURL: "gs://trivial-guineologia.appspot.com/images")
-    var ref = Database.database().reference()
     @State private var isImagePickerDisplayed = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var showSuccessAlert = false
-    @Binding var shouldNavigateToProfile: Bool  // <-- Add this line here
+    @Binding var shouldNavigateToProfile: Bool
     let leaderboardPosition: Int
     let dismissAction: () -> Void
     @State private var shouldShowMenuModoCompeticion = false
-    @State private var profileData: [(title: String, value: String)] = []
-    @Environment(\.presentationMode) var presentationMode
-    @State private var goToMenuModoCompeticion: Bool = false
-    @State private var currentDestination: Destination = .menuModoCompeticion
-    @State private var userData: UserData = UserData()
+    @State private var navigateToMenuModoCompeticion = false
 
-    
-    
-    enum Destination: Hashable {
-        case menuModoCompeticion
-        //... other cases
-    }
-    
-    init( leaderboardPosition: Int, shouldNavigateToProfile: Binding<Bool>, dismissAction: @escaping () -> Void) {
-     //   self.userViewModel = userViewModel
-        self.leaderboardPosition = leaderboardPosition
-        self._shouldNavigateToProfile = shouldNavigateToProfile
-        self.dismissAction = dismissAction
-        print("ProfileView initialized")
-    }
-    
-    func destinationView(for destination: Destination?, userData: Binding<UserData>, goToMenuCompeticion: Binding<Bool>) -> some View {
-        switch destination {
-        case .menuModoCompeticion:
-            return AnyView(MenuModoCompeticion(
-                userId: "DummyuserId",
-                userData: UserData(),
-                viewModel: RegistrarUsuarioViewModel()
-            ))
-        default:
-            return AnyView(EmptyView())
-        }
-    }
-    
-            
-            var body: some View {
-       
-                    
+    var body: some View {
+        NavigationView{
+            ZStack {
+                Image("coolbackground")
+                    .resizable()
+                    .edgesIgnoringSafeArea(.all)
                 
-                NavigationView {
-                    ZStack {
-                        Image("coolbackground")
+                VStack(spacing: 10) {
+                    if let profileImage = profileViewModel.profileImage {
+                        Image(uiImage: profileImage)
                             .resizable()
-                            .edgesIgnoringSafeArea(.all)
-                        
-                        VStack(spacing: 10) {
-//                            if let profileImage = profileImage {
-//                                Image(uiImage: profileImage)
-//                                    .resizable()
-//                                    .aspectRatio(contentMode: .fit)
-//                                    .frame(width: 200, height: 150)
-//                                    .border(Color.black, width: 3)
-//                                    .background(Color.white)
-//                            } else {
-//                                Image(systemName: "person.fill") // Use a system image for the placeholder
-//                                    .resizable()
-//                                    .aspectRatio(contentMode: .fit)
-//                                    .frame(width: 200, height: 150)
-//                                    .border(Color.black, width: 3)
-//                                    .foregroundColor(.gray)
-//                                    .onTapGesture {
-//                                        self.isImagePickerDisplayed = true
-//                                    }
-//                                    .overlay(
-//                                        VStack {
-//                                            Text("Foto de Perfil")
-//                                                .font(.subheadline)
-//                                                .foregroundColor(.black)
-//                                        }
-//                                    )
-//                                    .alert(isPresented: $showSuccessAlert) {
-//                                        Alert(title: Text("¡Foto de perfil actualizada!"), dismissButton: .default(Text("OK")))
-//                                  }
-  //                          }
-                            Circle()
-                                .stroke(Color.black, lineWidth: 2) // black border
-                                .background(Circle().fill(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))) // red circle
-                                .frame(width: 100, height: 100)
-                                .padding(.leading, 200)
-                                .padding(.top, -50)
-                                .overlay(
-                                    FlashingText(text: "\(userViewModel.positionInLeaderboard)", shouldFlash: true)
-                                        .foregroundColor(.white)
-                                        .font(.largeTitle)
-                                        .bold()
-                                        .padding(.leading, 200)
-                                        .padding(.top, -40)
-                                )
-                            
-                            
-                            ScrollView {
-                                VStack {
-                                    TextRowView(title: "NOMBRE", value: "\(userViewModel.fullname)")
-                                    TextRowView(title: "EMAIL", value: "\(userViewModel.email)")
-                                    TextRowView(title: "TELEFONO", value: "\(userViewModel.telefono)")
-                                    TextRowView(title: "BARRIO", value: "\(userViewModel.barrio)")
-                                    TextRowView(title: "CIUDAD", value: "\(userViewModel.ciudad)")
-                                    TextRowView(title: "PAIS", value: "\(userViewModel.pais)")
-                                    TextRowView(title: "RECORD", value: "\(userViewModel.highestScore)")
-                                    TextRowView(title: "PUNTUACION ACUMULADA", value: "\(userViewModel.accumulatedPuntuacion)")
-                                    TextRowView(title: "ACIERTOS ACUMULADOS", value: "\(userViewModel.accumulatedAciertos)")
-                                    TextRowView(title: "FALLOS ACUMULADOS", value: "\(userViewModel.accumulatedFallos)")
-                                    
-                                }
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 200, height: 150)
+                            .border(Color.black, width: 3)
+                            .background(Color.white)
+                    } else {
+                        Image(systemName: "person.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 200, height: 150)
+                            .border(Color.black, width: 3)
+                            .foregroundColor(.gray)
+                            .onTapGesture {
+                                self.isImagePickerDisplayed = true
                             }
-                            .frame(width: 300, height: 310)
-                            .padding(.horizontal, 5)
-                            
-                            Button(action: {
-                            self.currentDestination = .menuModoCompeticion
-                             self.shouldShowMenuModoCompeticion = true
-                            }) {
-                            Text("VOLVER")
+                            .overlay(
+                                VStack {
+                                    Text("Foto de Perfil")
+                                        .font(.subheadline)
+                                        .foregroundColor(.black)
+                                }
+                            )
+                            .alert(isPresented: $showSuccessAlert) {
+                                Alert(title: Text("¡Foto de perfil actualizada!"), dismissButton: .default(Text("OK")))
+                            }
+                    }
+                    Circle()
+                        .stroke(Color.black, lineWidth: 2)
+                        .background(Circle().fill(Color(hue: 1.0, saturation: 0.984, brightness: 0.699)))
+                        .frame(width: 100, height: 100)
+                        .padding(.leading, 200)
+                        .padding(.top, -50)
+                        .overlay(
+                            Text("\(profileViewModel.positionInLeaderboard)")
+                                .foregroundColor(.white)
+                                .font(.largeTitle)
+                                .bold()
+                                .padding(.leading, 200)
+                                .padding(.top, -40)
+                        )
+                    
+                    ScrollView {
+                        VStack {
+                            TextRowView(title: "NOMBRE:", content: profileViewModel.fullname)
+                            TextRowView(title: "EMAIL:", content: profileViewModel.email)
+                            TextRowView(title: "TELEFONO:", content: profileViewModel.telefono)
+                            TextRowView(title: "CIUDAD:", content: profileViewModel.ciudad)
+                            TextRowView(title: "PAIS:", content: profileViewModel.pais)
+                            TextRowView(title: "RECORD:", content: "\(profileViewModel.highestScore)")
+                            TextRowView(title: "PUNTUACION ACUMULADA:", content: "\(profileViewModel.accumulatedPuntuacion)")
+                            TextRowView(title: "ACIERTOS ACUMULADOS:", content: "\(profileViewModel.accumulatedAciertos)")
+                            TextRowView(title: "FALLOS ACUMULADOS:", content: "\(profileViewModel.accumulatedFallos)")
+                        }
+                    }
+                    .frame(width: 300, height: 400)
+                    .padding(.horizontal, 3)
+                    
+                    NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel())) {
+                        Text("VOLVER")
                             .font(.headline)
                             .foregroundColor(.white)
                             .padding()
@@ -138,81 +93,64 @@ struct Profile: View {
                             .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
                             .cornerRadius(10)
                             .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.black, lineWidth: 3)
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 3)
                             )
-                            }
-                            .fullScreenCover(isPresented: $shouldShowMenuModoCompeticion) {
-                                MenuModoCompeticion(
-                                    userId: "DummyuserId",
-                                    userData: userData, // Assuming userData is of type UserData
-                                    viewModel: RegistrarUsuarioViewModel()
-                                )
-                            }
-
-                            .padding(.top, 40)
-                        }
                     }
-                }
-                .onAppear {
-                    print("ProfileView appeared")
-                    ProfileViewModel.shared.fetchProfileData()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                    print("ProfileView is being loaded due to app entering foreground!")
-                }
-                .sheet(isPresented: $isImagePickerDisplayed) {
-                    ImagePicker(selectedImage: $profileImage, showSuccessAlert: $showSuccessAlert, storageRef: storageRef, ref: ref)
-                    
-                }
-                .navigationBarBackButtonHidden(true)
-                
-                
-            }
-            
-            
-            
-            
-            struct TextRowView: View {
-                var title: String
-                var value: String
-                var currency: String?
-                
-                init(title: String, value: String, currency: String? = nil) {
-                    self.title = title
-                    self.value = value
-                    self.currency = currency
-                }
-                
-                var body: some View {
-                    HStack {
-                        Text(title)
-                            .bold()
-                            .foregroundColor(Color.gray)
-                        Spacer()
-                        Text(currency == nil ? value : "\(value) \(currency!)")
-                            .foregroundColor(Color.blue)
-                            .bold()
-                    }
-                    .padding(.vertical, 1)
-                    .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            
-            
-            struct ProfileView_Previews: PreviewProvider {
-                // Dummy binding for the preview
-                @State static var dummyShouldNavigateToProfile = false
-                
-                static var previews: some View {
-                    Profile(
-                        //userViewModel: UserViewModel(),
-                        leaderboardPosition: 1,
-                        shouldNavigateToProfile: $dummyShouldNavigateToProfile,
-                        dismissAction: {}
-                    )
+                    .padding(.top, 10)
                 }
             }
         }
-        
+           
+            .sheet(isPresented: $isImagePickerDisplayed) {
+                ImagePicker(
+                    selectedImage: $profileViewModel.profileImage,
+                    showSuccessAlertImagePicker: $showSuccessAlert,
+                    storageRef: Storage.storage().reference(), // example reference; replace with the correct one if needed
+                    ref: Database.database().reference()      // example reference; replace with the correct one if needed
+                )
+            }
+            .alert(isPresented: $showAlert) {
+                if showSuccessAlert {
+                    return Alert(title: Text("Success"), message: Text("Image uploaded successfully!"), dismissButton: .default(Text("OK")))
+                } else {
+                    return Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                }
+            }
+            .onAppear {
+                print("Should navigate to profile: \(shouldNavigateToProfile)")
+                profileViewModel.fetchProfileData()
+            }
+        }
+    }
 
+    struct TextRowView: View {
+        let title: String
+        let content: String
+        
+        var body: some View {
+            HStack(alignment: .center, spacing: 20) {
+                Text(title)
+                    .font(.subheadline)
+                    .bold()
+                    .frame(width: 120, alignment: .leading) // Adjust width as needed for proper alignment
+                
+                Text(content)
+                    .font(.system(size: 14))
+                    .padding(3)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                Spacer()  // This pushes the content to the left
+            }
+            .padding([.leading, .trailing])
+        }
+    }
+
+
+struct Profile_Previews: PreviewProvider {
+    static var previews: some View {
+        Profile(shouldNavigateToProfile: .constant(true), leaderboardPosition: 1, dismissAction: {})
+    }
+}

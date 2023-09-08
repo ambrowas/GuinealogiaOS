@@ -69,17 +69,16 @@
 		757BC2F32A2FFAD300CA7A16 /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 757BC2F22A2FFAD300CA7A16 /* FirebaseRemoteConfigSwift */; };
 		757BC2F52A2FFAD300CA7A16 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 757BC2F42A2FFAD300CA7A16 /* FirebaseStorage */; };
 		757BC2F72A2FFAD300CA7A16 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 757BC2F62A2FFAD300CA7A16 /* FirebaseStorageCombine-Community */; };
-		757BC2F92A3006CA00CA7A16 /* RegistrarUsuario2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC2F82A3006CA00CA7A16 /* RegistrarUsuario2.swift */; };
-		757BC2FB2A3014CA00CA7A16 /* IniciarSesion2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC2FA2A3014C900CA7A16 /* IniciarSesion2.swift */; };
 		757BC2FD2A31176000CA7A16 /* JugarModoCompeticion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC2FC2A31176000CA7A16 /* JugarModoCompeticion.swift */; };
 		757BC2FF2A315C6100CA7A16 /* QuizContract2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC2FE2A315C6000CA7A16 /* QuizContract2.swift */; };
 		757BC3012A316F5800CA7A16 /* JugarModoCompeticionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC3002A316F5800CA7A16 /* JugarModoCompeticionViewModel.swift */; };
 		757BC3052A33FDD500CA7A16 /* ResultadoCompeticion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC3042A33FDD500CA7A16 /* ResultadoCompeticion.swift */; };
 		757BC3072A37997000CA7A16 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC3062A37997000CA7A16 /* UserViewModel.swift */; };
 		757BC3092A37A9C700CA7A16 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC3082A37A9C700CA7A16 /* Profile.swift */; };
+		75A4A2832AA8FBC50086EA79 /* RegistroSesion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A4A2822AA8FBC50086EA79 /* RegistroSesion.swift */; };
+		75A4A2852AAA56860086EA79 /* NuevoUsuario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A4A2842AAA56860086EA79 /* NuevoUsuario.swift */; };
+		75A4A2872AAA57A10086EA79 /* NuevoUsuarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A4A2862AAA57A10086EA79 /* NuevoUsuarioViewModel.swift */; };
 		75AA53512A9D3ADF0014FAA9 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53502A9D3ADF0014FAA9 /* ProfileViewModel.swift */; };
-		75AA53532A9E1D910014FAA9 /* RegistrarUsuarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53522A9E1D910014FAA9 /* RegistrarUsuarioViewModel.swift */; };
-		75AA53552A9E1F220014FAA9 /* RegistrarUsuario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53542A9E1F220014FAA9 /* RegistrarUsuario.swift */; };
 		75AA53572A9E47660014FAA9 /* IniciarSesion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53562A9E47660014FAA9 /* IniciarSesion.swift */; };
 		75AA53592A9E4B320014FAA9 /* InputFieldViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53582A9E4B320014FAA9 /* InputFieldViews.swift */; };
 		75D44C392A3D1AC400E16F86 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D44C382A3D1AC400E16F86 /* ImagePicker.swift */; };
@@ -146,8 +145,6 @@
 		757BC2BB2A2E86CD00CA7A16 /* Contactanos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contactanos.swift; sourceTree = "<group>"; };
 		757BC2BD2A2FB65800CA7A16 /* MenuModoCompeticion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuModoCompeticion.swift; sourceTree = "<group>"; };
 		757BC2BF2A2FF97E00CA7A16 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		757BC2F82A3006CA00CA7A16 /* RegistrarUsuario2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrarUsuario2.swift; sourceTree = "<group>"; };
-		757BC2FA2A3014C900CA7A16 /* IniciarSesion2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IniciarSesion2.swift; sourceTree = "<group>"; };
 		757BC2FC2A31176000CA7A16 /* JugarModoCompeticion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JugarModoCompeticion.swift; sourceTree = "<group>"; };
 		757BC2FE2A315C6000CA7A16 /* QuizContract2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizContract2.swift; sourceTree = "<group>"; };
 		757BC3002A316F5800CA7A16 /* JugarModoCompeticionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JugarModoCompeticionViewModel.swift; sourceTree = "<group>"; };
@@ -155,9 +152,10 @@
 		757BC3062A37997000CA7A16 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		757BC3082A37A9C700CA7A16 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		757BC30B2A37B2D800CA7A16 /* SDWebImage-SDWebImage-fedc884 */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "SDWebImage-SDWebImage-fedc884"; path = "../../Downloads/SDWebImage-SDWebImage-fedc884"; sourceTree = "<group>"; };
+		75A4A2822AA8FBC50086EA79 /* RegistroSesion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistroSesion.swift; sourceTree = "<group>"; };
+		75A4A2842AAA56860086EA79 /* NuevoUsuario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuevoUsuario.swift; sourceTree = "<group>"; };
+		75A4A2862AAA57A10086EA79 /* NuevoUsuarioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuevoUsuarioViewModel.swift; sourceTree = "<group>"; };
 		75AA53502A9D3ADF0014FAA9 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
-		75AA53522A9E1D910014FAA9 /* RegistrarUsuarioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrarUsuarioViewModel.swift; sourceTree = "<group>"; };
-		75AA53542A9E1F220014FAA9 /* RegistrarUsuario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrarUsuario.swift; sourceTree = "<group>"; };
 		75AA53562A9E47660014FAA9 /* IniciarSesion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IniciarSesion.swift; sourceTree = "<group>"; };
 		75AA53582A9E4B320014FAA9 /* InputFieldViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldViews.swift; sourceTree = "<group>"; };
 		75D44C382A3D1AC400E16F86 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -246,11 +244,7 @@
 		1797DB732A85E1C000E69C72 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				757BC2F82A3006CA00CA7A16 /* RegistrarUsuario2.swift */,
 				7506F4922A943AF700C77915 /* AlertTypes.swift */,
-				757BC2FA2A3014C900CA7A16 /* IniciarSesion2.swift */,
-				75AA53522A9E1D910014FAA9 /* RegistrarUsuarioViewModel.swift */,
-				75AA53542A9E1F220014FAA9 /* RegistrarUsuario.swift */,
 				75AA53562A9E47660014FAA9 /* IniciarSesion.swift */,
 				75AA53582A9E4B320014FAA9 /* InputFieldViews.swift */,
 				75D6A3212A9E93CD00EE8847 /* MenuModoCompeticionViewModel.swift */,
@@ -302,6 +296,9 @@
 		7557A7842A2400D4007C2A07 = {
 			isa = PBXGroup;
 			children = (
+				75A4A2862AAA57A10086EA79 /* NuevoUsuarioViewModel.swift */,
+				75A4A2842AAA56860086EA79 /* NuevoUsuario.swift */,
+				75A4A2822AA8FBC50086EA79 /* RegistroSesion.swift */,
 				7565B5432A5F4AF30020E6E1 /* CheckCodigo.swift */,
 				753536392A54B231006A3779 /* LeadersProfile.swift */,
 				757BC30A2A37B2D800CA7A16 /* Packages */,
@@ -558,18 +555,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				757BC2BC2A2E86CD00CA7A16 /* Contactanos.swift in Sources */,
-				75AA53532A9E1D910014FAA9 /* RegistrarUsuarioViewModel.swift in Sources */,
 				757BC2BE2A2FB65800CA7A16 /* MenuModoCompeticion.swift in Sources */,
 				7506F4932A943AF800C77915 /* AlertTypes.swift in Sources */,
 				7535363A2A54B231006A3779 /* LeadersProfile.swift in Sources */,
 				75D44C392A3D1AC400E16F86 /* ImagePicker.swift in Sources */,
-				757BC2FB2A3014CA00CA7A16 /* IniciarSesion2.swift in Sources */,
 				757BC3052A33FDD500CA7A16 /* ResultadoCompeticion.swift in Sources */,
 				7557A7932A2400D4007C2A07 /* ContentView.swift in Sources */,
 				75D44C3F2A40E9C000E16F86 /* GameOver.swift in Sources */,
 				7557A7C82A24548E007C2A07 /*  MenuModoLibre.swift in Sources */,
 				75D6A3242AA0C31E00EE8847 /* IniciarSesionViewModel .swift in Sources */,
-				757BC2F92A3006CA00CA7A16 /* RegistrarUsuario2.swift in Sources */,
 				757BC3072A37997000CA7A16 /* UserViewModel.swift in Sources */,
 				75AA53512A9D3ADF0014FAA9 /* ProfileViewModel.swift in Sources */,
 				7557A7C42A2446C8007C2A07 /* MenuPrincipal.swift in Sources */,
@@ -580,16 +574,18 @@
 				753536342A4DF932006A3779 /* RegistrarUsuarioViewModel2.swift in Sources */,
 				752EB76A2A462B5200013A73 /* AuthService.swift in Sources */,
 				753536382A549EDE006A3779 /* Clasificacion.swift in Sources */,
+				75A4A2832AA8FBC50086EA79 /* RegistroSesion.swift in Sources */,
 				7557A7912A2400D4007C2A07 /* GuinealogiaApp.swift in Sources */,
 				7565B5442A5F4AF30020E6E1 /* CheckCodigo.swift in Sources */,
 				75D44C3B2A40C19D00E16F86 /* CodigoQR.swift in Sources */,
+				75A4A2872AAA57A10086EA79 /* NuevoUsuarioViewModel.swift in Sources */,
 				752EB76C2A478ED500013A73 /* UserManager.swift in Sources */,
 				75AA53592A9E4B320014FAA9 /* InputFieldViews.swift in Sources */,
-				75AA53552A9E1F220014FAA9 /* RegistrarUsuario.swift in Sources */,
 				7557A7D22A251D6C007C2A07 /* QuizDBHelper.swift in Sources */,
 				757BC3012A316F5800CA7A16 /* JugarModoCompeticionViewModel.swift in Sources */,
 				757BC2FF2A315C6100CA7A16 /* QuizContract2.swift in Sources */,
 				757BC3092A37A9C700CA7A16 /* Profile.swift in Sources */,
+				75A4A2852AAA56860086EA79 /* NuevoUsuario.swift in Sources */,
 				757BC2B02A27E8F600CA7A16 /* QuizState.swift in Sources */,
 				75AA53572A9E47660014FAA9 /* IniciarSesion.swift in Sources */,
 				757BC2B22A27E91400CA7A16 /* JugarModoLibre.swift in Sources */,

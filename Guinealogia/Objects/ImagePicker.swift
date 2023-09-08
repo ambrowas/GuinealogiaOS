@@ -9,14 +9,14 @@
     struct ImagePicker: UIViewControllerRepresentable {
         @Binding var selectedImage: UIImage?
         @Environment(\.presentationMode) private var presentationMode
-        @Binding var showSuccessAlert: Bool
+        @Binding var showSuccessAlertImagePicker: Bool
 
         let storageRef: StorageReference
         let ref: DatabaseReference
 
-        init(selectedImage: Binding<UIImage?>, showSuccessAlert: Binding<Bool>, storageRef: StorageReference, ref: DatabaseReference) {
+        init(selectedImage: Binding<UIImage?>, showSuccessAlertImagePicker: Binding<Bool>, storageRef: StorageReference, ref: DatabaseReference) {
                self._selectedImage = selectedImage
-               self._showSuccessAlert = showSuccessAlert  // initialize with the new binding
+               self._showSuccessAlertImagePicker = showSuccessAlertImagePicker  // initialize with the new binding
                self.storageRef = storageRef
                self.ref = ref
            }
@@ -91,7 +91,7 @@
                    } else {
                        print("Foto de perfil actualizada")
                        DispatchQueue.main.async {
-                           self.showSuccessAlert = true  // update the success alert variable to true
+                           self.showSuccessAlertImagePicker = true  // update the success alert variable to true
                        }
                    }
                }

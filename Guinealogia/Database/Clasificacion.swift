@@ -23,7 +23,7 @@ import FirebaseDatabase
         func fetchUsers() {
             db.child("user")
                 .queryOrdered(byChild: "accumulatedPuntuacion")
-                .queryLimited(toLast: 10)
+                .queryLimited(toLast: 15)
                 .observe(.value) { (snapshot) in
                    //print("Number of snapshots fetched: \(snapshot.childrenCount)")
                     var newUsers = [User]()

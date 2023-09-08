@@ -3,7 +3,7 @@ import FirebaseDatabase
 import FirebaseAuth
 
 struct CheckCodigo: View {
-    @StateObject private var viewModel = RegistrarUsuarioViewModel()
+    @StateObject private var viewModel = NuevoUsuarioViewModel()
     @State private var showAlert = false
     @State private var showAlert1 = false
     @State private var showAlert2 = false
@@ -226,7 +226,7 @@ struct CheckCodigo: View {
         }
         
         .sheet(isPresented: $showSheet) {
-                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: RegistrarUsuarioViewModel()
+                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel()
 
             )
         }

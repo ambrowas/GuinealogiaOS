@@ -14,69 +14,79 @@ class IniciarSesionViewModel: ObservableObject {
     @Published var currentUser: CurrentUser = CurrentUser.shared
     @Published var showMenuModoCompeticion: Bool = false
     @Published var alertType: AlertType?
+    @Published var shouldNavigateToMenuModoCompeticion: Bool = false
+
     
     enum AlertType: Identifiable {
-        case userCreated, emptyFields, incorrectPassword, invalidEmail, loginSuccess, generalError
+        
+        case loginSuccess
+        case incorrectPassword
+        case invalidEmail
+        case emptyFields
+        case generalError
         
         var id: Int {
             switch self {
-            case .userCreated:
-                return 1
-            case .emptyFields:
-                return 2
-            case .incorrectPassword:
-                return 3
-            case .invalidEmail:
-                return 4
             case .loginSuccess:
-                return 5
+                return 1
+            case .incorrectPassword:
+                return 2
+            case .invalidEmail:
+                return 3
+            case .emptyFields:
+                return 4
             case .generalError:
-                return 6
+                return 5
             }
         }
     }
     
-    func loginAndSetAlertType(completion: @escaping (AlertType?) -> Void) {
-        loginUser {
-            // Now this will be called after the loginUser logic is complete
-            switch self.errorMessage {
-            case "La contraseña es incorrecta. Inténtalo otra vez.":
-                completion(.incorrectPassword)
-            case "Este email es incorrecto o no existe. Intentalo otra vez o crea una nueva cuenta.":
-                completion(.invalidEmail)
-            case "Ocurrió un error inesperado. Inténtalo otra vez.":
-                completion(.generalError)
-            default:
-                completion(self.userFullName.isEmpty ? .emptyFields : .loginSuccess)
-            }
-        }
-    }
-    
-    
-    func loginUser(completion: (() -> Void)? = nil) {
+    func loginAndSetAlertType() {
+        print("Email: \(email)") // Debug print
+        print("Password: \(password)") // Debug print
+        
+        // Verify inputs first
         if email.isEmpty || password.isEmpty {
-            print("Email and password fields are empty.")
-            self.alertType = .emptyFields
+            alertType = .emptyFields
             return
         }
         
+        // Try to login
+        loginUser()
+    }
+    
+    func loginUser() {
         Auth.auth().signIn(withEmail: email, password: password) { (authResult, error) in
-            guard let user = authResult?.user, error == nil else {
-                if let error = error {
-                    print("Firebase sign-in error: \(error.localizedDescription)")
-                    self.errorMessage = self.getCustomErrorDescription(errorCode: error.localizedDescription)
-                    print("Custom error message: \(self.errorMessage)")
-                    
+            if let error = error {
+                self.alertType = self.getAlertTypeBasedOnError(errorCode: error.localizedDescription)
+            } else if let user = authResult?.user {
+                let userId = user.uid
+                self.currentUser.userId = userId
+                print("User \(userId) has logged in successfully with email: \(self.email)")
+                
+                // Fetch additional user data
+                self.fetchCurrentUserData(userId: userId) {
+                    self.showMenuModoCompeticion = true
+                    self.alertType = .loginSuccess
+                    DispatchQueue.main.async {
+                        self.shouldNavigateToMenuModoCompeticion = true
+                    }
                 }
-                return
+            } else {
+                self.alertType = .generalError
             }
-            
-            let userId = user.uid
-            self.currentUser.userId = userId
-            
-            self.fetchCurrentUserData(userId: userId) {
-                self.showMenuModoCompeticion = true
-            }
+        }
+    }
+    
+    func getAlertTypeBasedOnError(errorCode: String) -> AlertType {
+        switch errorCode {
+        case "The password is invalid or the user does not have a password.":
+            return .incorrectPassword
+        case "There is no user record corresponding to this identifier. The user may have been deleted.",
+            "The email address is badly formatted.":
+            return .invalidEmail
+        default:
+            return .generalError
         }
     }
     
@@ -91,37 +101,19 @@ class IniciarSesionViewModel: ObservableObject {
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }
-        
     }
     
-    func getCustomErrorDescription(errorCode: String) -> String {
-        var customDescription = ""
-        switch errorCode {
-        case "The password is invalid or the user does not have a password.":
-            customDescription = "La contraseña es incorrecta. Inténtalo otra vez."
-        case "There is no user record corresponding to this identifier. The user may have been deleted.",
-            "The email address is badly formatted.":
-            customDescription = "Este email es incorrecto o no existe. Intentalo otra vez o crea una nueva cuenta."
-        default:
-            customDescription = "Ocurrió un error inesperado. Inténtalo otra vez."
-        }
-        return customDescription
-    }
-  
     func fetchCurrentUserData(userId: String, completion: @escaping () -> Void) {
         let ref = Database.database().reference().child("user").child(userId)
         ref.observeSingleEvent(of: .value) { snapshot in
             guard let value = snapshot.value as? NSDictionary,
-                  let username = value["userName"] as? String else {
-                print("No user data found for userId: \(userId)")
+                  let fullname = value["fullname"] as? String else {
+                print("No fullname data found for userId: \(userId)")
                 return
             }
-            self.loggedInUserName = username
-            self.userFullName = username
+            self.loggedInUserName = fullname
+            self.userFullName = fullname
             completion()
         }
     }
-    
-    
-    
 }

@@ -1,13 +1,12 @@
-import Combine
+import SwiftUI
 import Firebase
+import FirebaseDatabase
 import FirebaseStorage
 
 class ProfileViewModel: ObservableObject {
-    
     static let shared = ProfileViewModel()
-           
-        private init() {}
 
+    private init() {}
 
     @Published var fullname: String = ""
     @Published var email: String = ""
@@ -17,11 +16,10 @@ class ProfileViewModel: ObservableObject {
     @Published var pais: String = ""
     @Published var highestScore: Int = 0
     @Published var positionInLeaderboard: Int = 0
-    @Published var profilePicture: String = ""
+    @Published var profileImage: UIImage?
     @Published var accumulatedPuntuacion: Int = 0
     @Published var accumulatedAciertos: Int = 0
     @Published var accumulatedFallos: Int = 0
-    @Published var profileImage: UIImage?
 
     private var ref = Database.database().reference()
     private var storageRef = Storage.storage().reference(forURL: "gs://trivial-guineologia.appspot.com/images")
@@ -33,24 +31,22 @@ class ProfileViewModel: ObservableObject {
         }
 
         let userRef = ref.child("user").child(currentUserID)
-        userRef.observeSingleEvent(of: .value) { [weak self] snapshot in
+        userRef.observeSingleEvent(of: .value) { [weak self] (snapshot, errorString) in
+            guard let self = self else { return }
             if let userData = snapshot.value as? [String: Any] {
-                DispatchQueue.main.async {
-                    self?.fullname = userData["fullname"] as? String ?? ""
-                    self?.email = userData["email"] as? String ?? ""
-                    self?.telefono = userData["telefono"] as? String ?? ""
-                    self?.barrio = userData["barrio"] as? String ?? ""
-                    self?.ciudad = userData["ciudad"] as? String ?? ""
-                    self?.pais = userData["pais"] as? String ?? ""
-                    self?.highestScore = userData["highestScore"] as? Int ?? 0
-                    self?.positionInLeaderboard = userData["positionInLeaderboard"] as? Int ?? 0
-                    self?.profilePicture = userData["profilePicture"] as? String ?? ""
-                    self?.accumulatedPuntuacion = userData["accumulatedPuntuacion"] as? Int ?? 0
-                    self?.accumulatedAciertos = userData["accumulatedAciertos"] as? Int ?? 0
-                    self?.accumulatedFallos = userData["accumulatedFallos"] as? Int ?? 0
-                    if let profilePictureURL = userData["profilePicture"] as? String {
-                        self?.fetchProfileImage(from: profilePictureURL)
-                    }
+                self.fullname = userData["fullname"] as? String ?? ""
+                self.email = userData["email"] as? String ?? ""
+                self.telefono = userData["telefono"] as? String ?? ""
+                self.barrio = userData["barrio"] as? String ?? ""
+                self.ciudad = userData["ciudad"] as? String ?? ""
+                self.pais = userData["pais"] as? String ?? ""
+                self.highestScore = userData["highestScore"] as? Int ?? 0
+                self.positionInLeaderboard = userData["positionInLeaderboard"] as? Int ?? 0
+                self.accumulatedPuntuacion = userData["accumulatedPuntuacion"] as? Int ?? 0
+                self.accumulatedAciertos = userData["accumulatedAciertos"] as? Int ?? 0
+                self.accumulatedFallos = userData["accumulatedFallos"] as? Int ?? 0
+                if let profilePictureURL = userData["profilePicture"] as? String {
+                    self.fetchImageFromFirebaseStorage(path: profilePictureURL)
                 }
             } else {
                 print("Error fetching profile data from Realtime Database")
@@ -58,19 +54,34 @@ class ProfileViewModel: ObservableObject {
         }
     }
 
-    func fetchProfileImage(from urlString: String) {
-        guard let url = URL(string: urlString) else {
-            print("Failed to create URL for profile picture")
+    func fetchImageFromFirebaseStorage(path: String) {
+        let imageRef = storageRef.child(path)
+        imageRef.getData(maxSize: 1 * 1024 * 1024) { [weak self] data, error in
+            guard let self = self else { return }
+            if let error = error {
+                print("Error fetching image from Firebase Storage: \(error.localizedDescription)")
+            } else if let data = data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.profileImage = image
+                }
+            }
+        }
+    }
+    
+    func storeProfileImage(image: UIImage, completion: @escaping (Bool) -> Void) {
+        guard let data = image.jpegData(compressionQuality: 1.0) else {
+            completion(false)
             return
         }
-
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-            guard let data = data, error == nil else { return }
-            DispatchQueue.main.async {
-                self?.profileImage = UIImage(data: data)
-                print("Profile image fetched and set successfully")
+        let imageRef = storageRef.child("path/to/image.jpg")
+        imageRef.putData(data, metadata: nil) { _, error in
+            if let error = error {
+                print("Error uploading image: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                completion(true)
             }
-        }.resume()
+        }
     }
 }
 
