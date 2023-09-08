@@ -1,7 +1,7 @@
 import SwiftUI
 import AVFoundation
 
-struct ContentView: View {
+struct FlashView: View {
     @State private var scale: CGFloat = 1.0
     @State private var rotation: Double = 0.0
     @State private var player: AVAudioPlayer?
@@ -83,7 +83,7 @@ struct ContentView: View {
     
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
-            ContentView()
+            FlashView()
                 .previewDevice("iPhone 14")
         }
     }

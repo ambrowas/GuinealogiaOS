@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7504FEC32AABA073009CEA9A /* GestionarSesion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7504FEC22AABA073009CEA9A /* GestionarSesion.swift */; };
+		7504FEC52AABA087009CEA9A /* GestionarSesionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7504FEC42AABA087009CEA9A /* GestionarSesionViewModel.swift */; };
 		7506F4932A943AF800C77915 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7506F4922A943AF700C77915 /* AlertTypes.swift */; };
 		752EB76A2A462B5200013A73 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB7692A462B5200013A73 /* AuthService.swift */; };
 		752EB76C2A478ED500013A73 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB76B2A478ED500013A73 /* UserManager.swift */; };
@@ -14,7 +16,7 @@
 		753536382A549EDE006A3779 /* Clasificacion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536372A549EDE006A3779 /* Clasificacion.swift */; };
 		7535363A2A54B231006A3779 /* LeadersProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536392A54B231006A3779 /* LeadersProfile.swift */; };
 		7557A7912A2400D4007C2A07 /* GuinealogiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7902A2400D4007C2A07 /* GuinealogiaApp.swift */; };
-		7557A7932A2400D4007C2A07 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7922A2400D4007C2A07 /* ContentView.swift */; };
+		7557A7932A2400D4007C2A07 /* FlashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7922A2400D4007C2A07 /* FlashView.swift */; };
 		7557A7952A2400D6007C2A07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7557A7942A2400D6007C2A07 /* Assets.xcassets */; };
 		7557A7992A2400D6007C2A07 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7557A7982A2400D6007C2A07 /* Preview Assets.xcassets */; };
 		7557A7A32A2400D6007C2A07 /* GuinealogiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7A22A2400D6007C2A07 /* GuinealogiaTests.swift */; };
@@ -107,6 +109,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7504FEC22AABA073009CEA9A /* GestionarSesion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestionarSesion.swift; sourceTree = "<group>"; };
+		7504FEC42AABA087009CEA9A /* GestionarSesionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestionarSesionViewModel.swift; sourceTree = "<group>"; };
 		7506F4922A943AF700C77915 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
 		752EB7692A462B5200013A73 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		752EB76B2A478ED500013A73 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
@@ -115,7 +119,7 @@
 		753536392A54B231006A3779 /* LeadersProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadersProfile.swift; sourceTree = "<group>"; };
 		7557A78D2A2400D4007C2A07 /* Guinealogia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guinealogia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7557A7902A2400D4007C2A07 /* GuinealogiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuinealogiaApp.swift; sourceTree = "<group>"; };
-		7557A7922A2400D4007C2A07 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7557A7922A2400D4007C2A07 /* FlashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashView.swift; sourceTree = "<group>"; };
 		7557A7942A2400D6007C2A07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7557A7962A2400D6007C2A07 /* Guinealogia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guinealogia.entitlements; sourceTree = "<group>"; };
 		7557A7982A2400D6007C2A07 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -256,7 +260,7 @@
 		1797DB742A85E1F700E69C72 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				7557A7922A2400D4007C2A07 /* ContentView.swift */,
+				7557A7922A2400D4007C2A07 /* FlashView.swift */,
 				7557A7C32A2446C8007C2A07 /* MenuPrincipal.swift */,
 				75D44C3A2A40C19D00E16F86 /* CodigoQR.swift */,
 				757BC3082A37A9C700CA7A16 /* Profile.swift */,
@@ -296,6 +300,8 @@
 		7557A7842A2400D4007C2A07 = {
 			isa = PBXGroup;
 			children = (
+				7504FEC42AABA087009CEA9A /* GestionarSesionViewModel.swift */,
+				7504FEC22AABA073009CEA9A /* GestionarSesion.swift */,
 				75A4A2862AAA57A10086EA79 /* NuevoUsuarioViewModel.swift */,
 				75A4A2842AAA56860086EA79 /* NuevoUsuario.swift */,
 				75A4A2822AA8FBC50086EA79 /* RegistroSesion.swift */,
@@ -560,12 +566,14 @@
 				7535363A2A54B231006A3779 /* LeadersProfile.swift in Sources */,
 				75D44C392A3D1AC400E16F86 /* ImagePicker.swift in Sources */,
 				757BC3052A33FDD500CA7A16 /* ResultadoCompeticion.swift in Sources */,
-				7557A7932A2400D4007C2A07 /* ContentView.swift in Sources */,
+				7557A7932A2400D4007C2A07 /* FlashView.swift in Sources */,
 				75D44C3F2A40E9C000E16F86 /* GameOver.swift in Sources */,
 				7557A7C82A24548E007C2A07 /*  MenuModoLibre.swift in Sources */,
+				7504FEC32AABA073009CEA9A /* GestionarSesion.swift in Sources */,
 				75D6A3242AA0C31E00EE8847 /* IniciarSesionViewModel .swift in Sources */,
 				757BC3072A37997000CA7A16 /* UserViewModel.swift in Sources */,
 				75AA53512A9D3ADF0014FAA9 /* ProfileViewModel.swift in Sources */,
+				7504FEC52AABA087009CEA9A /* GestionarSesionViewModel.swift in Sources */,
 				7557A7C42A2446C8007C2A07 /* MenuPrincipal.swift in Sources */,
 				75D6A3222A9E93CD00EE8847 /* MenuModoCompeticionViewModel.swift in Sources */,
 				757BC2FD2A31176000CA7A16 /* JugarModoCompeticion.swift in Sources */,

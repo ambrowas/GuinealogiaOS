@@ -32,7 +32,7 @@ struct GuinealogiaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(authService)
+            FlashView().environmentObject(authService)
         }
     }
 }

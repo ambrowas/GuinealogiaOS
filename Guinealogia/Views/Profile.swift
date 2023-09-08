@@ -18,7 +18,7 @@ struct Profile: View {
     @State private var navigateToMenuModoCompeticion = false
 
     var body: some View {
-        NavigationView{
+        
             ZStack {
                 Image("coolbackground")
                     .resizable()
@@ -99,8 +99,11 @@ struct Profile: View {
                     }
                     .padding(.top, 10)
                 }
+                .navigationBarTitle("", displayMode: .inline)
+                .navigationBarHidden(true)
+                .navigationBarBackButtonHidden(true)
             }
-        }
+        
            
             .sheet(isPresented: $isImagePickerDisplayed) {
                 ImagePicker(
@@ -129,7 +132,7 @@ struct Profile: View {
         let content: String
         
         var body: some View {
-            HStack(alignment: .center, spacing: 20) {
+            HStack(alignment: .center, spacing: 10) {
                 Text(title)
                     .font(.subheadline)
                     .bold()

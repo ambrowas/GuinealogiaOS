@@ -14,7 +14,7 @@ class IniciarSesionViewModel: ObservableObject {
     @Published var currentUser: CurrentUser = CurrentUser.shared
     @Published var showMenuModoCompeticion: Bool = false
     @Published var alertType: AlertType?
-    @Published var shouldNavigateToMenuModoCompeticion: Bool = false
+    @Published var regresarAlMenuModoCompeticion: Bool = false
 
     
     enum AlertType: Identifiable {
@@ -66,11 +66,9 @@ class IniciarSesionViewModel: ObservableObject {
                 
                 // Fetch additional user data
                 self.fetchCurrentUserData(userId: userId) {
-                    self.showMenuModoCompeticion = true
-                    self.alertType = .loginSuccess
-                    DispatchQueue.main.async {
-                        self.shouldNavigateToMenuModoCompeticion = true
-                    }
+                self.alertType = .loginSuccess
+                self.regresarAlMenuModoCompeticion = true
+                    
                 }
             } else {
                 self.alertType = .generalError

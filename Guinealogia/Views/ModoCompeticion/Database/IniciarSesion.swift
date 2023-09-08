@@ -20,13 +20,8 @@ struct IniciarSesion: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var registrarViewModel = NuevoUsuarioViewModel()
     @State private var isShowingNuevoUsuario = false
-    @State private var goToMenuModoCompeticion: Bool = false
+   
     
-    
-
-    
-    
- 
     
     var body: some View {
         NavigationView{
@@ -73,8 +68,22 @@ struct IniciarSesion: View {
                             RoundedRectangle(cornerRadius: 5)
                                 .stroke(Color.black, lineWidth: 3)
                         )
-                       
                         
+                        NavigationLink(
+                            destination: MenuModoCompeticion(
+                                userId: currentUser.userId ?? "DummyuserId",
+                                userData: UserData(),
+                                viewModel: NuevoUsuarioViewModel()
+                            ),
+                            isActive: Binding(
+                                get: { self.viewModel.regresarAlMenuModoCompeticion },
+                                set: { self.viewModel.regresarAlMenuModoCompeticion = $0 }
+                            )
+                        ) {
+                            EmptyView()
+                        }
+
+
                         
                         Button(action: {
                             viewModel.loginAndSetAlertType()
@@ -96,9 +105,7 @@ struct IniciarSesion: View {
                         .alert(item: $viewModel.alertType) { type in
                             switch type {
                             case .loginSuccess:
-                                return Alert(title: Text("Exito"), message: Text("Usuario Conectado"), dismissButton: .default(Text("OK")) {
-                                    goToMenuModoCompeticion = true
-                                })
+                           return Alert(title: Text("Exito"), message: Text("Usuario Conectado"), dismissButton: .default(Text("OK")))
                                 
                             case .incorrectPassword:
                                 return Alert(title: Text("Error"), message: Text("Contraseña Incorrecta."), dismissButton: .default(Text("OK")))
@@ -113,6 +120,8 @@ struct IniciarSesion: View {
                                 return Alert(title: Text("Error"), message: Text("Ha ocurrido un error."), dismissButton: .default(Text("OK")))
                             }
                         }
+                        
+                        
                         NavigationLink(destination: NuevoUsuario(), isActive: $isShowingNuevoUsuario) {
                             Button(action: {
                                 isShowingNuevoUsuario = true
@@ -130,11 +139,8 @@ struct IniciarSesion: View {
                                     )
                             }
                         }
-
-
-                        Button(action: {
-                          goToMenuModoCompeticion = true
-                        }) {
+  
+                        NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel())) {
                             Text("VOLVER")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -147,8 +153,8 @@ struct IniciarSesion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
-                      
-                          
+                        
+                        
                     } else {
                         Button(action: {
                             viewModel.signOutUser()
@@ -166,17 +172,17 @@ struct IniciarSesion: View {
                                 )
                         }
                         
-                        .navigationBarHidden(true)
-                        .navigationBarBackButtonHidden(true)
+                        
                     }
-                    }
-                    
                 }
+                .navigationBarTitle("", displayMode: .inline)
+                .navigationBarHidden(true)
+                .navigationBarBackButtonHidden(true)
+                
             }
-          
-            }
+            
         }
-        
+    }
     
     
     struct IniciarSesion_Previews: PreviewProvider {
@@ -184,4 +190,5 @@ struct IniciarSesion: View {
             IniciarSesion(loggedInUserName: .constant(""), showIniciarSesion: .constant(false))
         }
     }
+}
 
