@@ -11,7 +11,7 @@ import FirebaseDatabase
         var scoreAchievedAt: Date? // making this optional
     }
 
-    class UserData: ObservableObject {
+        class UserData: ObservableObject {
         @Published var users = [User]()
         
         private var db = Database.database().reference()
@@ -64,28 +64,28 @@ import FirebaseDatabase
         }
     }
 
-extension User {
-    init?(snapshot: DataSnapshot) {
-        guard let value = snapshot.value as? [String: Any],
-              let fullname = value["fullname"] as? String,
-              let ciudad = value["ciudad"] as? String else {
-            print("Failed to parse required fields for snapshot: \(snapshot.key)")
-            return nil
-        }
-        
-        self.id = snapshot.key
-        self.fullname = fullname
-        self.ciudad = ciudad
-        self.accumulatedPuntuacion = value["accumulatedPuntuacion"] as? Int ?? 0 // provide default value if missing
-        self.leaderboardPosition = 0 // Placeholder value, it will be updated later
-        
-        if let scoreAchievedAt = value["scoreAchievedAt"] as? Double {
-            self.scoreAchievedAt = Date(timeIntervalSince1970: scoreAchievedAt)
-        } else {
-            self.scoreAchievedAt = nil
+    extension User {
+        init?(snapshot: DataSnapshot) {
+            guard let value = snapshot.value as? [String: Any],
+                let fullname = value["fullname"] as? String,
+                let ciudad = value["ciudad"] as? String else {
+                print("Failed to parse required fields for snapshot: \(snapshot.key)")
+                return nil
+            }
+            
+            self.id = snapshot.key
+            self.fullname = fullname
+            self.ciudad = ciudad
+            self.accumulatedPuntuacion = value["accumulatedPuntuacion"] as? Int ?? 0 // provide default value if missing
+            self.leaderboardPosition = 0 // Placeholder value, it will be updated later
+            
+            if let scoreAchievedAt = value["scoreAchievedAt"] as? Double {
+                self.scoreAchievedAt = Date(timeIntervalSince1970: scoreAchievedAt)
+            } else {
+                self.scoreAchievedAt = nil
+            }
         }
     }
-}
     
     struct FlashingText: View {
         let text: String
@@ -98,7 +98,7 @@ extension User {
                 .foregroundColor(getColor())
                 .onAppear {
                     if shouldFlash {
-                        startFlashing()
+                        startFlashing() 
                     }
                 }
                 .onDisappear {
@@ -119,95 +119,97 @@ extension User {
         }
     }
     
-    struct ClasificacionView: View {
-        @Environment(\.presentationMode) var presentationMode
-        @StateObject private var userData = UserData()
-        @State private var shouldShowMenuModoCompeticion = false
-        @State private var selectedUserId: String? = nil
-        let userId: String
-       
-
+struct ClasificacionView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @StateObject private var userData = UserData()
+    @State private var shouldShowMenuModoCompeticion = false
+    @State private var selectedUserId: String? = nil
+    let userId: String
+    @State private var showResultadoSheet = false
+    
+    var body: some View {
         
-        var body: some View {
-            NavigationView {
-                ZStack {
-                    Image("coolbackground")
-                        .resizable()
-                        .edgesIgnoringSafeArea(.all)
+        ZStack {
+            Image("coolbackground")
+                .resizable()
+                .edgesIgnoringSafeArea(.all)
+            
+            
+            VStack(spacing: 10) {
+                Spacer()
+                
+                VStack(spacing: 10) {
+                    Text("CLASIFICACION GLOBAL DE SABELOTODOS")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                        .padding(.bottom, 10)
+                        .padding(.top, 35)
                     
+                    Button(action: {
+                        self.showResultadoSheet = true
+                    }) {
+                        Text("VOLVER")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 300, height: 55)
+                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 3)
+                            )
+                    }
                     
-                    VStack(spacing: 10) {
-                        Spacer()
-                        
-                        
-                        VStack(spacing: 10) {
-                            Text("CLASIFICACION GLOBAL DE SABELOTODOS")
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                                .multilineTextAlignment(.center)
-                                .frame(maxWidth: .infinity)
-                                .padding(.bottom, 10)
-                                .padding(.top, 35)
-                            
-                            Button(action: {
-                                self.presentationMode.wrappedValue.dismiss()
-                            }) {
-                                Text("VOLVER")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 300, height: 55)
-                                    .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
-                                    .cornerRadius(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color.black, lineWidth: 3)
-                                    )
-                            }
-                            
-                            List {
-                                Section(header: HStack {
-                                    Text("POS.").fontWeight(.bold)
-                                    Spacer()
-                                    Text("NOMBRE").fontWeight(.bold)
-                                    Spacer()
-                                    Text("CIUDAD").fontWeight(.bold)
-                                    Spacer()
-                                    Text("FCFA").fontWeight(.bold)
-                                }) {
-                                    ForEach(userData.users) { user in
-                                        NavigationLink(
-                                            destination: LeadersProfile(userId: user.id)
-                                        ) {
-                                            HStack {
-                                                FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
-                                                    .font(.system(size: 12)) // adjust the size as per your needs
-                                                Spacer()
-                                                FlashingText(text: user.fullname, shouldFlash: user.id == userId)
-                                                    .font(.system(size: 12)) // adjust the size as per your needs
-                                                Spacer()
-                                                FlashingText(text: user.ciudad, shouldFlash: user.id == userId)
-                                                    .font(.system(size: 12)) // adjust the size as per your needs
-                                                Spacer()
-                                                FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
-                                                        .font(.system(size: 12)) // adjust the size as per your needs
-                                                }
-                                            }
+                    List {
+                        Section(header: HStack {
+                            Text("POS.").fontWeight(.bold)
+                            Spacer()
+                            Text("NOMBRE").fontWeight(.bold)
+                            Spacer()
+                            Text("CIUDAD").fontWeight(.bold)
+                            Spacer()
+                            Text("FCFA").fontWeight(.bold)
+                        }) {
+                            ForEach(userData.users) { user in
+                                NavigationLink(
+                                    destination: LeadersProfile(userId: user.id)
+                                ) {
+                                    HStack {
+                                        FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
+                                            .font(.system(size: 12)) // adjust the size as per your needs
+                                        Spacer()
+                                        FlashingText(text: user.fullname, shouldFlash: user.id == userId)
+                                            .font(.system(size: 12)) // adjust the size as per your needs
+                                        Spacer()
+                                        FlashingText(text: user.ciudad, shouldFlash: user.id == userId)
+                                            .font(.system(size: 12)) // adjust the size as per your needs
+                                        Spacer()
+                                        FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
+                                            .font(.system(size: 12)) // adjust the size as per your needs
                                     }
-                                    
                                 }
                             }
-                            .listStyle(InsetGroupedListStyle())
-                            .onAppear {
-                                userData.fetchUsers()
-                                
-                            }
+                            
                         }
                     }
+                    .sheet(isPresented: $showResultadoSheet) {
+                        ResultadoCompeticion(userId: Auth.auth().currentUser?.uid ?? "")
+                            .listStyle(InsetGroupedListStyle())
+                    }
+                    .onAppear {
+                        userData.fetchUsers()
+                           
+                                
+                            }
+                    }
                 }
-                .navigationBarHidden(true)
-                .navigationBarBackButtonHidden(true)
             }
+            .navigationBarTitle("", displayMode: .inline)
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
         }
     }
     
@@ -216,6 +218,6 @@ extension User {
             ClasificacionView(userId: "DummyUserId")
         }
     }
-
+    
 
 

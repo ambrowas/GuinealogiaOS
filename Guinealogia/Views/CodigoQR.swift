@@ -41,7 +41,6 @@ struct CodigoQR: View {
     @Environment (\.presentationMode) var presentationMode
     
     var body: some View {
-        NavigationView {
             ZStack {
                 Image("coolbackground")
                     .resizable()
@@ -93,94 +92,99 @@ struct CodigoQR: View {
                 }
                 .onAppear {
                     if let userId = Auth.auth().currentUser?.uid {
-                        self.userViewModel.fetchUserData(userId: userId)
-                        qrCodeKey = generateQRCodeKey()
-                        qrData = generateQRCodeData()
+                        self.userViewModel.fetchUserData(userId: userId) {
+                            self.qrCodeKey = self.generateQRCodeKey()
+                            self.qrData = self.generateQRCodeData()
+                        }
                     }
                 }
+                .alert(isPresented: $isShowingAlert) {
+                    Alert(title: Text("Resultado"),
+                          message: Text(alertMessage),
+                          dismissButton: .default(Text("OK")))
+                }
             }
-            .alert(isPresented: $isShowingAlert) {
-                Alert(title: Text("Resultado"),
-                      message: Text(alertMessage),
-                      dismissButton: .default(Text("OK")))
+        }
+        
+        func generateQRCodeKey() -> String {
+            let allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            let length = 18
+            
+            var randomKey = ""
+            
+            for _ in 0..<length {
+                let randomIndex = allowedCharacters.index(allowedCharacters.startIndex, offsetBy: Int.random(in: 0..<allowedCharacters.count))
+                let character = allowedCharacters[randomIndex]
+                randomKey.append(character)
             }
-        }
-    }
-    
-    func generateQRCodeKey() -> String {
-        let allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        let length = 18
-        
-        var randomKey = ""
-        
-        for _ in 0..<length {
-            let randomIndex = allowedCharacters.index(allowedCharacters.startIndex, offsetBy: Int.random(in: 0..<allowedCharacters.count))
-            let character = allowedCharacters[randomIndex]
-            randomKey.append(character)
+            
+            return randomKey
         }
         
-        return randomKey
-    }
-    
-    func generateQRCodeData() -> Data? {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            return nil
-        }
-        
-        let qrCodeData: [String: Any] = [
-            "base64QRCode": "iVBORw0KGgoAAAANSUhEUgAA",
-            "lastGamePuntuacion": 1000,
-            "lastGameScore": 2,
-            "qrCodeKey": qrCodeKey,
-            "timestamp": generateCurrentTimestamp(),
-            "userId": userId,
-            "fullname": userViewModel.fullname
-        ]
-        
-        if let qrCodeDataString = try? JSONSerialization.data(withJSONObject: qrCodeData) {
-            return "\(qrCodeKey),\(String(data: qrCodeDataString, encoding: .utf8) ?? "")".data(using: .utf8)
-        } else {
-            return nil
-        }
-    }
-    
-    func guardarButtonPressed() {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            return
-        }
-        
-        let qrCodeData: [String: Any] = [
-            "base64QRCode": "iVBORw0KGgoAAAANSUhEUgAA",
-            "lastGamePuntuacion": 1000,
-            "lastGameScore": 2,
-            "qrCodeKey": qrCodeKey,
-            "timestamp": generateCurrentTimestamp(),
-            "userId": userId,
-            "fullname": userViewModel.fullname
-        ]
-        
-        let ref = Database.database().reference(withPath: "qrCodes")
-        ref.child(qrCodeKey).setValue(qrCodeData) { error, _ in
-            if error == nil {
-                isShowingAlert = true
-                alertMessage = "Codigo QR Guardado. Ya puedes ir a cobrar."
+        func generateQRCodeData() -> Data? {
+            guard let userId = Auth.auth().currentUser?.uid else {
+                return nil
+            }
+            
+            let qrCodeData: [String: Any] = [
+                "base64QRCode": "iVBORw0KGgoAAAANSUhEUgAA",
+                "lastGamePuntuacion": userViewModel.currentGamePuntuacion,
+                "lastGameScore": userViewModel.currentGameAciertos,
+                "qrCodeKey": qrCodeKey,
+                "timestamp": generateCurrentTimestamp(),
+                "userId": userId,
+                "fullname": userViewModel.fullname,
+                "email": userViewModel.email
+            ]
+            
+            if let qrCodeDataString = try? JSONSerialization.data(withJSONObject: qrCodeData) {
+                return "\(qrCodeKey),\(String(data: qrCodeDataString, encoding: .utf8) ?? "")".data(using: .utf8)
             } else {
-                isShowingAlert = true
-                alertMessage = "Error al guardar código."
+                return nil
             }
         }
-    }
-    
-    func generateCurrentTimestamp() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
-        return dateFormatter.string(from: Date())
-    }
-    
-    struct CodigoQR_Previews: PreviewProvider {
-        static var previews: some View {
-            CodigoQR()
+        
+        func guardarButtonPressed() {
+            guard let userId = Auth.auth().currentUser?.uid else {
+                return
+            }
+            
+            let qrCodeData: [String: Any] = [
+                "base64QRCode": "iVBORw0KGgoAAAANSUhEUgAA",
+                "lastGamePuntuacion": userViewModel.currentGamePuntuacion,
+                "lastGameScore": userViewModel.currentGameAciertos,
+                "qrCodeKey": qrCodeKey,
+                "timestamp": generateCurrentTimestamp(),
+                "userId": userId,
+                "fullname": userViewModel.fullname,
+                "email": userViewModel.email
+            ]
+            
+            let ref = Database.database().reference(withPath: "qrCodes").child(userId)
+            ref.setValue(qrCodeData) { error, _ in
+                if error == nil {
+                    isShowingAlert = true
+                    alertMessage = "Codigo QR Guardado. Ya puedes ir a cobrar."
+                } else {
+                    isShowingAlert = true
+                    alertMessage = "Error al guardar código."
+                }
+            }
+        }
+        
+        
+        func generateCurrentTimestamp() -> String {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
+            return dateFormatter.string(from: Date())
         }
     }
+        
+        struct CodigoQR_Previews: PreviewProvider {
+            static var previews: some View {
+                CodigoQR()
+            }
+        }
+        
     
-}
+

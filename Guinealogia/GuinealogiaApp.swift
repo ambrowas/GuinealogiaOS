@@ -12,12 +12,16 @@ struct GuinealogiaApp: App {
     init() {
         FirebaseApp.configure()
         
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
+
     func sanitize(input: String) -> String {
         let invalidCharacters = CharacterSet(charactersIn: ".#$[]")
         return input.components(separatedBy: invalidCharacters).joined(separator: "")
     }
-
 
     func testDatabaseAccess() {
         let databaseRef = Database.database().reference()

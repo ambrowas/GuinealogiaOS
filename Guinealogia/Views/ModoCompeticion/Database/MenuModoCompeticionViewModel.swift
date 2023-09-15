@@ -17,9 +17,6 @@ class MenuModoCompeticionViewModel: ObservableObject {
     @Published var jugarModoCompeticionActive: Bool = false
     @Published var goToMenuPrincipal: Bool = false
     @Published var showIniciarSesion: Bool = false
-    
-    
-    
     var showAlertJugar = false
     var showAlertClasificacion = false
     var showAlertPerfil = false
@@ -31,50 +28,44 @@ class MenuModoCompeticionViewModel: ObservableObject {
     
     
     
-    
-
+    init() {
+        fetchCurrentUserData()
+    }
     func fetchCurrentUserData() {
-    print("Fetching current user data...")
-    if let user = Auth.auth().currentUser {
+        
+        print("Fetching current user data...")
+        
+        // Initially, fetch data from UserDefaults
+        self.userFullName = UserDefaults.standard.string(forKey: "fullname") ?? "Usuario Desconectado"
+        self.highestScore = UserDefaults.standard.integer(forKey: "highestScore") // Fetching initial value as 0
+        self.currentGameFallos = UserDefaults.standard.integer(forKey: "currentGameFallos") // Fetching initial value as 0
+        
+        guard let user = Auth.auth().currentUser else {
+            print("No user is logged in")
+            return
+        }
+        
         print("User found: \(user.uid)")
+        
         let ref = Database.database().reference().child("user").child(user.uid)
         
         ref.observeSingleEvent(of: .value, with: { snapshot in
-            if let dict = snapshot.value as? [String: Any],
+            // Fetch user details from Firebase and update UserDefaults with new values
+            if let data = snapshot.value as? [String: Any] {
+                self.userFullName = data["fullname"] as? String ?? "Usuario Desconectado"
+                self.highestScore = data["highestScore"] as? Int ?? 0
+                self.currentGameFallos = data["currentGameFallos"] as? Int ?? 0
                 
-                let fullname = dict["fullname"] as? String,
-                let highestScore = dict["highestScore"] as? Int {
-                let currentGameFallos = dict["currentGameFallos"] as? Int ?? 0
-                
-                DispatchQueue.main.async {
-                    self.userFullName = fullname
-                    self.highestScore = highestScore
-                    self.currentGameFallos = currentGameFallos
-                    
-                    // Print fetched values
-                    print("Fetched User Fullname: \(self.userFullName)")
-                    print("Fetched Highest Score: \(self.highestScore)")
-                    print("Fetched Current Game Fallos: \(self.currentGameFallos)")
-                }
-            } else {
-                // Print an error message if snapshot could not be cast to [String: Any]
-                print("Error: Snapshot could not be cast to [String: Any]")
+                // Updating UserDefaults with fetched data
+                UserDefaults.standard.set(self.userFullName, forKey: "fullname")
+                UserDefaults.standard.set(self.highestScore, forKey: "highestScore")
+                UserDefaults.standard.set(self.currentGameFallos, forKey: "currentGameFallos")
             }
         }) { error in
-            // Print an error if Firebase could not fetch the data
-            print("Error fetching user data from Firebase: \(error.localizedDescription)")
+            print("Error fetching data: \(error.localizedDescription)")
         }
-    } else {
-        // No user is logged in
-        self.userFullName = ""
-        self.highestScore = 0
-        self.currentGameFallos = 0
-        
-        // Print a message saying no user is logged in
-        print("No user is logged in")
     }
-}
-
+    
     func validateCurrentGameFallos() -> Bool {
         return currentGameFallos >= 5
     }

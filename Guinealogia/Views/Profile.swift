@@ -14,9 +14,16 @@ struct Profile: View {
     @Binding var shouldNavigateToProfile: Bool
     let leaderboardPosition: Int
     let dismissAction: () -> Void
-    @State private var shouldShowMenuModoCompeticion = false
-    @State private var navigateToMenuModoCompeticion = false
-
+    @State private var currentAlertType: ProfileAlertType?
+    @State private var showSuccessAlertImagePicker = false
+    private let storageRef = Storage.storage().reference()
+    private let ref = Database.database().reference()
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var shouldPresentProfile: Bool
+    @State private var showMenuModoCompeticionSheet = false
+    
+    
+    
     var body: some View {
         
             ZStack {
@@ -25,34 +32,34 @@ struct Profile: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 10) {
-                    if let profileImage = profileViewModel.profileImage {
-                        Image(uiImage: profileImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 200, height: 150)
-                            .border(Color.black, width: 3)
-                            .background(Color.white)
-                    } else {
-                        Image(systemName: "person.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 200, height: 150)
-                            .border(Color.black, width: 3)
-                            .foregroundColor(.gray)
-                            .onTapGesture {
-                                self.isImagePickerDisplayed = true
-                            }
-                            .overlay(
-                                VStack {
-                                    Text("Foto de Perfil")
-                                        .font(.subheadline)
-                                        .foregroundColor(.black)
-                                }
-                            )
-                            .alert(isPresented: $showSuccessAlert) {
-                                Alert(title: Text("¡Foto de perfil actualizada!"), dismissButton: .default(Text("OK")))
-                            }
+                    Group {
+                        if let profileImage = profileViewModel.profileImage {
+                            Image(uiImage: profileImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 200, height: 150)
+                                .border(Color.black, width: 3)
+                                .background(Color.white)
+                        } else {
+                            Image(systemName: "person.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 200, height: 150)
+                                .border(Color.black, width: 3)
+                                .foregroundColor(.gray)
+                                .overlay(
+                                    VStack {
+                                        Text("Foto de Perfil")
+                                            .font(.subheadline)
+                                            .foregroundColor(.black)
+                                    }
+                                )
+                        }
                     }
+                    .onTapGesture {
+                        self.isImagePickerDisplayed = true
+                    }
+                    
                     Circle()
                         .stroke(Color.black, lineWidth: 2)
                         .background(Circle().fill(Color(hue: 1.0, saturation: 0.984, brightness: 0.699)))
@@ -84,7 +91,10 @@ struct Profile: View {
                     .frame(width: 300, height: 400)
                     .padding(.horizontal, 3)
                     
-                    NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel())) {
+           
+                    Button(action: {
+                        self.showMenuModoCompeticionSheet = true
+                    }) {
                         Text("VOLVER")
                             .font(.headline)
                             .foregroundColor(.white)
@@ -98,35 +108,50 @@ struct Profile: View {
                             )
                     }
                     .padding(.top, 10)
+                    .sheet(isPresented: $showMenuModoCompeticionSheet) {
+                        MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())  // Pass necessary parameters here
+                    }
                 }
-                .navigationBarTitle("", displayMode: .inline)
-                .navigationBarHidden(true)
-                .navigationBarBackButtonHidden(true)
+               
             }
-        
            
+                    .navigationBarBackButtonHidden(true)
             .sheet(isPresented: $isImagePickerDisplayed) {
                 ImagePicker(
                     selectedImage: $profileViewModel.profileImage,
-                    showSuccessAlertImagePicker: $showSuccessAlert,
-                    storageRef: Storage.storage().reference(), // example reference; replace with the correct one if needed
-                    ref: Database.database().reference()      // example reference; replace with the correct one if needed
+                    showSuccessAlertImagePicker: $showSuccessAlertImagePicker,
+                    alertMessage: $alertMessage,
+                    currentAlertType: $currentAlertType,
+                    storageRef: storageRef,
+                    ref: ref
                 )
             }
-            .alert(isPresented: $showAlert) {
-                if showSuccessAlert {
-                    return Alert(title: Text("Success"), message: Text("Image uploaded successfully!"), dismissButton: .default(Text("OK")))
-                } else {
-                    return Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            
+            .alert(item: $currentAlertType) { alertType in
+                Alert(
+                    title: Text(alertType.title),
+                    message: Text(alertType.message),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+            .onReceive(profileViewModel.$profileImageUpdateStatus) { newStatus in
+                switch newStatus {
+                case .success:
+                    currentAlertType = .profileImageUpdated
+                case .failure(let errorMessage):
+                    currentAlertType = .error(errorMessage)
+                case .none, .some(_):
+                    break
                 }
             }
+            
+            
             .onAppear {
-                print("Should navigate to profile: \(shouldNavigateToProfile)")
                 profileViewModel.fetchProfileData()
             }
         }
     }
-
+    
     struct TextRowView: View {
         let title: String
         let content: String
@@ -150,10 +175,17 @@ struct Profile: View {
             .padding([.leading, .trailing])
         }
     }
-
-
-struct Profile_Previews: PreviewProvider {
-    static var previews: some View {
-        Profile(shouldNavigateToProfile: .constant(true), leaderboardPosition: 1, dismissAction: {})
+    
+    
+    struct Profile_Previews: PreviewProvider {
+        @State static private var shouldPresentProfile = false
+        
+        static var previews: some View {
+            Profile(
+                shouldNavigateToProfile: .constant(true),
+                leaderboardPosition: 1,
+                dismissAction: {},
+                shouldPresentProfile: $shouldPresentProfile
+            )
+        }
     }
-}

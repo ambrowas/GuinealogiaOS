@@ -3,6 +3,7 @@ import SwiftUI
 
 struct NuevoUsuario: View {
     @StateObject private var viewModel = NuevoUsuarioViewModel()
+    @State private var shouldPresentProfile = false
    
         
     var body: some View {
@@ -45,8 +46,12 @@ struct NuevoUsuario: View {
                     .background(
                         NavigationLink(
                             "",
-                            destination: Profile(shouldNavigateToProfile: .constant(true), leaderboardPosition: 1,
-                                                 dismissAction: {}),
+                            destination: Profile(
+                                               shouldNavigateToProfile: .constant(true),
+                                               leaderboardPosition: 1,
+                                               dismissAction: {},
+                                               shouldPresentProfile: $shouldPresentProfile
+                            ),
                             isActive: $viewModel.navegarAlPerfil
                         )
                         .opacity(0)
@@ -54,7 +59,7 @@ struct NuevoUsuario: View {
                     .padding(.bottom,5)
                     
                     
-                    NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel())) {
+                    NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())) {
                         Text("VOLVER")
                             .font(.headline)
                             .foregroundColor(.white)

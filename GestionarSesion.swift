@@ -85,7 +85,7 @@ struct GestionarSesion: View {
                                 )
                         }
                         
-                        NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserID", userData: UserData(), viewModel: NuevoUsuarioViewModel()), isActive: $navegarAMenuModoCompeticion) {
+                        NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserID", userData: UserData(), viewModel: MenuModoCompeticionViewModel()), isActive: $navegarAMenuModoCompeticion) {
                             EmptyView()
                         }
                         Button(action: {

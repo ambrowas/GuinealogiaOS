@@ -3,7 +3,7 @@ import FirebaseDatabase
 import FirebaseStorage
 
 struct LeadersProfile: View {
-    @ObservedObject private var viewModel: LeadersProfileViewModel
+    @StateObject private var viewModel: LeadersProfileViewModel
     @State private var shouldShowMenuModoCompeticion = false
     @Environment(\.presentationMode) var presentationMode
     @State private var userData: UserData = UserData()
@@ -11,10 +11,11 @@ struct LeadersProfile: View {
     @State private var goToMenuCompeticion: Bool = false
 
     
-    
     init(userId: String) {
-        self.viewModel = LeadersProfileViewModel(userId: userId)
-    }
+           _viewModel = StateObject(wrappedValue: LeadersProfileViewModel(userId: userId))
+       }
+
+
     
     var body: some View {
         ZStack {
@@ -24,10 +25,10 @@ struct LeadersProfile: View {
             VStack(spacing: 20) {
                 // Profile Picture and Circle
                 VStack(spacing: 10) {
-                    if let profileImageData = viewModel.profileImageData {
-                        Image(uiImage: UIImage(data: profileImageData)!)
+                    if let profileImageData = viewModel.profileImageData,
+                       let uiImage = UIImage(data: profileImageData) {
+                        Image(uiImage: uiImage)
                             .resizable()
-                    
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 200, height: 150)
                             .border(Color.black, width: 3)
@@ -112,9 +113,10 @@ struct LeadersProfile: View {
 
             }
             .sheet(isPresented: $showSheet) {
-                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel()
+                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel()
                 )
             }
+            .navigationBarTitle("", displayMode: .inline)
             .navigationBarHidden(true)
             .navigationBarBackButtonHidden(true)
         }
@@ -124,76 +126,13 @@ struct LeadersProfile: View {
     
     struct LeadersProfile_Previews: PreviewProvider {
         static var previews: some View {
-            LeadersProfile(userId: "PoGQOuIby2Y1mVf2bhYSidOLU7v1")
+            LeadersProfile(userId: "DummyUserId")
+
             
         }
     }
     
-    final class LeadersProfileViewModel: ObservableObject {
-        @Published var user: ProfileUser?
-        private let userId: String
-        @Published var profileImageData: Data?
-        
-        init(userId: String) {
-            self.userId = userId
-        }
-        
-        func fetchUserDataFromRealtimeDatabase() {
-            let ref = Database.database().reference().child("user").child(userId)
-            ref.observeSingleEvent(of: .value) { snapshot in
-                if let value = snapshot.value as? [String: Any] {
-                    let fullname = value["fullname"] as? String ?? "Unknown"
-                    let barrio = value["barrio"] as? String ?? "Unknown"
-                    let ciudad = value["ciudad"] as? String ?? "Unknown"
-                    let pais = value["pais"] as? String ?? "Unknown"
-                    let positionInLeaderboard = value["positionInLeaderboard"] as? Int ?? 0
-                    let accumulatedPuntuacion = value["accumulatedPuntuacion"] as? Int ?? 0
-                    let accumulatedAciertos = value["accumulatedAciertos"] as? Int ?? 0
-                    let accumulatedFallos = value["accumulatedFallos"] as? Int ?? 0
-                    let highestScore = value["highestScore"] as? Int ?? 0
-                    let profilePicture = value["profilePicture"] as? String ?? ""
-                    
-                    DispatchQueue.main.async {
-                        self.user = ProfileUser(
-                            id: self.userId,
-                            fullname: fullname,
-                            barrio: barrio,
-                            ciudad: ciudad,
-                            pais: pais,
-                            positionInLeaderboard: positionInLeaderboard,
-                            accumulatedPuntuacion: accumulatedPuntuacion,
-                            accumulatedAciertos: accumulatedAciertos,
-                            accumulatedFallos: accumulatedFallos,
-                            highestScore: highestScore,
-                            profilePictureURL: profilePicture
-                        )
-                        self.fetchProfileImage(urlString: self.user?.profilePictureURL)
-                    }
-                }
-            }
-        }
-        
-        
-        func fetchProfileImage(urlString: String?) {
-            guard let urlString = urlString,
-                  let url = URL(string: urlString),
-                  UIApplication.shared.canOpenURL(url) else {
-                print("Invalid URL")
-                return
-            }
-            
-            URLSession.shared.dataTask(with: url) { data, _, error in
-                guard let data = data, error == nil else {
-                    print("Failed to fetch image:", error ?? "No error information")
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self.profileImageData = data
-                }
-            }.resume()
-        }
-    }
+
     
     struct TextRowView: View {
         var title: String
@@ -203,7 +142,7 @@ struct LeadersProfile: View {
             HStack {
                 Text(title)
                     .bold()
-                    .foregroundColor(Color.gray)
+                    .foregroundColor(Color.black)
                 Spacer()
                 Text(value)
                     .foregroundColor(Color.blue)
@@ -215,22 +154,6 @@ struct LeadersProfile: View {
         
     }
     
-    struct ProfileUser: Equatable {
-        let id: String
-        let fullname: String
-        let barrio: String
-        let ciudad: String
-        let pais: String
-        let positionInLeaderboard: Int
-        let accumulatedPuntuacion: Int
-        let accumulatedAciertos: Int
-        let accumulatedFallos: Int
-        let highestScore: Int
-        var profilePictureURL: String
-        
-        static func ==(lhs: ProfileUser, rhs: ProfileUser) -> Bool {
-            return lhs.id == rhs.id
-        }
-    }
+   
     
 }

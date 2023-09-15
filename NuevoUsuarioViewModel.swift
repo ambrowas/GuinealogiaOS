@@ -6,6 +6,7 @@ import Firebase
 import FirebaseDatabase
 import Combine
 import SwiftUI
+import FirebaseFirestore
 
 class NuevoUsuarioViewModel: ObservableObject {
     @Published var fullname: String = ""
@@ -89,8 +90,14 @@ class NuevoUsuarioViewModel: ObservableObject {
                 "pais": pais,
                 "accumulatedAciertos": 0,
                 "accumulatedFallos": 0,
-                "accumulatedPuntuacion": 0
+                "accumulatedPuntuacion": 0,
+                "highestScore": 0
             ]
+        
+            UserDefaults.standard.set(fullname, forKey: "fullname")
+           UserDefaults.standard.set(0, forKey: "highestScore")
+           UserDefaults.standard.set(0, forKey: "currentGameFallos")
+        
             
             // You can log the userData dictionary before sending it to Firestore
             print("UserData: \(userData)")
@@ -164,6 +171,12 @@ class NuevoUsuarioViewModel: ObservableObject {
 
             self.alertaTipo = .exito(message: "Usuario Creado. Completa tu perfil agregando una foto.")
             self.mostrarAlerta = true
+            
+            UserDefaults.standard.set(self.fullname, forKey: "fullname")
+            UserDefaults.standard.set(0, forKey: "highestScore")  // Setting initial values as 0
+            UserDefaults.standard.set(0, forKey: "currentGameFallos")
+            
+            
             
             print("User signed in successfully")
             // You can retrieve user information from 'authResult'

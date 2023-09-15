@@ -22,6 +22,8 @@ class GestionarSesionViewModel: ObservableObject {
         case emptyFields
         case invalidEmailFormat
         case wrongPassword
+        case emailNotFound
+       
 
         var errorDescription: String? {
             switch self {
@@ -31,6 +33,9 @@ class GestionarSesionViewModel: ObservableObject {
                 return "Error de formato en el email."
             case .wrongPassword :
                 return "Contraseña incorrecta. "
+            case .emailNotFound:
+                        return "Este email no existe. Corrígelo o crea una cuenta nueva."
+          
             }
         }
     }
@@ -40,25 +45,34 @@ class GestionarSesionViewModel: ObservableObject {
     func loginUsuario(correoElectronico: String, contrasena: String) {
         
         guard validarInputs(correoElectronico: correoElectronico, contrasena: contrasena) else {
-                   return
-               }
-           
-         // Use Firebase Auth method to login the user
-           Auth.auth().signIn(withEmail: correoElectronico, password: contrasena) { [weak self] authResult, error in
-               
-           //  Handle the result of the authentication process
-               if let error = error {
-                   self?.estaAutenticado = false
-                   self?.errorDeAutenticacion = error
-                   self?.ensenarAlerta(type: .mistake("Error de login. Comprueba email/contraseña"))
-               } else {
-                   self?.usuario = authResult?.user
-                   self?.estaAutenticado = true
-                   self?.ensenarAlerta(type: .success("Usuario Conectado"))
-               }
+            return
+        }
+       
+        // Use Firebase Auth method to login the user
+        Auth.auth().signIn(withEmail: correoElectronico, password: contrasena) { [weak self] authResult, error in
+            
+            //  Handle the result of the authentication process
+            if let error = error as NSError? {
+                self?.estaAutenticado = false
+                self?.errorDeAutenticacion = error
+                
+                if error.code == AuthErrorCode.userNotFound.rawValue {
+                    self?.ensenarAlerta(type: .mistake(SessionError.emailNotFound.localizedDescription))
+                } else if error.code == AuthErrorCode.wrongPassword.rawValue {
+                    self?.ensenarAlerta(type: .mistake(SessionError.wrongPassword.localizedDescription))
+                } else {
+                    self?.ensenarAlerta(type: .mistake("Error de login. Comprueba email/contraseña"))
+                }
+                
+            } else {
+                self?.usuario = authResult?.user
+                self?.estaAutenticado = true
+                self?.ensenarAlerta(type: .success("Usuario Conectado"))
+            }
 
-           }
-       }
+        }
+    }
+
     
     func validarInputs(correoElectronico: String, contrasena: String) -> Bool {
         // Validate that inputs are not empty
@@ -80,10 +94,18 @@ class GestionarSesionViewModel: ObservableObject {
         // If we reach here, it means inputs are valid
         return true
     }
+    
+    func clearUserData() {
+        UserDefaults.standard.removeObject(forKey: "fullname")
+        UserDefaults.standard.removeObject(forKey: "highestScore")
+        UserDefaults.standard.removeObject(forKey: "currentGameFallos")
+    }
 
     func logoutUsuario() {
             try? Auth.auth().signOut()
             self.estaAutenticado = false
+        
+        clearUserData()
         }
     
     func ensenarAlerta(type: TipoDeAlerta) {

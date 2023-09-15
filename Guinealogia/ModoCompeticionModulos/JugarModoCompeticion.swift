@@ -1,3 +1,4 @@
+
 import SwiftUI
 import AVFoundation
 import Combine
@@ -20,7 +21,6 @@ struct JugarModoCompeticion: View {
     
     
     let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
-    
     
     enum ActiveAlert: Identifiable {
         case showAlert, showEndGameAlert, showGameOverAlert, showManyMistakesAlert
@@ -228,12 +228,12 @@ struct JugarModoCompeticion: View {
                         }
                     }
                     .transition(.asymmetric(insertion: .scale, removal: .opacity))
-                
-                
+                        }
+                        }
+                    .onAppear(perform: viewModel.fetchQuestion)
                     .navigationBarHidden(true)
                     .navigationBarBackButtonHidden(true)
-                    .onAppear(perform: viewModel.fetchQuestion)
-                    .alert(item: $viewModel.activeAlert) { item in
+                    .alert(item: $viewModel.activeAlert) { item -> Alert in
                         print("Alert triggered with item: \(item)")
                         print("Current mistakes: \(viewModel.mistakes)")
                         switch item {
@@ -268,23 +268,23 @@ struct JugarModoCompeticion: View {
                             return Alert(title: Text("Cuidado"), message: Text("Llevas 4 fallos. Uno más y la partida se acaba."), dismissButton: .default(Text("OK")))
                         }
                     }
-                    .onChange(of: viewModel.activeAlert) { newAlert in
-                        viewModel.isAlertBeingDisplayed = (newAlert != nil)
-                    }
-                
+                  
                     .fullScreenCover(isPresented: $shouldPresentGameOver){
                         GameOver(userId: userId)
                             .onDisappear{
                                 presentationMode.wrappedValue.dismiss()
                             }
                     }
+                    .onChange(of: viewModel.activeAlert) { newAlert in
+                        viewModel.isAlertBeingDisplayed = (newAlert != nil)
+                    }
                     .onReceive(viewModel.timeExpired, perform: { newValue in
                         showAnswerStatusForMistakes = newValue
                     })
                 
             }
-        }
     }
+    
     struct GameOverPresented: Identifiable {
         var id = UUID() // changes
     }
@@ -294,4 +294,4 @@ struct JugarModoCompeticion: View {
             JugarModoCompeticion(userId: "DummyuserId", userData: UserData())
         }
     }
-}
+

@@ -23,6 +23,8 @@ struct InputFieldsView: View {
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.none)
                 .textContentType(.emailAddress)
+                .autocapitalization(.none)
+                .keyboardType(.emailAddress)
                 
             
             SecureInputFieldView(text: $password, placeholder: "Contraseña")

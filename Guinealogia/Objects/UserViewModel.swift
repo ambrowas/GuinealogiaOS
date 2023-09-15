@@ -22,7 +22,7 @@ class UserViewModel: ObservableObject {
     
     
     
-    func fetchUserData(userId: String) {
+    func fetchUserData(userId: String, completion: @escaping () -> Void) {
         let ref = Database.database().reference().child("user").child(userId)
         
         ref.observeSingleEvent(of: .value) { snapshot, error in
@@ -43,6 +43,8 @@ class UserViewModel: ObservableObject {
                     self.accumulatedAciertos = dict["accumulatedAciertos"] as? Int ?? 0
                     self.accumulatedFallos = dict["accumulatedFallos"] as? Int ?? 0
                     self.positionInLeaderboard = dict["positionInLeaderboard"] as? Int ?? 0
+                    self.email = dict["email"]as? String ?? ""
+                    completion()
                 }
             }
         }

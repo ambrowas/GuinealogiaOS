@@ -33,16 +33,17 @@ struct MenuModoLibre: View {
                 
 
                 if jugadorGuardado.isEmpty {
-                    TextField("           INTRODUCE TU NOMBRE", text: $playerName)
+                    TextField("INTRODUCE TU NOMBRE", text: $playerName)
                         .foregroundColor(.black)
-                        .font(.system(size: 10))
-                        .frame(width: 200, height: 50)
+                        .font(.system(size: 18))
+                        .frame(width: 220, height: 50)
+                        .multilineTextAlignment(.center)
                        
                         .background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.black, lineWidth: 2))
                             .background(RoundedRectangle(cornerRadius: 1).fill(Color.white))
                         
                 } else {
-                    Text("HOLA \(jugadorGuardado)")
+                    Text("¡Mbolan \(jugadorGuardado)! ")
                         .foregroundColor(.black)
                         .font(.headline)
                         .padding(.horizontal, 20)

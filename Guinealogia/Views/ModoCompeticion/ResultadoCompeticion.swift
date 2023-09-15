@@ -12,6 +12,8 @@ struct ResultadoCompeticion: View {
     @State private var goToMenuPrincipal: Bool = false
     
     
+    
+    
     let userId: String
     @State var showCodigo: Bool = false
     
@@ -76,6 +78,7 @@ struct ResultadoCompeticion: View {
                     
                     VStack(spacing: 10) {
                         Button {
+                            
                             showCodigo = true
                         } label: {
                             Text("GENERAR COBRO")
@@ -93,6 +96,7 @@ struct ResultadoCompeticion: View {
                             CodigoQR()
                         }
                         
+                        
                         if let currentUser = Auth.auth().currentUser {
                             NavigationLink(destination: ClasificacionView(userId: currentUser.uid)) {
                                 Text("RANKING")
@@ -109,41 +113,40 @@ struct ResultadoCompeticion: View {
                             }
                         }
                         NavigationLink(destination: MenuPrincipal(player: .constant(nil))) {
-                        Text("MENU PRINCIPAL")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 300, height: 55)
-                        .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
-                        .cornerRadius(10)
-                        .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 3)
-                        )
+                            Text("MENU PRINCIPAL")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 300, height: 55)
+                                .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
                         }
-
+                        
+                    }
+                    .onAppear {
+                        print("ResultadoCompeticion view appeared")
+                        if let userId = Auth.auth().currentUser?.uid {
+                            self.userViewModel.fetchUserData(userId: userId) {
+                              
                                 
-                            }
-                        .onAppear {
-                            print("ResultadoCompeticion view appeared")
-                            if let userId = Auth.auth().currentUser?.uid {
-                                self.userViewModel.fetchUserData(userId: userId)
                             }
                         }
                     }
                 }
+                .navigationBarHidden(true)
+                .navigationBarBackButtonHidden(true)
+                
             }
-            .navigationBarHidden(true)
-            .navigationBarBackButtonHidden(true)
-            
         }
     }
     
     struct ResultadoCompeticion_Previews: PreviewProvider {
         static var previews: some View {
             ResultadoCompeticion(userId: Auth.auth().currentUser?.uid ?? "")
-            
         }
     }
-    
-
+}

@@ -21,7 +21,8 @@ struct CheckCodigo: View {
     @State private var showSheet = false
     @State private var userData: UserData = UserData()
     @State private var goToMenuCompeticion: Bool = false
-
+    
+    
     
     
     func checkCodigo() {
@@ -31,12 +32,16 @@ struct CheckCodigo: View {
             return
         }
         
+        print("Input is valid, proceeding to fetch data from Firebase")
+        
         let gameCodesRef = Database.database().reference().child("gamecodes")
         gameCodesRef.observeSingleEvent(of: .value) { snapshot in
             var codeExists = false
             var codeUsed = false
             var keyToUpdate: String?
             var isStaticCode = false
+            
+            print("Successfully fetched data from Firebase")
             
             for child in snapshot.children {
                 let snap = child as! DataSnapshot
@@ -67,22 +72,7 @@ struct CheckCodigo: View {
                 showAlert = true
                 clearInputs()
                 isInput1Active = true
-                
-                
-                // Update the game data
-                if let user = Auth.auth().currentUser {
-                    let gameData: [String: Any] = ["currentGameAciertos": 0,
-                                                   "currentGameFallos": 0,
-                                                   "currentGamePuntuacion": 0]
-                    let userRef = Database.database().reference().child("user").child(user.uid)
-                    userRef.updateChildValues(gameData) { (error, reference) in
-                        if let error = error {
-                            print("Failed to update game data. Error: \(error)")
-                            return
-                        }
-                    }
-                }
-                
+                resetGameData() // Reset game data when static code is used
             } else if codeUsed {
                 showAlert2 = true
                 showAlert = true
@@ -107,18 +97,31 @@ struct CheckCodigo: View {
                             print("Failed to update value. Error: \(error)")
                             return
                         }
+                        print("Successfully updated the code usage info")
                     }
                 }
-                
-                // Navigate to MenuModoCompeticion
-                showAlertPromotionValid = false
-                showAlert = false
-                showSheet = true
             }
         }
     }
-    
-    
+  
+    func resetGameData() {
+                  if let user = Auth.auth().currentUser {
+                      let userGameRef = Database.database().reference().child("user").child(user.uid)
+                      let gameData: [String: Any] = ["currentGameAciertos": 0,
+                                                     "currentGameFallos": 0,
+                                                     "currentGamePuntuacion": 0]
+                      userGameRef.updateChildValues(gameData) { (error, reference) in
+                          if let error = error {
+                              print("Failed to reset game data. Error: \(error)")
+                              return
+                          }
+                          print("Game data has been successfully reset.")
+                      }
+                  } else {
+                      print("No current user found while trying to reset game data.")
+                  }
+              }
+ 
     func clearInputs() {
         input1 = ""
         input2 = ""
@@ -226,7 +229,7 @@ struct CheckCodigo: View {
         }
         
         .sheet(isPresented: $showSheet) {
-                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: NuevoUsuarioViewModel()
+                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel()
 
             )
         }
@@ -237,19 +240,7 @@ struct CheckCodigo: View {
                     message: Text("Buena suerte."),
                     dismissButton: .default(Text("OK")) {
                         // Reset game data
-                        if let user = Auth.auth().currentUser {
-                            let userGameRef = Database.database().reference().child("user").child(user.uid)
-                            let gameData: [String: Any] = ["currentGameAciertos": 0,
-                                                           "currentGameFallos": 0,
-                                                           "currentGamePuntuacion": 0]
-                            userGameRef.updateChildValues(gameData) { (error, reference) in
-                                if let error = error {
-                                    print("Failed to update value. Error: \(error)")
-                                    return
-                                }
-                            }
-                        }
-                        
+                        resetGameData()
                         // Navigate to MenuModoCompeticion
                         showAlert1 = false
                         showAlert = false
