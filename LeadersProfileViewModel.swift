@@ -11,9 +11,9 @@ final class LeadersProfileViewModel: ObservableObject {
     
    
     init(userId: String) {
-          self.userId = userId
-          print("Initializing ViewModel with userId: \(self.userId)")
-      }
+           self.userId = userId
+           fetchUserDataFromRealtimeDatabase()
+       }
       
 
     

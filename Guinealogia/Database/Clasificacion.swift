@@ -11,58 +11,58 @@ import FirebaseDatabase
         var scoreAchievedAt: Date? // making this optional
     }
 
-        class UserData: ObservableObject {
-        @Published var users = [User]()
-        
-        private var db = Database.database().reference()
-        
-        init() {
-            fetchUsers()
-        }
-        
-        func fetchUsers() {
-            db.child("user")
-                .queryOrdered(byChild: "accumulatedPuntuacion")
-                .queryLimited(toLast: 15)
-                .observe(.value) { (snapshot) in
-                   //print("Number of snapshots fetched: \(snapshot.childrenCount)")
-                    var newUsers = [User]()
-                    for child in snapshot.children {
-                        if let snapshot = child as? DataSnapshot,
-                           let user = User(snapshot: snapshot) {
-                            newUsers.append(user)
-                        } else {
-                          // print("Failed to parse snapshot: \(child)")
-                                        }
-                                    }
-                                    
-                        //print("Number of users parsed: \(newUsers.count)")
-                    
-                    DispatchQueue.main.async {
-                        // First, sort the users array by `accumulatedPuntuacion`
-                        newUsers.sort { $0.accumulatedPuntuacion > $1.accumulatedPuntuacion }
-                        // Then, for users with equal `accumulatedPuntuacion`, sort by `scoreAchievedAt`
-                        newUsers = newUsers.sorted {
-                            if $0.accumulatedPuntuacion == $1.accumulatedPuntuacion {
-                                return $0.scoreAchievedAt ?? Date.distantPast > $1.scoreAchievedAt ?? Date.distantPast
-                            }
-                            return $0.accumulatedPuntuacion > $1.accumulatedPuntuacion
+    class UserData: ObservableObject {
+    @Published var users = [User]()
+    @Published internal var refreshID: UUID = UUID()
+    
+    private var db = Database.database().reference()
+    
+    init() {
+        fetchUsers()
+    }
+    
+    func fetchUsers() {
+        db.child("user")
+            .queryOrdered(byChild: "accumulatedPuntuacion")
+            .queryLimited(toLast: 15)
+            .observe(.value) { (snapshot) in
+                //print("Number of snapshots fetched: \(snapshot.childrenCount)")
+                var newUsers = [User]()
+                for child in snapshot.children {
+                    if let snapshot = child as? DataSnapshot,
+                        let user = User(snapshot: snapshot) {
+                        newUsers.append(user)
+                    } else {
+                       
+               }
+              }
+                           
+                DispatchQueue.main.async {
+                    // First, sort the users array by `accumulatedPuntuacion`
+                    newUsers.sort { $0.accumulatedPuntuacion > $1.accumulatedPuntuacion }
+                    // Then, for users with equal `accumulatedPuntuacion`, sort by `scoreAchievedAt`
+                    newUsers = newUsers.sorted {
+                        if $0.accumulatedPuntuacion == $1.accumulatedPuntuacion {
+                            return $0.scoreAchievedAt ?? Date.distantPast > $1.scoreAchievedAt ?? Date.distantPast
                         }
-                        self.users = newUsers
-                        self.updateLeaderboardPositions()
+                        return $0.accumulatedPuntuacion > $1.accumulatedPuntuacion
                     }
+                    self.users = newUsers
+                    self.updateLeaderboardPositions()
+                    self.refreshID = UUID()
                 }
-        }
-        
-        func updateLeaderboardPositions() {
-            var currentLeaderboardPosition = 1
-            
-            for (index, _) in users.enumerated() {
-                users[index].leaderboardPosition = currentLeaderboardPosition
-                currentLeaderboardPosition += 1
             }
+    }
+    
+    func updateLeaderboardPositions() {
+        var currentLeaderboardPosition = 1
+        
+        for (index, _) in users.enumerated() {
+            users[index].leaderboardPosition = currentLeaderboardPosition
+            currentLeaderboardPosition += 1
         }
     }
+}
 
     extension User {
         init?(snapshot: DataSnapshot) {
@@ -124,8 +124,12 @@ struct ClasificacionView: View {
     @StateObject private var userData = UserData()
     @State private var shouldShowMenuModoCompeticion = false
     @State private var selectedUserId: String? = nil
+    @State private var isShowingLeaderProfile = false
     let userId: String
-    @State private var showResultadoSheet = false
+    @StateObject private var viewModel = LeadersProfileViewModel(userId: "yourUserIdHere")
+    @State private var selectedUser: User? = nil
+
+    
     
     var body: some View {
         
@@ -148,7 +152,7 @@ struct ClasificacionView: View {
                         .padding(.top, 35)
                     
                     Button(action: {
-                        self.showResultadoSheet = true
+                        self.presentationMode.wrappedValue.dismiss()
                     }) {
                         Text("VOLVER")
                             .font(.headline)
@@ -173,45 +177,54 @@ struct ClasificacionView: View {
                             Spacer()
                             Text("FCFA").fontWeight(.bold)
                         }) {
+                            
                             ForEach(userData.users) { user in
-                                NavigationLink(
-                                    destination: LeadersProfile(userId: user.id)
-                                ) {
+                                Button(action: {
+                                    self.selectedUser = user
+                                    print("Selected User ID: \(String(describing: self.selectedUser?.id))")
+                                    self.isShowingLeaderProfile = true
+                                }) {
                                     HStack {
                                         FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
-                                            .font(.system(size: 12)) // adjust the size as per your needs
+                                            .font(.system(size: 12))
                                         Spacer()
                                         FlashingText(text: user.fullname, shouldFlash: user.id == userId)
-                                            .font(.system(size: 12)) // adjust the size as per your needs
+                                            .font(.system(size: 12))
                                         Spacer()
                                         FlashingText(text: user.ciudad, shouldFlash: user.id == userId)
-                                            .font(.system(size: 12)) // adjust the size as per your needs
+                                            .font(.system(size: 12))
                                         Spacer()
                                         FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
-                                            .font(.system(size: 12)) // adjust the size as per your needs
+                                            .font(.system(size: 12))
                                     }
                                 }
                             }
                             
                         }
+                        
                     }
-                    .sheet(isPresented: $showResultadoSheet) {
-                        ResultadoCompeticion(userId: Auth.auth().currentUser?.uid ?? "")
-                            .listStyle(InsetGroupedListStyle())
-                    }
-                    .onAppear {
-                        userData.fetchUsers()
-                           
-                                
-                            }
-                    }
+                    .id(userData.refreshID)
+                }
+                .sheet(item: $selectedUser) { user in
+                    LeadersProfile(userId: user.id) // passing the userId directly
+                }
+                .onAppear {
+                    self.viewModel.fetchUserDataFromRealtimeDatabase()
+                }
+
+                    
+                    
                 }
             }
-            .navigationBarTitle("", displayMode: .inline)
-            .navigationBarHidden(true)
-            .navigationBarBackButtonHidden(true)
-        }
+    
+        
+        
+        
+        .navigationBarTitle("", displayMode: .inline)
+        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
     }
+    
     
     struct ClasificacionView_Previews: PreviewProvider {
         static var previews: some View {
@@ -219,5 +232,5 @@ struct ClasificacionView: View {
         }
     }
     
-
+}
 
