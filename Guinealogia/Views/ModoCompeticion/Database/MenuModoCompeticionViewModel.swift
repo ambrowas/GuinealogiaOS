@@ -36,7 +36,7 @@ class MenuModoCompeticionViewModel: ObservableObject {
         print("Fetching current user data...")
         
         // Initially, fetch data from UserDefaults
-        self.userFullName = UserDefaults.standard.string(forKey: "fullname") ?? "Usuario Desconectado"
+        self.userFullName = UserDefaults.standard.string(forKey: "fullname") ?? ""
         self.highestScore = UserDefaults.standard.integer(forKey: "highestScore") // Fetching initial value as 0
         self.currentGameFallos = UserDefaults.standard.integer(forKey: "currentGameFallos") // Fetching initial value as 0
         
@@ -52,7 +52,7 @@ class MenuModoCompeticionViewModel: ObservableObject {
         ref.observeSingleEvent(of: .value, with: { snapshot in
             // Fetch user details from Firebase and update UserDefaults with new values
             if let data = snapshot.value as? [String: Any] {
-                self.userFullName = data["fullname"] as? String ?? "Usuario Desconectado"
+                self.userFullName = data["fullname"] as? String ?? ""
                 self.highestScore = data["highestScore"] as? Int ?? 0
                 self.currentGameFallos = data["currentGameFallos"] as? Int ?? 0
                 
@@ -137,6 +137,7 @@ class MenuModoCompeticionViewModel: ObservableObject {
                 userFullName = ""
                 highestScore = 0
                 currentGameFallos = 0
+                UserDefaults.standard.set(userFullName, forKey: "fullname")
             } catch let signOutError as NSError {
                 print("Error signing out: %@", signOutError)
             }

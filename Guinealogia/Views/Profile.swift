@@ -161,11 +161,13 @@ struct Profile: View {
                 Text(title)
                     .font(.subheadline)
                     .bold()
+                    .foregroundColor(.black)
                     .frame(width: 120, alignment: .leading) // Adjust width as needed for proper alignment
                 
                 Text(content)
                     .font(.system(size: 14))
                     .padding(3)
+                    .foregroundColor(.black)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.gray, lineWidth: 1)
@@ -173,6 +175,7 @@ struct Profile: View {
                 Spacer()  // This pushes the content to the left
             }
             .padding([.leading, .trailing])
+            .environment(\.colorScheme, .light)
         }
     }
     

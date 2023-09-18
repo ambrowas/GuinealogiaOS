@@ -17,6 +17,7 @@ struct InputFieldsView: View {
                 .border(Color.black, width: 2)
                 .textContentType(.name)
                 .autocapitalization(.words)
+                .background(Color.white)
           
             SingleInputFieldView(text: $email, placeholder: "Email")
                 .border(Color.black, width: 2)
@@ -25,29 +26,34 @@ struct InputFieldsView: View {
                 .textContentType(.emailAddress)
                 .autocapitalization(.none)
                 .keyboardType(.emailAddress)
+                .background(Color.white)
                 
             
             SecureInputFieldView(text: $password, placeholder: "Contraseña")
                 .border(Color.black, width: 2)
-                //.textContentType(.password)
+                .background(Color.white)
                 
             SingleInputFieldView(text: $telefono, placeholder: "Teléfono")
                 .border(Color.black, width: 2)
-              //  .textContentType(.telephoneNumber)
+                .background(Color.white)
             
             SingleInputFieldView(text: $barrio, placeholder: "Barrio")
                 .border(Color.black, width: 2)
                 .autocorrectionDisabled()
+                .background(Color.white)
             
             SingleInputFieldView(text: $ciudad, placeholder: "Ciudad")
                 .border(Color.black, width: 2)
                 .autocorrectionDisabled()
+                .background(Color.white)
             
             SingleInputFieldView(text: $pais, placeholder: "País")
                 .border(Color.black, width: 2)
                 .autocorrectionDisabled()
+                .background(Color.white)
         }
         .padding(.horizontal, 40)
+        .environment(\.colorScheme, .light)
     }
 }
 

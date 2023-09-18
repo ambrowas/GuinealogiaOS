@@ -27,10 +27,12 @@ struct GestionarSesion: View {
                     TextField("Email", text: $correoelectronico, onCommit: {
                         self.correoelectronico = self.correoelectronico.lowercased()
                     })
+                    
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 300)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
+                    .background(Color.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.black, lineWidth: 3)
@@ -41,6 +43,7 @@ struct GestionarSesion: View {
                     })
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 300)
+                    .background(Color.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.black, lineWidth: 3)
@@ -108,6 +111,7 @@ struct GestionarSesion: View {
                 }
                 .padding()
             }
+            .environment(\.colorScheme, .light)
         }
         .alert(isPresented: $viewModel.muestraAlerta) {
             switch viewModel.alert {

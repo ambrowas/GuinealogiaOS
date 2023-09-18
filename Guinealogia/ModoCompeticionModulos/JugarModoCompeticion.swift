@@ -153,8 +153,6 @@ struct JugarModoCompeticion: View {
                 
                 Button(action: {
                     if viewModel.buttonConfirmar == "CONFIRMAR" {
-                        print("Before setting activeAlert: \($viewModel.activeAlert)")
-                        print("Current mistakes: \(viewModel.mistakes)")
                         if viewModel.selectedOptionIndex == nil {
                             viewModel.activeAlert = .showAlert
                         } else {
@@ -234,8 +232,6 @@ struct JugarModoCompeticion: View {
                     .navigationBarHidden(true)
                     .navigationBarBackButtonHidden(true)
                     .alert(item: $viewModel.activeAlert) { item -> Alert in
-                        print("Alert triggered with item: \(item)")
-                        print("Current mistakes: \(viewModel.mistakes)")
                         switch item {
                         case .showAlert:
                             return Alert(title: Text("ATENCION"), message: Text("Sin miedo, escoge una opción."), dismissButton: .default(Text("OK")))

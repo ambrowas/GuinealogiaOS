@@ -47,16 +47,18 @@ struct NuevoUsuario: View {
                         NavigationLink(
                             "",
                             destination: Profile(
-                                               shouldNavigateToProfile: .constant(true),
-                                               leaderboardPosition: 1,
-                                               dismissAction: {},
-                                               shouldPresentProfile: $shouldPresentProfile
+                                shouldNavigateToProfile: .constant(true),
+                                leaderboardPosition: 1,
+                                dismissAction: {},
+                                shouldPresentProfile: $shouldPresentProfile
                             ),
                             isActive: $viewModel.navegarAlPerfil
                         )
                         .opacity(0)
                     )
                     .padding(.bottom,5)
+                
+                .environment(\.colorScheme, .light)
                     
                     
                     NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())) {

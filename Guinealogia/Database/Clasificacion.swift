@@ -149,6 +149,7 @@ struct ClasificacionView: View {
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity)
                         .padding(.bottom, 10)
+                        .foregroundColor(.black)
                         .padding(.top, 35)
                     
                     Button(action: {
@@ -185,17 +186,21 @@ struct ClasificacionView: View {
                                     self.isShowingLeaderProfile = true
                                 }) {
                                     HStack {
-                                        FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
-                                            .font(.system(size: 12))
-                                        Spacer()
-                                        FlashingText(text: user.fullname, shouldFlash: user.id == userId)
-                                            .font(.system(size: 12))
-                                        Spacer()
-                                        FlashingText(text: user.ciudad, shouldFlash: user.id == userId)
-                                            .font(.system(size: 12))
-                                        Spacer()
-                                        FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
-                                            .font(.system(size: 12))
+                                                      FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
+                                                          .font(.system(size: 12))
+                                                          .foregroundColor(.black)
+                                                      Spacer()
+                                                      FlashingText(text: user.fullname, shouldFlash: user.id == userId)
+                                                          .font(.system(size: 12))
+                                                          .foregroundColor(.black)
+                                                      Spacer()
+                                                      FlashingText(text: user.ciudad, shouldFlash: user.id == userId)
+                                                          .font(.system(size: 12))
+                                                          .foregroundColor(.black)
+                                                      Spacer()
+                                                      FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
+                                                          .font(.system(size: 12))
+                                                          .foregroundColor(.black)
                                     }
                                 }
                             }
@@ -203,13 +208,15 @@ struct ClasificacionView: View {
                         }
                         
                     }
-                    .id(userData.refreshID)
+                    .id(userData.refreshID)                
+                    .environment(\.colorScheme, .light)
                 }
                 .sheet(item: $selectedUser) { user in
                     LeadersProfile(userId: user.id) // passing the userId directly
                 }
                 .onAppear {
                     self.viewModel.fetchUserDataFromRealtimeDatabase()
+                    
                 }
 
                     

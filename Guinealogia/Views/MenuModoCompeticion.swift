@@ -37,7 +37,7 @@ struct MenuModoCompeticion: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 15) {
-                    Text(viewModel.userFullName.isEmpty ? "Usuario Desconectado" : viewModel.userFullName)
+                    Text(viewModel.userFullName)
                         .foregroundColor(.black)
                         .font(.headline)
                         .padding(.horizontal, 20)

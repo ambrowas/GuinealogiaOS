@@ -75,6 +75,7 @@ struct ResultadoCompeticion: View {
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.black, lineWidth: 3)
                     )
+                    .environment(\.colorScheme, .light)
                     
                     VStack(spacing: 10) {
                         Button {
