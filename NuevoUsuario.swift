@@ -4,6 +4,10 @@ import SwiftUI
 struct NuevoUsuario: View {
     @StateObject private var viewModel = NuevoUsuarioViewModel()
     @State private var shouldPresentProfile = false
+    @State private var scale: CGFloat = 1.0
+       @State private var glowColor = Color.blue
+       let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
    
         
     var body: some View {
@@ -15,11 +19,31 @@ struct NuevoUsuario: View {
                 
                 VStack(spacing: 10) {
                     Image("logotrivial")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding(.top, -90)
-                        .frame(width: 200, height: 150)
-                    
+                       .resizable()
+                       .aspectRatio(contentMode: .fit)
+                       .frame(width: 200, height: 150)
+            
+                       .shadow(color: glowColor.opacity(0.8), radius: 10, x: 0.0, y: 0.0)
+                       .scaleEffect(scale)
+                       .animation(
+                        Animation.easeInOut(duration: 1.3)
+                               .repeatForever(autoreverses: true)
+                       )
+                       .onAppear {
+                           scale = 1.01
+                       }
+                       .onReceive(timer) { _ in
+                           switch glowColor {
+                           case Color.blue:
+                               glowColor = .green
+                           case Color.green:
+                               glowColor = .red
+                           case Color.red:
+                               glowColor = .white
+                           default:
+                               glowColor = .blue
+                           }
+                       }
                     InputFieldsView(fullname: $viewModel.fullname,
                                     email: $viewModel.email,
                                     password: $viewModel.password,

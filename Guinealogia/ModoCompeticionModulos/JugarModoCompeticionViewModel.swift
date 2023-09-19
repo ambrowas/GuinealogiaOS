@@ -53,6 +53,8 @@ class JugarModoCompeticionViewModel: ObservableObject {
       @Published var isAlertBeingDisplayed: Bool = false
       @Published var showAnswerStatus: Bool = false
       let timeExpired = PassthroughSubject<Bool, Never>()
+    var lastDocumentSnapshot: DocumentSnapshot?
+    var questionCache: [QueryDocumentSnapshot] = []
      
 
 
@@ -118,60 +120,116 @@ class JugarModoCompeticionViewModel: ObservableObject {
       }
       
       func fetchQuestion() {
-        firestore.collection("PREGUNTAS").getDocuments { [weak self] snapshot, error in
+            firestore.collection("PREGUNTAS").getDocuments { [weak self] snapshot, error in
+                if let error = error {
+                    print("Error fetching questions: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let documents = snapshot?.documents else {
+                    print("No documents found")
+                    return
+                }
+
+                var unseenDocuments = documents.filter { document in
+                    return !(self?.shownQuestionIDs.contains(document.documentID))!
+                }
+
+                // If all questions have been shown, reset the list and shuffle the documents
+                if unseenDocuments.isEmpty {
+                    self?.shownQuestionIDs.removeAll()
+                    unseenDocuments = documents.shuffled()
+                }
+
+                // Select a random question from the unseen questions
+                let randomIndex = Int.random(in: 0..<unseenDocuments.count)
+                let document = unseenDocuments[randomIndex]
+
+                // Add the selected question's ID to the list of shown questions
+                self?.shownQuestionIDs.insert(document.documentID)
+
+                let data = document.data()
+
+                if let question = data["QUESTION"] as? String,
+                    let category = data["CATEGORY"] as? String,
+                    let image = data["IMAGE"] as? String,
+                    let optionA = data["OPTION A"] as? String,
+                    let optionB = data["OPTION B"] as? String,
+                    let optionC = data["OPTION C"] as? String,
+                    let answer = data["ANSWER"] as? String {
+
+                    DispatchQueue.main.async {
+                        self?.selectedOptionIndex = nil // Clear all selections
+                        self?.currentQuestion = question
+                        self?.category = category
+                        self?.image = image
+                        self?.options = [optionA, optionB, optionC]
+                        self?.correctAnswer = answer
+                        self?.startTimer()
+                    }
+                } else {
+                    print("Invalid data format")
+                    print("Fetching question...")
+                    print("Documents count: \(documents.count)")
+                    print("Data: \(data)")
+                    print("Fetched data: \(data)")
+                }
+            }
+        }
+    
+      func fetchQuestionBatch() {
+        // If we have cached questions, use them
+        if !questionCache.isEmpty {
+            presentRandomQuestionFromCache()
+            return
+        }
+
+        var query: Query = firestore.collection("PREGUNTAS")
+
+        // Start after the last document snapshot if available
+        if let lastSnapshot = lastDocumentSnapshot {
+            query = query.start(afterDocument: lastSnapshot)
+        }
+
+        query.limit(to: 50).getDocuments { [weak self] snapshot, error in
+            // Handle error
             if let error = error {
                 print("Error fetching questions: \(error.localizedDescription)")
                 return
             }
 
-            guard let documents = snapshot?.documents else {
-                print("No documents found")
+            guard let documents = snapshot?.documents, !documents.isEmpty else {
+                print("No more documents found")
+                self?.lastDocumentSnapshot = nil // Reset to fetch from the beginning next time
                 return
             }
 
-            // Filter out questions that have already been shown
-            let unseenDocuments = documents.filter { document in
-                return !(self?.shownQuestionIDs.contains(document.documentID))!
-            }
+            self?.lastDocumentSnapshot = documents.last
+            self?.questionCache.append(contentsOf: documents)
 
-            // If all questions have been shown, reset the list
-            if unseenDocuments.isEmpty {
-                self?.shownQuestionIDs.removeAll()
-            }
+            // Now that we have a new batch of questions, present one
+            self?.presentRandomQuestionFromCache()
 
-            // Select a random question from the unseen questions
-            let randomIndex = Int.random(in: 0..<unseenDocuments.count)
-            let document = unseenDocuments[randomIndex]
+            // Trigger a background fetch for the next batch
+            self?.fetchQuestionBatchInBackground()
+        }
+    }
 
-            // Add the selected question's ID to the list of shown questions
-            self?.shownQuestionIDs.insert(document.documentID)
+      func presentRandomQuestionFromCache() {
+        // Select a random question from the cached questions
+        let randomIndex = Int.random(in: 0..<questionCache.count)
+        let document = questionCache[randomIndex]
 
-            let data = document.data()
+        // Remove the selected question from the cache
+        questionCache.remove(at: randomIndex)
 
-            if let question = data["QUESTION"] as? String,
-                let category = data["CATEGORY"] as? String,
-                let image = data["IMAGE"] as? String,
-                let optionA = data["OPTION A"] as? String,
-                let optionB = data["OPTION B"] as? String,
-                let optionC = data["OPTION C"] as? String,
-                let answer = data["ANSWER"] as? String {
+        // ... (parse and present the question using your existing logic)
+    }
 
-                DispatchQueue.main.async {
-                    self?.selectedOptionIndex = nil // Clear all selections
-                    self?.currentQuestion = question
-                    self?.category = category
-                    self?.image = image
-                    self?.options = [optionA, optionB, optionC]
-                    self?.correctAnswer = answer
-                    self?.startTimer()
-                }
-            } else {
-                print("Invalid data format")
-                print("Fetching question...")
-                print("Documents count: \(documents.count)")
-                print("Data: \(data)")
-                print("Fetched data: \(data)")
-            }
+      func fetchQuestionBatchInBackground() {
+        // Fetch the next batch in background
+        DispatchQueue.global(qos: .background).async {
+            self.fetchQuestionBatch()
         }
     }
 

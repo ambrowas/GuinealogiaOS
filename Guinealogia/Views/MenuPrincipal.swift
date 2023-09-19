@@ -7,6 +7,10 @@ struct MenuPrincipal: View {
     @State private var playerName: String = ""
     @Binding var player: AVAudioPlayer?
     @State private var showContactanosView = false
+    @State private var scale: CGFloat = 1.0
+       @State private var glowColor = Color.blue
+       let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
     private var playerBinding: Binding<AVAudioPlayer?> {
         Binding<AVAudioPlayer?>(
             get: { self.player },
@@ -23,9 +27,32 @@ struct MenuPrincipal: View {
                 
                 VStack(spacing: 10) {
                     Image("logotrivial")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 300, height: 250)
+                    
+                       .resizable()
+                       .aspectRatio(contentMode: .fit)
+                       .frame(width: 200, height: 150)
+                       .padding(.top, 20)
+                       .shadow(color: glowColor.opacity(0.8), radius: 10, x: 0.0, y: 0.0)
+                   //    .scaleEffect(scale)
+                     //  .animation(
+//                        Animation.easeInOut(duration: 1.3)
+//                               .repeatForever(autoreverses: true)
+//                       )
+                       .onAppear {
+                           scale = 1.3
+                       }
+                       .onReceive(timer) { _ in
+                           switch glowColor {
+                           case Color.blue:
+                               glowColor = .green
+                           case Color.green:
+                               glowColor = .red
+                           case Color.red:
+                               glowColor = .white
+                           default:
+                               glowColor = .blue
+                           }
+                       }
                     
                     Spacer()
                     

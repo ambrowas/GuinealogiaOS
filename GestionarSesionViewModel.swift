@@ -10,6 +10,7 @@ class GestionarSesionViewModel: ObservableObject {
     @Published var errorDeAutenticacion: Error?
     @Published var muestraAlerta: Bool = false
     @Published var alert: TipoDeAlerta?
+    @State private var isUserAuthenticated: Bool = false
     
     
     enum TipoDeAlerta {
@@ -68,6 +69,8 @@ class GestionarSesionViewModel: ObservableObject {
                 self?.usuario = authResult?.user
                 self?.estaAutenticado = true
                 self?.ensenarAlerta(type: .success("Usuario Conectado"))
+                
+  
             }
 
         }
@@ -90,8 +93,7 @@ class GestionarSesionViewModel: ObservableObject {
             self.ensenarAlerta(type: .mistake(SessionError.invalidEmailFormat.localizedDescription))
             return false
         }
-        
-        // If we reach here, it means inputs are valid
+      
         return true
     }
     
@@ -106,7 +108,11 @@ class GestionarSesionViewModel: ObservableObject {
             self.estaAutenticado = false
         
         clearUserData()
+     
+
         }
+    
+  
     
     func ensenarAlerta(type: TipoDeAlerta) {
        self.alert = type

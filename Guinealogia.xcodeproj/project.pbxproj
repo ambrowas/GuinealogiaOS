@@ -15,7 +15,6 @@
 		7506F4932A943AF800C77915 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7506F4922A943AF700C77915 /* AlertTypes.swift */; };
 		752EB76A2A462B5200013A73 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB7692A462B5200013A73 /* AuthService.swift */; };
 		752EB76C2A478ED500013A73 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB76B2A478ED500013A73 /* UserManager.swift */; };
-		753536342A4DF932006A3779 /* RegistrarUsuarioViewModel2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536332A4DF932006A3779 /* RegistrarUsuarioViewModel2.swift */; };
 		753536382A549EDE006A3779 /* Clasificacion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536372A549EDE006A3779 /* Clasificacion.swift */; };
 		7535363A2A54B231006A3779 /* LeadersProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536392A54B231006A3779 /* LeadersProfile.swift */; };
 		7557A7912A2400D4007C2A07 /* GuinealogiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7902A2400D4007C2A07 /* GuinealogiaApp.swift */; };
@@ -119,7 +118,6 @@
 		7506F4922A943AF700C77915 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
 		752EB7692A462B5200013A73 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		752EB76B2A478ED500013A73 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
-		753536332A4DF932006A3779 /* RegistrarUsuarioViewModel2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrarUsuarioViewModel2.swift; sourceTree = "<group>"; };
 		753536372A549EDE006A3779 /* Clasificacion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Clasificacion.swift; sourceTree = "<group>"; };
 		753536392A54B231006A3779 /* LeadersProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadersProfile.swift; sourceTree = "<group>"; };
 		7557A78D2A2400D4007C2A07 /* Guinealogia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guinealogia.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -275,7 +273,6 @@
 		1797DB752A85E20A00E69C72 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
-				753536332A4DF932006A3779 /* RegistrarUsuarioViewModel2.swift */,
 				75D44C382A3D1AC400E16F86 /* ImagePicker.swift */,
 				757BC3062A37997000CA7A16 /* UserViewModel.swift */,
 				757BC2AF2A27E8F600CA7A16 /* QuizState.swift */,
@@ -595,7 +592,6 @@
 				757BC2FD2A31176000CA7A16 /* JugarModoCompeticion.swift in Sources */,
 				7557A7CC2A2516BB007C2A07 /* Quiz Contract.swift in Sources */,
 				7557A7D92A2578D8007C2A07 /* ResultadoView.swift in Sources */,
-				753536342A4DF932006A3779 /* RegistrarUsuarioViewModel2.swift in Sources */,
 				752EB76A2A462B5200013A73 /* AuthService.swift in Sources */,
 				753536382A549EDE006A3779 /* Clasificacion.swift in Sources */,
 				7557A7912A2400D4007C2A07 /* GuinealogiaApp.swift in Sources */,

@@ -25,6 +25,8 @@ class MenuModoCompeticionViewModel: ObservableObject {
     var shouldPresentGameOver: Bool = false
     var shouldPresentResultado: Bool = false
     var shouldNavigateToProfile: Bool = false
+    @Published var isAuthenticated: Bool = false
+
     
     
     
@@ -33,38 +35,34 @@ class MenuModoCompeticionViewModel: ObservableObject {
     }
     func fetchCurrentUserData() {
         
-        print("Fetching current user data...")
-        
-        // Initially, fetch data from UserDefaults
-        self.userFullName = UserDefaults.standard.string(forKey: "fullname") ?? ""
-        self.highestScore = UserDefaults.standard.integer(forKey: "highestScore") // Fetching initial value as 0
-        self.currentGameFallos = UserDefaults.standard.integer(forKey: "currentGameFallos") // Fetching initial value as 0
-        
+
         guard let user = Auth.auth().currentUser else {
             print("No user is logged in")
+            self.isAuthenticated = false
+            self.userFullName = ""
+            self.highestScore = 0
+            self.currentGameFallos = 0
             return
         }
         
-        print("User found: \(user.uid)")
+        
+        self.isAuthenticated = true
         
         let ref = Database.database().reference().child("user").child(user.uid)
         
         ref.observeSingleEvent(of: .value, with: { snapshot in
-            // Fetch user details from Firebase and update UserDefaults with new values
+            // Fetch user details from Firebase
             if let data = snapshot.value as? [String: Any] {
                 self.userFullName = data["fullname"] as? String ?? ""
                 self.highestScore = data["highestScore"] as? Int ?? 0
                 self.currentGameFallos = data["currentGameFallos"] as? Int ?? 0
-                
-                // Updating UserDefaults with fetched data
-                UserDefaults.standard.set(self.userFullName, forKey: "fullname")
-                UserDefaults.standard.set(self.highestScore, forKey: "highestScore")
-                UserDefaults.standard.set(self.currentGameFallos, forKey: "currentGameFallos")
             }
         }) { error in
             print("Error fetching data: \(error.localizedDescription)")
         }
     }
+
+
     
     func validateCurrentGameFallos() -> Bool {
         return currentGameFallos >= 5
@@ -137,12 +135,20 @@ class MenuModoCompeticionViewModel: ObservableObject {
                 userFullName = ""
                 highestScore = 0
                 currentGameFallos = 0
-                UserDefaults.standard.set(userFullName, forKey: "fullname")
+                isAuthenticated = false
+                UserDefaults.standard.set("", forKey: "fullname")
+                UserDefaults.standard.set(0, forKey: "highestScore")
+                UserDefaults.standard.set(0, forKey: "currentGameFallos")
             } catch let signOutError as NSError {
                 print("Error signing out: %@", signOutError)
+                // Use the alert properties to show an error message to the user
+                self.alertMessage = "Error signing out: \(signOutError.localizedDescription)"
+                self.showAlert = true
             }
         }
     }
+
+
     
     func handleVolverButtonPressed() {
         goToMenuPrincipal = true

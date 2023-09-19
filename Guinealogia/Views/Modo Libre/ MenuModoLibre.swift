@@ -8,6 +8,10 @@ struct MenuModoLibre: View {
     @State private var highScore: Int = 0
     @State private var colorIndex: Int = 0
     @Environment(\.presentationMode) var presentationMode
+    @State private var scale: CGFloat = 1.0
+       @State private var glowColor = Color.blue
+       let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
     
     private let playerNameKey = "PlayerName"
     private let highScoreKey = "HighScore"
@@ -25,11 +29,28 @@ struct MenuModoLibre: View {
             
             VStack(spacing: 20) {
                 Image("logotrivial")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding(.top, 15)
-                    .frame(width: 200, height: 150)
-                    .padding(.bottom, 50)
+                
+                   .resizable()
+                   .aspectRatio(contentMode: .fit)
+                   .frame(width: 200, height: 150)
+                   .padding(.top, 20)
+                   .shadow(color: glowColor.opacity(0.8), radius: 10, x: 0.0, y: 0.0)
+                   .onAppear {
+                       scale = 1.01
+                   }
+                   .onReceive(timer) { _ in
+                       switch glowColor {
+                       case Color.blue:
+                           glowColor = .green
+                       case Color.green:
+                           glowColor = .red
+                       case Color.red:
+                           glowColor = .white
+                       default:
+                           glowColor = .blue
+                       }
+                   }
+                   .padding(.bottom, 10)
                 
 
                 if jugadorGuardado.isEmpty {
@@ -38,7 +59,6 @@ struct MenuModoLibre: View {
                         .font(.system(size: 18))
                         .frame(width: 220, height: 50)
                         .multilineTextAlignment(.center)
-                       
                         .background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.black, lineWidth: 2))
                             .background(RoundedRectangle(cornerRadius: 1).fill(Color.white))
                         
@@ -47,7 +67,7 @@ struct MenuModoLibre: View {
                         .foregroundColor(.black)
                         .font(.headline)
                         .padding(.horizontal, 20)
-                        .padding(.top, 80)
+                        .padding(.top, 200)
                 }
             
                 Text("El record actual es de \(highScore) puntos")
@@ -56,12 +76,11 @@ struct MenuModoLibre: View {
                     .padding(.horizontal, 20)
                     .padding(.top, -10)
                     .onAppear {
-                        startFlashing()
+                        
                     }
+                    .padding(.top, 0)
                 
-                
-             
-                
+            
                 Button(action: {
                     savePlayerName()
                     jugadorGuardado = playerName

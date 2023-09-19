@@ -3,13 +3,18 @@ import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 
+
+
 struct GestionarSesion: View {
     @StateObject var viewModel = GestionarSesionViewModel()
     @State private var correoelectronico: String = ""
     @State private var contrasena: String = ""
     @State private var navegarAMenuModoCompeticion = false
     @State private var navegarANuevoUsuario = false
-    
+    @State private var scale: CGFloat = 1.0
+       @State private var glowColor = Color.blue
+       let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -18,11 +23,28 @@ struct GestionarSesion: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 10) {
-                    Image("logotrivial")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding(.top, -150)
-                        .frame(width: 200, height: 150)
+                            Image("logotrivial")
+                    
+                               .resizable()
+                               .aspectRatio(contentMode: .fit)
+                               .frame(width: 200, height: 150)
+                               .shadow(color: glowColor.opacity(0.8), radius: 10, x: 0.0, y: 0.0)
+                               .onAppear {
+                                   scale = 1.01
+                               }
+                               .onReceive(timer) { _ in
+                                   switch glowColor {
+                                   case Color.blue:
+                                       glowColor = .green
+                                   case Color.green:
+                                       glowColor = .red
+                                   case Color.red:
+                                       glowColor = .white
+                                   default:
+                                       glowColor = .blue
+                                   }
+                               }
+                               .padding(.bottom, 10)
                     
                     TextField("Email", text: $correoelectronico, onCommit: {
                         self.correoelectronico = self.correoelectronico.lowercased()
