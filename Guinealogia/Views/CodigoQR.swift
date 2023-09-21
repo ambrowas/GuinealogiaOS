@@ -53,7 +53,7 @@ struct CodigoQR: View {
                 Image("coolbackground")
                     .resizable()
                     .edgesIgnoringSafeArea(.all)
-                
+                    
                 VStack(spacing: 10) {
                     if let qrData = qrData {
                         QRCodeView(data: qrData)
@@ -192,23 +192,22 @@ struct CodigoQR: View {
         }
     }
     
-    func startCooldown() {
-        isGuardarButtonDisabled = true
+        func startCooldown() {
+            isGuardarButtonDisabled = true
 
-        cooldownTimer = Timer.scheduledTimer(withTimeInterval: 90, repeats: false) { timer in
-            isGuardarButtonDisabled = false
-            cooldownTimer?.invalidate()
-            cooldownTimer = nil
+            cooldownTimer = Timer.scheduledTimer(withTimeInterval: 90, repeats: false) { timer in
+                isGuardarButtonDisabled = false
+                cooldownTimer?.invalidate()
+                cooldownTimer = nil
+            }
         }
-    }
-        
         
         func generateCurrentTimestamp() -> String {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
             return dateFormatter.string(from: Date())
         }
-    }
+            }
         
         struct CodigoQR_Previews: PreviewProvider {
             static var previews: some View {
