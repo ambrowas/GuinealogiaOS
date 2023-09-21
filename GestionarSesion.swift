@@ -72,7 +72,6 @@ struct GestionarSesion: View {
                     )
                     .padding(.bottom, 10)
                     
-                    // Buttons
                     VStack(spacing: 10) {
                         
                         Button(action: {

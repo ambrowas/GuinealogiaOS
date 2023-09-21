@@ -6,6 +6,7 @@ import CoreImage.CIFilterBuiltins
 struct QRCodeView: View {
     let context = CIContext()
     let filter = CIFilter.qrCodeGenerator()
+   
     
     var data: Data
     
@@ -30,7 +31,11 @@ struct QRCodeView: View {
             return UIImage(systemName: "xmark.circle") ?? UIImage()
         }
     }
-}
+      }
+
+   
+
+    
 
 struct CodigoQR: View {
     @StateObject var userViewModel = UserViewModel()
@@ -39,6 +44,9 @@ struct CodigoQR: View {
     @State private var isShowingAlert = false
     @State private var alertMessage = ""
     @Environment (\.presentationMode) var presentationMode
+    @State private var isGuardarButtonDisabled = false
+    @State private var cooldownTimer: Timer?
+
     
     var body: some View {
             ZStack {
@@ -72,6 +80,7 @@ struct CodigoQR: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
+                     
                         
                         Button {
                             presentationMode.wrappedValue.dismiss()
@@ -145,32 +154,53 @@ struct CodigoQR: View {
         }
         
         func guardarButtonPressed() {
-            guard let userId = Auth.auth().currentUser?.uid else {
-                return
-            }
-            
-            let qrCodeData: [String: Any] = [
-                "base64QRCode": "iVBORw0KGgoAAAANSUhEUgAA",
-                "lastGamePuntuacion": userViewModel.currentGamePuntuacion,
-                "lastGameScore": userViewModel.currentGameAciertos,
-                "qrCodeKey": qrCodeKey,
-                "timestamp": generateCurrentTimestamp(),
-                "userId": userId,
-                "fullname": userViewModel.fullname,
-                "email": userViewModel.email
-            ]
-            
-            let ref = Database.database().reference(withPath: "qrCodes").child(userId)
-            ref.setValue(qrCodeData) { error, _ in
-                if error == nil {
-                    isShowingAlert = true
-                    alertMessage = "Codigo QR Guardado. Ya puedes ir a cobrar."
-                } else {
-                    isShowingAlert = true
-                    alertMessage = "Error al guardar código."
-                }
-            }
+        
+            if isGuardarButtonDisabled {
+                   isShowingAlert = true
+                   alertMessage = "Debes esperar 90 segundos antes de poder volver a guardar."
+                   return
+               }
+        
+        
+        guard let userId = Auth.auth().currentUser?.uid else {
+            return
         }
+        
+        let qrCodeData: [String: Any] = [
+            "base64QRCode": "iVBORw0KGgoAAAANSUhEUgAA",
+            "lastGamePuntuacion": userViewModel.currentGamePuntuacion,
+            "lastGameScore": userViewModel.currentGameAciertos,
+            "qrCodeKey": qrCodeKey,
+            "timestamp": generateCurrentTimestamp(),
+            "userId": userId,
+            "fullname": userViewModel.fullname,
+            "email": userViewModel.email
+        ]
+        
+        let ref = Database.database().reference(withPath: "qrCodes").child(userId)
+        ref.setValue(qrCodeData) { error, _ in
+            if error == nil {
+                isShowingAlert = true
+                alertMessage = "Codigo QR Guardado. Ya puedes ir a cobrar."
+            } else {
+                isShowingAlert = true
+                alertMessage = "Error al guardar código."
+            }
+            
+            // Start the cooldown timer irrespective of whether there was an error
+            startCooldown()
+        }
+    }
+    
+    func startCooldown() {
+        isGuardarButtonDisabled = true
+
+        cooldownTimer = Timer.scheduledTimer(withTimeInterval: 90, repeats: false) { timer in
+            isGuardarButtonDisabled = false
+            cooldownTimer?.invalidate()
+            cooldownTimer = nil
+        }
+    }
         
         
         func generateCurrentTimestamp() -> String {

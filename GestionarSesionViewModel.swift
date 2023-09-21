@@ -49,10 +49,10 @@ class GestionarSesionViewModel: ObservableObject {
             return
         }
        
-        // Use Firebase Auth method to login the user
+      
         Auth.auth().signIn(withEmail: correoElectronico, password: contrasena) { [weak self] authResult, error in
             
-            //  Handle the result of the authentication process
+        
             if let error = error as NSError? {
                 self?.estaAutenticado = false
                 self?.errorDeAutenticacion = error

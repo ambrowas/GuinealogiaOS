@@ -80,20 +80,25 @@ class NuevoUsuarioViewModel: ObservableObject {
     }
     
     private func guardarUsuario(userId: String) {
-            let userData: [String: Any] = [
-                "fullname": fullname,
-                "email": email,
-                "password": password,
-                "telefono": telefono,
-                "barrio": barrio,
-                "ciudad": ciudad,
-                "pais": pais,
-                "accumulatedAciertos": 0,
-                "accumulatedFallos": 0,
-                "accumulatedPuntuacion": 0,
-                "highestScore": 0
-            ]
-        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yy"
+        let currentDateTime = Date()
+        let formattedDate = dateFormatter.string(from: currentDateTime)
+
+        let userData: [String: Any] = [
+            "fullname": fullname,
+            "email": email,
+            "password": password,
+            "telefono": telefono,
+            "barrio": barrio,
+            "ciudad": ciudad,
+            "pais": pais,
+            "accumulatedAciertos": 0,
+            "accumulatedFallos": 0,
+            "accumulatedPuntuacion": 0,
+            "highestScore": 0,
+            "FechadeCreacion": formattedDate // Here we add the formatted date and time
+        ]
             UserDefaults.standard.set(fullname, forKey: "fullname")
            UserDefaults.standard.set(0, forKey: "highestScore")
            UserDefaults.standard.set(0, forKey: "currentGameFallos")

@@ -74,10 +74,8 @@ struct MenuModoCompeticion: View {
                 } else {
                     Button(action: {
                         if Auth.auth().currentUser != nil {
-                            print("User is authenticated. Setting jugarModoCompeticionActive to true.")
                             jugarModoCompeticionActive = true
                         } else {
-                            print("No authenticated user found. Showing alert.")
                             alertMessage = "Debes iniciar sesión para poder jugar."
                             showAlert = true
                         }
@@ -105,10 +103,8 @@ struct MenuModoCompeticion: View {
                 
                 Button(action: {
                     if Auth.auth().currentUser != nil {
-                        print("Authenticated user found. Setting showClasificacion to true.")
                         showClasificacion = true
                     } else {
-                        print("No authenticated user found. Showing alert for Clasificacion.")
                         alertMessage = "Debes iniciar sesión para poder acceder a la clasificación."
                         showAlert = true
                     }
@@ -165,17 +161,15 @@ struct MenuModoCompeticion: View {
                 
                 Button(action: {
                     if viewModel.userFullName.isEmpty {
-                        print("User full name is empty. Showing Iniciar Sesion.")
                         showIniciarSesion = true
                     } else {
-                        print("Trying to logout user...")
                         do {
                             try Auth.auth().signOut()
                             viewModel.userFullName = ""
                             viewModel.highestScore = 0
                             viewModel.currentGameFallos = 0
                         } catch let signOutError as NSError {
-                            print("Error signing out: %@", signOutError)
+                          
                         }
                     }
                 }) {
@@ -215,11 +209,9 @@ struct MenuModoCompeticion: View {
             }
             .alert(isPresented: $showAlert) {
                 () -> Alert in
-                print("Showing alert with message: \(alertMessage)")
                 return Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
             .onAppear {
-                print("MenuModoCompeticion view appeared.")
                 if viewModel.userFullName.isEmpty {
                     viewModel.fetchCurrentUserData()
                 }
