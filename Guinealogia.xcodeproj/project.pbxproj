@@ -309,6 +309,14 @@
 		7557A7842A2400D4007C2A07 = {
 			isa = PBXGroup;
 			children = (
+				7557A7C12A242B90007C2A07 /* maeledjidalot.mp3 */,
+				7557A7DB2A257FC7007C2A07 /* notright.wav */,
+				757BC2B32A2989CA00CA7A16 /* mixkit.wav */,
+				757BC2B42A2989CA00CA7A16 /* noluck.mp3 */,
+				75D44C402A40EDEE00E16F86 /* gameover.mp3 */,
+				757BC2B92A2989F500CA7A16 /* countdown.wav */,
+				7557A7DA2A257FC7007C2A07 /* right.wav */,
+				757BC2B72A2989DA00CA7A16 /* hallelujah.mp3 */,
 				75CD8E352AB3A1330077E950 /* ProfileUser.swift */,
 				75CD8E332AB39D560077E950 /* LeadersProfileViewModel.swift */,
 				7504FEC42AABA087009CEA9A /* GestionarSesionViewModel.swift */,
@@ -343,14 +351,6 @@
 				7557A7D32A251DAD007C2A07 /* Sources */,
 				7557A7902A2400D4007C2A07 /* GuinealogiaApp.swift */,
 				7557A7942A2400D6007C2A07 /* Assets.xcassets */,
-				7557A7C12A242B90007C2A07 /* maeledjidalot.mp3 */,
-				7557A7DB2A257FC7007C2A07 /* notright.wav */,
-				757BC2B32A2989CA00CA7A16 /* mixkit.wav */,
-				757BC2B42A2989CA00CA7A16 /* noluck.mp3 */,
-				75D44C402A40EDEE00E16F86 /* gameover.mp3 */,
-				757BC2B92A2989F500CA7A16 /* countdown.wav */,
-				7557A7DA2A257FC7007C2A07 /* right.wav */,
-				757BC2B72A2989DA00CA7A16 /* hallelujah.mp3 */,
 				7557A7962A2400D6007C2A07 /* Guinealogia.entitlements */,
 				757BC2BF2A2FF97E00CA7A16 /* GoogleService-Info.plist */,
 				7557A7972A2400D6007C2A07 /* Preview Content */,
@@ -695,6 +695,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -739,6 +741,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -747,8 +750,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -759,6 +765,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Guinealogia/Guinealogia.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -766,6 +773,8 @@
 				DEVELOPMENT_TEAM = B5X8QR4N34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Guinealogia;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.trivia-games";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -776,10 +785,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.6;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iniviativaselebi.guinealogia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -796,13 +805,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Guinealogia/Guinealogia.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Guinealogia/Preview Content\"";
 				DEVELOPMENT_TEAM = B5X8QR4N34;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Guinealogia;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.trivia-games";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -813,10 +826,10 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.6;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iniviativaselebi.guinealogia;
 				PRODUCT_NAME = "$(TARGET_NAME)";

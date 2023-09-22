@@ -82,18 +82,35 @@ class JugarModoCompeticionViewModel: ObservableObject {
       var shuffledOptions: [String] {
           options.shuffled()
       }
-      
-      init(userId: String, userData: UserData) { // Modify the initializer
-          self.userId = userId
-          self.userData = userData
-          prepareCountdownSound()
-          loadSoundEffects()
-          optionSelections = Array(repeating: false, count: options.count)
+    
+       init(userId: String, userData: UserData) {
+        // Initialize your other properties
+        self.userId = userId
+        self.userData = userData
+        optionSelections = Array(repeating: false, count: options.count)
+        buttonBackgroundColors = Array(repeating: Color(hue: 0.664, saturation: 0.935, brightness: 0.604), count: 3)
         
-          
-          // Initialize button background colors with the default color
-          buttonBackgroundColors = Array(repeating: Color(hue: 0.664, saturation: 0.935, brightness: 0.604), count: 3)
-      }
+        // Load and prepare the sound players
+        if let countdownURL = Bundle.main.url(forResource: "countdown", withExtension: "wav"),
+           let rightURL = Bundle.main.url(forResource: "right", withExtension: "wav"),
+           let wrongURL = Bundle.main.url(forResource: "notright", withExtension: "wav") {
+           do {
+               countdownSound = try AVAudioPlayer(contentsOf: countdownURL)
+               countdownSound?.prepareToPlay()
+
+               rightSoundEffect = try AVAudioPlayer(contentsOf: rightURL)
+               rightSoundEffect?.prepareToPlay()
+
+               wrongSoundEffect = try AVAudioPlayer(contentsOf: wrongURL)
+               wrongSoundEffect?.prepareToPlay()
+           } catch {
+               print("Failed to load sound effects: \(error)")
+           }
+       } else {
+           print("Sound effect files not found in the bundle.")
+       }
+    }
+
       
       func terminar(completion: @escaping () -> Void) {
         // Invalidate and stop the timer
@@ -369,17 +386,8 @@ class JugarModoCompeticionViewModel: ObservableObject {
         timer = nil
       }
    
-      private func playCountdownSound() {
-            guard let url = Bundle.main.url(forResource: "countdown", withExtension: "wav") else {
-                fatalError("Countdown sound file not found")
-            }
-            
-            do {
-                countdownSound = try AVAudioPlayer(contentsOf: url)
-                countdownSound?.play()
-            } catch {
-                print("Failed to play countdown sound: \(error)")
-            }
+    private func playCountdownSound() {
+            countdownSound?.play()
         }
     
       private func prepareCountdownSound() {
@@ -416,12 +424,13 @@ class JugarModoCompeticionViewModel: ObservableObject {
       }
       
       private func playRightSoundEffect() {
-          rightSoundEffect?.play()
-      }
+            rightSoundEffect?.play()
+        }
       
       private func playWrongSoundEffect() {
-          wrongSoundEffect?.play()
-      }
+           wrongSoundEffect?.play()
+         }
+      
       
       public func resetButtonColors() {
           buttonBackgroundColors = Array(repeating: defaultButtonColor, count: options.count)

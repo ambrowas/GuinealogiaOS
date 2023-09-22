@@ -52,20 +52,24 @@ struct LeadersProfile: View {
                             )
                     }
                     
-                    Circle()
-                        .stroke(Color.black, lineWidth: 2) // black border
-                        .background(Circle().fill(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))) // red circle
-                        .frame(width: 100, height: 100)
-                        .padding(.leading, 200)
-                        .padding(.top, -70)
-                        .overlay(
-                            FlashingText(text: "\(viewModel.user?.positionInLeaderboard ?? 0)", shouldFlash: true)
-                                .foregroundColor(.white)
-                                .font(.largeTitle)
-                                .bold()
-                                .padding(.leading, 200)
-                                .padding(.top, -50)
-                        )
+                    if #available(iOS 16.0, *) {
+                        Circle()
+                            .stroke(Color.black, lineWidth: 2) // black border
+                            .background(Circle().fill(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))) // red circle
+                            .frame(width: 100, height: 100)
+                            .padding(.leading, 200)
+                            .padding(.top, -70)
+                            .overlay(
+                                FlashingText(text: "\(viewModel.user?.positionInLeaderboard ?? 0)", shouldFlash: true)
+                                    .foregroundColor(.white)
+                                    .font(.largeTitle)
+                                    .bold()
+                                    .padding(.leading, 200)
+                                    .padding(.top, -50)
+                            )
+                    } else {
+                        // Fallback on earlier versions
+                    }
                 }
                 
                 ScrollView {

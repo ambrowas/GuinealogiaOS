@@ -19,10 +19,10 @@ struct GameOver: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .edgesIgnoringSafeArea(.all)
-
+            
             VStack {
                 Spacer()
-
+                
                 Button(action: {
                     shouldShowResults = true
                 }) {
@@ -39,7 +39,7 @@ struct GameOver: View {
                             presentationMode.wrappedValue.dismiss()
                         }
                 }
-
+                
                 Spacer()
             }
         }
@@ -49,20 +49,20 @@ struct GameOver: View {
             
             // Play the game over sound
             playSound()
-
+            
             withAnimation(Animation.easeInOut(duration: 3.0)) {
                 self.scale = 3.0
             }
-
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                 withAnimation(Animation.linear(duration: 1.0)) {
                     self.rotation = 360.0
                 }
-
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     withAnimation(Animation.easeInOut(duration: 3.0)) {
                         self.scale = 2.0
-
+                        
                         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                             withAnimation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
                                 self.isAnimating = true
@@ -79,18 +79,19 @@ struct GameOver: View {
     }
     
     func playSound() {
-        if let path = Bundle.main.path(forResource: "gameover", ofType: "mp3") {
-            let url = URL(fileURLWithPath: path)
+        if let url = Bundle.main.url(forResource: "gameover", withExtension: "mp3") {
             do {
                 audioPlayer = try AVAudioPlayer(contentsOf: url)
                 audioPlayer?.play()
             } catch {
-                print("Couldn't load file")
+                print("Couldn't load or play the 'gameover.mp3' file: \(error)")
             }
+        } else {
+            print("The 'gameover.mp3' file was not found in the bundle.")
         }
     }
+    
 }
-
 
 
 struct GameOver_Previews: PreviewProvider {

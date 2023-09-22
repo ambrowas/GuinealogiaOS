@@ -14,6 +14,11 @@ struct FlashView: View {
         case menuPrincipal
     }
     
+    var audioURL: URL? {
+            // Use the Bundle to locate the audio file
+            return Bundle.main.url(forResource: "maeledjidalot", withExtension: "mp3")
+        }
+    
     @State private var navigationTarget: NavigationDestination = .none
     
     var body: some View {
@@ -59,17 +64,17 @@ struct FlashView: View {
                         }
                     }
                     
-                    if let url = Bundle.main.url(forResource: "maeledjidalot", withExtension: "mp3") {
-                        do {
-                            self.player = try AVAudioPlayer(contentsOf: url)
-                            self.player?.play()
-                        } catch {
-                            print("Could not create AVAudioPlayer: \(error)")
+                    if let url = audioURL {
+                                do {
+                                    self.player = try AVAudioPlayer(contentsOf: url)
+                                    self.player?.play()
+                                } catch {
+                                    print("Could not create AVAudioPlayer: \(error)")
+                                }
+                            } else {
+                                print("Could not find URL for audio file")
+                            }
                         }
-                    } else {
-                        print("Could not find URL for audio file")
-                    }
-                }
                 
                 NavigationLink(
                     destination: MenuPrincipal(player: .constant(nil)),

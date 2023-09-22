@@ -37,7 +37,7 @@ struct ResultadoView: View {
                                 isShowingImage = true
                             }
                         }
-                   
+                    
                     Text(textFieldText)
                         .foregroundColor(.black)
                         .font(.subheadline)
@@ -174,58 +174,47 @@ struct ResultadoView: View {
             isNewHighScore = false
         }
     }
-
+    
     
     private func handleAciertos() {
+        var audioFileName = ""
+        var imageName = ""
+        var textFieldText = ""
+        
         if aciertos >= 9 {
-            if let hallelujahSoundURL = Bundle.main.url(forResource: "hallelujah", withExtension: "mp3") {
-                do {
-                    self.player = try AVAudioPlayer(contentsOf: hallelujahSoundURL)
-                    self.player?.play()
-                } catch {
-                    print("Could not create AVAudioPlayer: \(error)")
-                }
-            } else {
-                print("Could not find URL for audio file")
-            }
-            
+            audioFileName = "hallelujah"
             imageName = "guinealogoexperto"
             textFieldText = "NECESITAMOS MÁS GUINEANOS COMO TÚ"
         } else if aciertos >= 5 && aciertos <= 8 {
-            if let mixkitSoundURL = Bundle.main.url(forResource: "mixkit", withExtension: "wav") {
-                do {
-                    self.player = try AVAudioPlayer(contentsOf: mixkitSoundURL)
-                    self.player?.play()
-                } catch {
-                    print("Could not create AVAudioPlayer: \(error)")
-                }
-            } else {
-                print("Could not find URL for audio file")
-            }
-            
+            audioFileName = "mixkit"
             imageName = "guinealogo_intermedio"
             textFieldText = "NO ESTÁ MAL, PERO PODRÍAS HACERLO MEJOR"
         } else {
-            if let noluckSoundURL = Bundle.main.url(forResource: "noluck", withExtension: "mp3") {
-                do {
-                    self.player = try AVAudioPlayer(contentsOf: noluckSoundURL)
-                    self.player?.play()
-                } catch {
-                    print("Could not create AVAudioPlayer: \(error)")
-                }
-            } else {
-                print("Could not find URL for audio file")
-            }
-            
+            audioFileName = "noluck"
             imageName = "guinealogo_mediocre"
             textFieldText = "POR GENTE COMO TÚ GUINEA NO AVANZA"
         }
+        
+        if let soundURL = Bundle.main.url(forResource: audioFileName, withExtension: "mp3") {
+            do {
+                self.player = try AVAudioPlayer(contentsOf: soundURL)
+                self.player?.play()
+            } catch {
+                print("Could not create AVAudioPlayer: \(error)")
+            }
+        } else {
+            print("Could not find URL for audio file: \(audioFileName).mp3")
+        }
+        
+        // Set the image and text based on the conditions
+        self.imageName = imageName
+        self.textFieldText = textFieldText
     }
-}
-
-struct ResultadoView_Previews: PreviewProvider {
-    static var previews: some View {
-        ResultadoView(aciertos: 8, puntuacion: 4000, errores: 2)
+    
+    struct ResultadoView_Previews: PreviewProvider {
+        static var previews: some View {
+            ResultadoView(aciertos: 8, puntuacion: 4000, errores: 2)
+        }
     }
+    
 }
-
