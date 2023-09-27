@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFAudio
+import AVFoundation
 
 struct MenuModoLibre: View {
     @State private var playerName: String = ""
@@ -29,7 +30,6 @@ struct MenuModoLibre: View {
             
             VStack(spacing: 20) {
                 Image("logotrivial")
-                
                    .resizable()
                    .aspectRatio(contentMode: .fit)
                    .frame(width: 200, height: 150)
@@ -82,6 +82,7 @@ struct MenuModoLibre: View {
                 
             
                 Button(action: {
+                    SoundManager.shared.playTransitionSound()
                     savePlayerName()
                     jugadorGuardado = playerName
                     playerName = ""
@@ -100,6 +101,7 @@ struct MenuModoLibre: View {
                 }
                 
                 Button(action: {
+                    SoundManager.shared.playTransitionSound()
                     jugarModoLibreActive = true
                 }) {
                     Text("JUGAR")
@@ -117,11 +119,12 @@ struct MenuModoLibre: View {
                 .onTapGesture {
                     jugarModoLibreActive.toggle()
                 }
-                .sheet(isPresented: $jugarModoLibreActive, content: {
+                .fullScreenCover(isPresented: $jugarModoLibreActive) {
                     JugarModoLibre(player: .constant(nil))
-                })
+                      }
                 
                 Button(action: {
+                    SoundManager.shared.playTransitionSound()
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     Text("SALIR")

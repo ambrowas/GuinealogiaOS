@@ -24,6 +24,7 @@ struct GameOver: View {
                 Spacer()
                 
                 Button(action: {
+                    SoundManager.shared.playTransitionSound()
                     shouldShowResults = true
                 }) {
                     Text("GAME OVER")

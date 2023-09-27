@@ -22,8 +22,6 @@ struct FlashView: View {
     @State private var navigationTarget: NavigationDestination = .none
     
     var body: some View {
-        NavigationView {
-            VStack {
                 ZStack {
                     Image("mimosa")
                         .resizable()
@@ -38,8 +36,12 @@ struct FlashView: View {
                         .rotationEffect(.degrees(rotation))
                         .scaleEffect(isAnimating ? 1.1 : 1.0)
                         .onTapGesture {
+                            SoundManager.shared.playTransitionSound()
                             self.shouldNavigateToMenuPrincipal = true
                         }
+                         .fullScreenCover(isPresented: $shouldNavigateToMenuPrincipal) {
+                          MenuPrincipal(player: .constant(nil))
+                         }
                 }
                 .onAppear {
                     withAnimation(Animation.easeInOut(duration: 3.0)) {
@@ -76,15 +78,11 @@ struct FlashView: View {
                             }
                         }
                 
-                NavigationLink(
-                    destination: MenuPrincipal(player: .constant(nil)),
-                    isActive: $shouldNavigateToMenuPrincipal
-                ) {
-                    EmptyView()
+             
                 }
             }
-        }
-    }
+        
+    
     
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
@@ -92,5 +90,5 @@ struct FlashView: View {
                 .previewDevice("iPhone 14")
         }
     }
-}
+
 

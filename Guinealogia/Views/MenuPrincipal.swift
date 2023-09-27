@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFAudio
+import AVFoundation
 
 struct MenuPrincipal: View {
     @State private var showMenuModoLibre = false
@@ -19,7 +20,6 @@ struct MenuPrincipal: View {
     }
 
     var body: some View {
-        NavigationView {
             ZStack {
                 Image("coolbackground")
                     .resizable()
@@ -33,11 +33,7 @@ struct MenuPrincipal: View {
                        .frame(width: 200, height: 150)
                        .padding(.top, 20)
                        .shadow(color: glowColor.opacity(0.8), radius: 10, x: 0.0, y: 0.0)
-                   //    .scaleEffect(scale)
-                     //  .animation(
-//                        Animation.easeInOut(duration: 1.3)
-//                               .repeatForever(autoreverses: true)
-//                       )
+
                        .onAppear {
                            scale = 1.3
                        }
@@ -56,7 +52,10 @@ struct MenuPrincipal: View {
                     
                     Spacer()
                     
-                    NavigationLink(destination: MenuModoLibre()){
+                    Button(action: {
+                     showMenuModoLibre = true
+                        SoundManager.shared.playTransitionSound()
+                     }) {
                         Text("MODO LIBRE")
                             .font(.headline)
                             .foregroundColor(.white)
@@ -68,9 +67,16 @@ struct MenuPrincipal: View {
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.black, lineWidth: 3)
                             )
-                    }
+                                       }
+                         .fullScreenCover(isPresented: $showMenuModoLibre) {
+                             MenuModoLibre()
+                  }
+
                     
-                    NavigationLink(destination: MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())) {
+                    Button(action: {
+                       showMenuModoCompeticion = true
+                        SoundManager.shared.playTransitionSound()
+                          }) {
                         Text("MODO COMPETICION")
                             .font(.headline)
                             .foregroundColor(.white)
@@ -83,8 +89,14 @@ struct MenuPrincipal: View {
                                     .stroke(Color.black, lineWidth: 3)
                             )
                     }
-                    
-                    NavigationLink(destination: ContactanosView(player: .constant(nil))) {
+                          .fullScreenCover(isPresented: $showMenuModoCompeticion) {
+                              MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())
+                          }
+
+                    Button(action: {
+                      showContactanosView = true
+                        SoundManager.shared.playTransitionSound()
+                       }) {
                         Text("CONTACTANOS")
                             .font(.headline)
                             .foregroundColor(.white)
@@ -97,7 +109,10 @@ struct MenuPrincipal: View {
                                     .stroke(Color.black, lineWidth: 3)
                             )
                     }
-                    
+                       .fullScreenCover(isPresented: $showContactanosView) {
+                           ContactanosView(player: .constant(nil))
+                       }
+                   
                     
                     Spacer()
                     
@@ -115,7 +130,7 @@ struct MenuPrincipal: View {
                 .padding()
             }
         }
-        .navigationBarHidden(true)
+     
     }
 
     struct MenuPrincipal_Previews: PreviewProvider {
@@ -123,6 +138,6 @@ struct MenuPrincipal: View {
             MenuPrincipal(player: .constant(nil))
         }
     }
-}
+
 
     

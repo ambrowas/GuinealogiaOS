@@ -27,6 +27,7 @@ struct InputFieldsView: View {
                 .autocapitalization(.none)
                 .keyboardType(.emailAddress)
                 .background(Color.white)
+              
                 
             
             SecureInputFieldView(text: $password, placeholder: "Contraseña")

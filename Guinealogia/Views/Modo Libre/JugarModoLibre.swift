@@ -16,15 +16,7 @@ struct JugarModoLibre: View {
 
 
     var body: some View {
-        // Inside your body view
-        NavigationLink(
-            destination: ResultadoView(aciertos: quizState.score, puntuacion: quizState.totalScore, errores: quizState.mistakes),
-            isActive: $quizState.isShowingResultadoView
-        ) {
-            EmptyView()
-        }
-
-
+      
         ZStack {
             Image("coolbackground")
                 .resizable()
@@ -104,10 +96,10 @@ struct JugarModoLibre: View {
                         quizState.currentQuestion = quizState.randomQuestions[quizState.currentQuestionIndex]
                         quizState.startCountdownTimer()
                     } else if quizState.buttonText == "TERMINAR" {
+                        SoundManager.shared.playTransitionSound()
                         quizState.finishQuiz()
-                        quizState.isShowingResultadoView = true
+                        isShowingResultadoView = true // Set the flag to true to present ResultadoView
                     }
-
                 }) {
                     Text(quizState.buttonText)
                         .font(.headline)
@@ -122,6 +114,9 @@ struct JugarModoLibre: View {
                         )
                 }
                 .padding(.top, -180)
+                .fullScreenCover(isPresented: $isShowingResultadoView) {
+                    ResultadoView(aciertos: quizState.score, puntuacion: quizState.totalScore, errores: quizState.mistakes)
+                }
 
             }
             .padding(.horizontal, 12)
@@ -136,9 +131,7 @@ struct JugarModoLibre: View {
                 dismissButton: .default(Text("OK"))
             )
         }
-        .sheet(isPresented: $quizState.isShowingResultadoView) {
-            ResultadoView(aciertos: quizState.score, puntuacion: quizState.totalScore, errores: quizState.mistakes)
-            }
+      
     }
 }
 

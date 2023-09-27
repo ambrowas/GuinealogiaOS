@@ -124,10 +124,12 @@ struct ClasificacionView: View {
     @StateObject private var userData = UserData()
     @State private var shouldShowMenuModoCompeticion = false
     @State private var selectedUserId: String? = nil
-    @State private var isShowingLeaderProfile = false
     let userId: String
     @StateObject private var viewModel = LeadersProfileViewModel(userId: "yourUserIdHere")
     @State private var selectedUser: User? = nil
+    @State private var isShowingLeadersProfile = false
+
+  
 
     
     
@@ -153,6 +155,7 @@ struct ClasificacionView: View {
                         .padding(.top, 35)
                     
                     Button(action: {
+                        SoundManager.shared.playTransitionSound()
                         self.presentationMode.wrappedValue.dismiss()
                     }) {
                         Text("VOLVER")
@@ -181,9 +184,9 @@ struct ClasificacionView: View {
                             
                             ForEach(userData.users) { user in
                                 Button(action: {
-                                    self.selectedUser = user
-                                    print("Selected User ID: \(String(describing: self.selectedUser?.id))")
-                                    self.isShowingLeaderProfile = true
+                                    SoundManager.shared.playTransitionSound()
+                                    self.selectedUser = user     
+                                    self.isShowingLeadersProfile = true
                                 }) {
                                     HStack {
                                                       FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
@@ -211,25 +214,17 @@ struct ClasificacionView: View {
                     .id(userData.refreshID)                
                     .environment(\.colorScheme, .light)
                 }
-                .sheet(item: $selectedUser) { user in
-                    LeadersProfile(userId: user.id) // passing the userId directly
+                .fullScreenCover(item: $selectedUser) { user in
+                    LeadersProfile(userId: user.id)
                 }
-                .onAppear {
+
+             .onAppear {
                     self.viewModel.fetchUserDataFromRealtimeDatabase()
                     
                 }
-
-                    
-                    
-                }
+             }
             }
-    
-        
-        
-        
-        .navigationBarTitle("", displayMode: .inline)
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
+       
     }
     
     

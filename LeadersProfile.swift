@@ -95,8 +95,9 @@ struct LeadersProfile: View {
                 
                 // Volver Button
                 Button(action: {
-                    shouldShowMenuModoCompeticion = true
-                    self.presentationMode.wrappedValue.dismiss()
+                    SoundManager.shared.playTransitionSound()
+                    presentationMode.wrappedValue.dismiss()
+                    
                 }) {
                     Text("VOLVER")
                         .font(.headline)
@@ -116,13 +117,9 @@ struct LeadersProfile: View {
                 self.viewModel.fetchUserDataFromRealtimeDatabase()
 
             }
-            .sheet(isPresented: $showSheet) {
-                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel()
-                )
-            }
-            .navigationBarTitle("", displayMode: .inline)
-            .navigationBarHidden(true)
-            .navigationBarBackButtonHidden(true)
+          
+
+      
         }
     }
     

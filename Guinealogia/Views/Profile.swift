@@ -25,7 +25,6 @@ struct Profile: View {
     
     
     var body: some View {
-        
             ZStack {
                 Image("coolbackground")
                     .resizable()
@@ -93,7 +92,8 @@ struct Profile: View {
                     
            
                     Button(action: {
-                        self.showMenuModoCompeticionSheet = true
+                        SoundManager.shared.playTransitionSound()
+                        presentationMode.wrappedValue.dismiss()
                     }) {
                         Text("VOLVER")
                             .font(.headline)
@@ -108,14 +108,13 @@ struct Profile: View {
                             )
                     }
                     .padding(.top, 10)
-                    .sheet(isPresented: $showMenuModoCompeticionSheet) {
-                        MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())  // Pass necessary parameters here
-                    }
+
+
                 }
                
             }
            
-                    .navigationBarBackButtonHidden(true)
+                
             .sheet(isPresented: $isImagePickerDisplayed) {
                 ImagePicker(
                     selectedImage: $profileViewModel.profileImage,
@@ -162,7 +161,7 @@ struct Profile: View {
                     .font(.subheadline)
                     .bold()
                     .foregroundColor(.black)
-                    .frame(width: 120, alignment: .leading) // Adjust width as needed for proper alignment
+                //    .frame(width: 120, alignment: .leading) // Adjust width as needed for proper alignment
                 
                 Text(content)
                     .font(.system(size: 14))

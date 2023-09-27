@@ -12,14 +12,13 @@ struct ResultadoView: View {
     @State private var player: AVAudioPlayer?
     @Environment(\.presentationMode) var presentationMode
     @State private var showJugarModoLibre = false
-    @State private var showMenuPrincipal = false
+    @State private var showMenuModoLibre = false
     @State private var playerName: String = ""
     @State private var highScore: Int = 0
     @State private var isNewHighScore: Bool = false
     @State private var showAlert = false
     
     var body: some View {
-        NavigationView {
             ZStack {
                 Image("coolbackground")
                     .resizable()
@@ -106,6 +105,7 @@ struct ResultadoView: View {
                     
                     HStack {
                         Button(action: {
+                            SoundManager.shared.playTransitionSound()
                             showJugarModoLibre = true
                         }) {
                             Text("JUGAR")
@@ -125,7 +125,8 @@ struct ResultadoView: View {
                         }
                         
                         Button(action: {
-                            showMenuPrincipal = true
+                            SoundManager.shared.playTransitionSound()
+                            showMenuModoLibre = true
                         }) {
                             Text("SALIR")
                                 .font(.headline)
@@ -139,8 +140,8 @@ struct ResultadoView: View {
                                 )
                         }
                         .padding(.top, 30)
-                        .sheet(isPresented: $showMenuPrincipal) {
-                            MenuPrincipal(player: .constant(nil))
+                        .fullScreenCover(isPresented: $showMenuModoLibre) {
+                            MenuModoLibre()
                         }
                     }
                 }
@@ -158,7 +159,7 @@ struct ResultadoView: View {
                 )
             }
         }
-    }
+    
     
     private func checkHighScore() {
         let userDefaults = UserDefaults.standard
@@ -182,20 +183,20 @@ struct ResultadoView: View {
         var textFieldText = ""
         
         if aciertos >= 9 {
-            audioFileName = "hallelujah"
+            audioFileName = "hallelujah.mp3"
             imageName = "guinealogoexperto"
             textFieldText = "NECESITAMOS MÁS GUINEANOS COMO TÚ"
         } else if aciertos >= 5 && aciertos <= 8 {
-            audioFileName = "mixkit"
+            audioFileName = "mixkit.wav"
             imageName = "guinealogo_intermedio"
             textFieldText = "NO ESTÁ MAL, PERO PODRÍAS HACERLO MEJOR"
         } else {
-            audioFileName = "noluck"
+            audioFileName = "noluck.mp3"
             imageName = "guinealogo_mediocre"
             textFieldText = "POR GENTE COMO TÚ GUINEA NO AVANZA"
         }
         
-        if let soundURL = Bundle.main.url(forResource: audioFileName, withExtension: "mp3") {
+        if let soundURL = Bundle.main.url(forResource: audioFileName, withExtension: nil) {
             do {
                 self.player = try AVAudioPlayer(contentsOf: soundURL)
                 self.player?.play()
@@ -203,7 +204,7 @@ struct ResultadoView: View {
                 print("Could not create AVAudioPlayer: \(error)")
             }
         } else {
-            print("Could not find URL for audio file: \(audioFileName).mp3")
+            print("Could not find URL for audio file: \(audioFileName)")
         }
         
         // Set the image and text based on the conditions

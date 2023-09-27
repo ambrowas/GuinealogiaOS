@@ -27,6 +27,7 @@ struct MenuModoCompeticion: View {
     @State private var shouldNavigateToProfile: Bool = false
     @State private var shouldPresentProfile = false
     @State private var showMenuPrincipalSheet = false
+    @State private var isFlashing = false
     
     
     
@@ -51,29 +52,41 @@ struct MenuModoCompeticion: View {
                         .padding(.top, -10)
                 }
                 
-                if viewModel.validateCurrentGameFallos() {
-                    
-                    Button(action: {
-                        showCheckCodigo = true
-                    }) {
-                        Text("VALIDAR CODIGO")
-                            .font(.headline)
-                            .foregroundColor(.black)
-                            .padding()
-                            .frame(width: 300, height: 75)
-                            .background(Color.white)
-                            .cornerRadius(10)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.black, lineWidth: 3)
-                            )
-                    }
-                    .sheet(isPresented: $showCheckCodigo) {
-                        CheckCodigo()
-                    }
+                    if viewModel.validateCurrentGameFallos() {
+                        
+                        Button(action: {
+                            SoundManager.shared.playTransitionSound()
+                                   showCheckCodigo = true
+                               }) {
+                                   Text("VALIDAR CODIGO")
+                                       .font(.headline)
+                                       .foregroundColor(.black)
+                                       .padding()
+                                       .frame(width: 300, height: 75)
+                                       .background(isFlashing ? Color.white : Color.red)
+                                       .cornerRadius(10)
+                                       .overlay(
+                                           RoundedRectangle(cornerRadius: 10)
+                                               .stroke(Color.black, lineWidth: 3)
+                                       )
+                               }
+                               .fullScreenCover(isPresented: $showCheckCodigo) {
+                                   CheckCodigo()
+                               }
+                               .onAppear {
+                        // Start a timer to toggle the flashing effect repeatedly
+                            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
+                            withAnimation {
+                            isFlashing.toggle()
+                              }
+                                }
+                        }
+                        
+                   
                 } else {
                     Button(action: {
                         if Auth.auth().currentUser != nil {
+                            SoundManager.shared.playTransitionSound()
                             jugarModoCompeticionActive = true
                         } else {
                             alertMessage = "Debes iniciar sesión para poder jugar."
@@ -85,7 +98,7 @@ struct MenuModoCompeticion: View {
                             .foregroundColor(.white)
                             .padding()
                             .frame(width: 300, height: 75)
-                            .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
+                            .background(isFlashing ? Color.white : Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -103,6 +116,7 @@ struct MenuModoCompeticion: View {
                 
                 Button(action: {
                     if Auth.auth().currentUser != nil {
+                        SoundManager.shared.playTransitionSound()
                         showClasificacion = true
                     } else {
                         alertMessage = "Debes iniciar sesión para poder acceder a la clasificación."
@@ -111,10 +125,10 @@ struct MenuModoCompeticion: View {
                 }) {
                     Text("CLASIFICACION")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                        .background(Color.white)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -131,6 +145,7 @@ struct MenuModoCompeticion: View {
                 
                 Button(action: {
                     if Auth.auth().currentUser != nil {
+                        SoundManager.shared.playTransitionSound()
                         showProfile = true
                     } else {
                         alertMessage = "Debes iniciar sesión para poder acceder a tu perfil."
@@ -139,10 +154,10 @@ struct MenuModoCompeticion: View {
                 }) {
                     Text("PERFIL")
                         .font(.headline)
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color.white)
+                        .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -161,10 +176,12 @@ struct MenuModoCompeticion: View {
                 
                 Button(action: {
                     if viewModel.userFullName.isEmpty {
+                        SoundManager.shared.playTransitionSound()
                         showIniciarSesion = true
                     } else {
                         do {
                             try Auth.auth().signOut()
+                            SoundManager.shared.playTransitionSound()
                             viewModel.userFullName = ""
                             viewModel.highestScore = 0
                             viewModel.currentGameFallos = 0
@@ -193,6 +210,7 @@ struct MenuModoCompeticion: View {
                 }
                 
                 Button {
+                    SoundManager.shared.playTransitionSound()
                     self.showMenuPrincipalSheet = true
                 } label: {
                     Text("VOLVER")
@@ -203,7 +221,7 @@ struct MenuModoCompeticion: View {
                         .cornerRadius(10)
                     
                 }
-                .sheet(isPresented: $showMenuPrincipalSheet) {
+                .fullScreenCover(isPresented: $showMenuPrincipalSheet) {
                     MenuPrincipal(player: .constant(nil))
                 }
             }
@@ -214,13 +232,12 @@ struct MenuModoCompeticion: View {
             .onAppear {
                 if viewModel.userFullName.isEmpty {
                     viewModel.fetchCurrentUserData()
+               
+                    }
                 }
-            }
             
             
-            .navigationBarTitle("", displayMode: .inline)
-            .navigationBarHidden(true)
-            .navigationBarBackButtonHidden(true)
+        
         }
         
     }

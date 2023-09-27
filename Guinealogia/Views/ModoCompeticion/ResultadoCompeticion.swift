@@ -10,7 +10,9 @@ struct ResultadoCompeticion: View {
     @State private var goToMenuModoCompeticion: Bool = false
     @State private var userData: UserData = UserData()
     @State private var goToMenuPrincipal: Bool = false
-    
+    @State private var goToClasificacion: Bool = false
+    @State private var showConfirmationAlert = false
+    @State private var showMinimoCobroAlert = false
     
     
     
@@ -78,10 +80,14 @@ struct ResultadoCompeticion: View {
                     .environment(\.colorScheme, .light)
                     
                     VStack(spacing: 10) {
-                        Button {
-                            
-                            showCodigo = true
-                        } label: {
+                        Button(action: {
+                          SoundManager.shared.playTransitionSound()
+                      if userViewModel.currentGamePuntuacion >= 2500 {
+                    showCodigo = true
+                       } else {
+                           showMinimoCobroAlert = true
+                           }
+                            }) {
                             Text("GENERAR COBRO")
                                 .font(.headline)
                                 .foregroundColor(.black)
@@ -93,27 +99,49 @@ struct ResultadoCompeticion: View {
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.black, lineWidth: 3)
                                 )
-                        }.sheet(isPresented: $showCodigo) {
+                        }
+                        .fullScreenCover(isPresented: $showCodigo) {
                             CodigoQR()
                         }
-                        
-                        
-                        if let currentUser = Auth.auth().currentUser {
-                            NavigationLink(destination: ClasificacionView(userId: currentUser.uid)) {
-                                Text("RANKING")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 300, height: 55)
-                                    .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
-                                    .cornerRadius(10)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color.black, lineWidth: 3)
-                                    )
+                        .alert(isPresented: $showMinimoCobroAlert) {
+                                           Alert(
+                                               title: Text("MinimoCobro"),
+                                               message: Text("Debes ganar al menos 2500 FCFA para poder generar un cobro."),
+                                               dismissButton: .default(Text("OK"))
+                                           )
+                                       }
+
+                        Button(action: {
+                            if let currentUser = Auth.auth().currentUser {
+                                SoundManager.shared.playTransitionSound()
+                                goToClasificacion = true
+                            } else {
+                                // Handle the case where there is no authenticated user,
+                                // you can show an alert or navigate to a login/registration page.
                             }
+                        }) {
+                            Text("RANKING")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 300, height: 55)
+                                .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
                         }
-                        NavigationLink(destination: MenuPrincipal(player: .constant(nil))) {
+                        .fullScreenCover(isPresented: $goToClasificacion) {
+                            // Here, you should present the ClasificacionView
+                            ClasificacionView(userId: Auth.auth().currentUser?.uid ?? "")
+                        }
+
+                        Button(action: {
+                            SoundManager.shared.playTransitionSound()
+                            showConfirmationAlert = true
+                            
+                        }) {
                             Text("MENU PRINCIPAL")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -126,10 +154,26 @@ struct ResultadoCompeticion: View {
                                         .stroke(Color.black, lineWidth: 3)
                                 )
                         }
+                        .alert(isPresented: $showConfirmationAlert) {
+                                          Alert(
+                                              title: Text("Confirmar"),
+                                              message: Text("¿Seguro que quieres salir sin cobrar?"),
+                                              primaryButton: .default(Text("Si")) {
+                                                  SoundManager.shared.playTransitionSound()
+                                                  goToMenuPrincipal = true
+                                              },
+                                              secondaryButton: .cancel(Text("No"))
+                                          )
+                                      }
+                        .fullScreenCover(isPresented: $goToMenuPrincipal) {
+                            MenuPrincipal(player: .constant(nil))
+                        }
+                    }
+
                         
                     }
                     .onAppear {
-                        print("ResultadoCompeticion view appeared")
+                        
                         if let userId = Auth.auth().currentUser?.uid {
                             self.userViewModel.fetchUserData(userId: userId) {
                               
@@ -138,8 +182,7 @@ struct ResultadoCompeticion: View {
                         }
                     }
                 }
-                .navigationBarHidden(true)
-                .navigationBarBackButtonHidden(true)
+           
                 
             }
         }
@@ -150,4 +193,4 @@ struct ResultadoCompeticion: View {
             ResultadoCompeticion(userId: Auth.auth().currentUser?.uid ?? "")
         }
     }
-}
+

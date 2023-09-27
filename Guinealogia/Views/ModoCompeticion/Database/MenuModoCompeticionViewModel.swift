@@ -37,7 +37,7 @@ class MenuModoCompeticionViewModel: ObservableObject {
         
 
         guard let user = Auth.auth().currentUser else {
-            print("No user is logged in")
+           // print("No user is logged in")
             self.isAuthenticated = false
             self.userFullName = ""
             self.highestScore = 0

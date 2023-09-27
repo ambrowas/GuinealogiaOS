@@ -21,9 +21,7 @@ struct CheckCodigo: View {
     @State private var showSheet = false
     @State private var userData: UserData = UserData()
     @State private var goToMenuCompeticion: Bool = false
-    
-    
-    
+    @State private var goToMenuModoCompeticion: Bool = false
     
     func checkCodigo() {
         guard let input = Int("\(input1)\(input2)\(input3)\(input4)") else {
@@ -103,32 +101,31 @@ struct CheckCodigo: View {
             }
         }
     }
-  
+    
     func resetGameData() {
-                  if let user = Auth.auth().currentUser {
-                      let userGameRef = Database.database().reference().child("user").child(user.uid)
-                      let gameData: [String: Any] = ["currentGameAciertos": 0,
-                                                     "currentGameFallos": 0,
-                                                     "currentGamePuntuacion": 0]
-                      userGameRef.updateChildValues(gameData) { (error, reference) in
-                          if let error = error {
-                              print("Failed to reset game data. Error: \(error)")
-                              return
-                          }
-                          print("Game data has been successfully reset.")
-                      }
-                  } else {
-                      print("No current user found while trying to reset game data.")
-                  }
-              }
- 
+        if let user = Auth.auth().currentUser {
+            let userGameRef = Database.database().reference().child("user").child(user.uid)
+            let gameData: [String: Any] = ["currentGameAciertos": 0,
+                                           "currentGameFallos": 0,
+                                           "currentGamePuntuacion": 0]
+            userGameRef.updateChildValues(gameData) { (error, reference) in
+                if let error = error {
+                    print("Failed to reset game data. Error: \(error)")
+                    return
+                }
+                print("Game data has been successfully reset.")
+            }
+        } else {
+            print("No current user found while trying to reset game data.")
+        }
+    }
+    
     func clearInputs() {
         input1 = ""
         input2 = ""
         input3 = ""
         input4 = ""
     }
-    
     
     var body: some View {
         ZStack {
@@ -193,6 +190,7 @@ struct CheckCodigo: View {
                 }
                 
                 Button(action: {
+                   
                     checkCodigo()
                 }) {
                     Text("VALIDAR")
@@ -210,7 +208,8 @@ struct CheckCodigo: View {
                 .padding(.top, 60)
                 
                 Button(action: {
-                    showSheet = true
+                    SoundManager.shared.playTransitionSound()
+                    goToMenuCompeticion = true
                 }) {
                     Text("VOLVER")
                         .font(.headline)
@@ -225,13 +224,14 @@ struct CheckCodigo: View {
                         )
                 }
                 .padding(.bottom, 10)
+                .fullScreenCover(isPresented: $goToMenuCompeticion) {
+                    MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())
+                }
             }
-        }
-        
-        .sheet(isPresented: $showSheet) {
-                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel()
-
-            )
+            // Use fullScreenCover for going to MenuModoCompeticion
+            .fullScreenCover(isPresented: $goToMenuModoCompeticion) {
+                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())
+            }
         }
         .alert(isPresented: $showAlert) {
             if showAlert1 {
@@ -244,7 +244,8 @@ struct CheckCodigo: View {
                         // Navigate to MenuModoCompeticion
                         showAlert1 = false
                         showAlert = false
-                        showSheet = true
+                        SoundManager.shared.playTransitionSound()
+                        goToMenuModoCompeticion = true
                     }
                 )
             } else if showAlert2 {
@@ -286,7 +287,8 @@ struct CheckCodigo: View {
                     dismissButton: .default(Text("OK")) {
                         showAlertPromotionValid = false
                         showAlert = false
-                        showSheet = true
+                        SoundManager.shared.playTransitionSound()
+                        goToMenuModoCompeticion = true
                     }
                 )
             } else {
@@ -297,26 +299,22 @@ struct CheckCodigo: View {
                 )
             }
         }
-        
     }
-
-        struct InputModifier: ViewModifier {
-            func body(content: Content) -> some View {
-                content
-                    .multilineTextAlignment(.center)
-                    .keyboardType(.numberPad)
-                    .font(.system(size: 30, weight: .light, design: .monospaced))
-                    .frame(width: 85, height: 60)
-                    .border(Color.black, width: 2)
-            }
+    
+    struct InputModifier: ViewModifier {
+        func body(content: Content) -> some View {
+            content
+                .multilineTextAlignment(.center)
+                .keyboardType(.numberPad)
+                .font(.system(size: 30, weight: .light, design: .monospaced))
+                .frame(width: 85, height: 60)
+                .border(Color.black, width: 2)
         }
-    
-    
+    }
     
     struct CheckCodigo_Previews: PreviewProvider {
         static var previews: some View {
             CheckCodigo()
         }
     }
-    
 }

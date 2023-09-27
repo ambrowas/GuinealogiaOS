@@ -49,7 +49,9 @@ struct ContactanosView: View {
                       .animation(.spring(response: 0.3, dampingFraction: 0.6))
                                           
                     Button {
+                        SoundManager.shared.playTransitionSound()
                         presentationMode.wrappedValue.dismiss()
+                        
                     } label: {
                         Text("VOLVER")
                             .font(.headline)
