@@ -95,6 +95,7 @@ import FirebaseDatabase
         
         var body: some View {
             Text(text)
+                .multilineTextAlignment(.leading)
                 .foregroundColor(getColor())
                 .onAppear {
                     if shouldFlash {
@@ -130,9 +131,6 @@ struct ClasificacionView: View {
     @State private var isShowingLeadersProfile = false
 
   
-
-    
-    
     var body: some View {
         
         ZStack {
@@ -192,14 +190,17 @@ struct ClasificacionView: View {
                                                       FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
                                                           .font(.system(size: 12))
                                                           .foregroundColor(.black)
+                                        
                                                       Spacer()
                                                       FlashingText(text: user.fullname, shouldFlash: user.id == userId)
                                                           .font(.system(size: 12))
                                                           .foregroundColor(.black)
+                                                          .frame(maxWidth: .infinity, alignment: .leading)
                                                       Spacer()
                                                       FlashingText(text: user.ciudad, shouldFlash: user.id == userId)
                                                           .font(.system(size: 12))
                                                           .foregroundColor(.black)
+                                                          .frame(maxWidth: .infinity, alignment: .leading) 
                                                       Spacer()
                                                       FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
                                                           .font(.system(size: 12))

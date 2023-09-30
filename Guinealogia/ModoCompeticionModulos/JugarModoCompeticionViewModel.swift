@@ -386,7 +386,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
         timer = nil
       }
    
-    private func playCountdownSound() {
+       private func playCountdownSound() {
             countdownSound?.play()
         }
     

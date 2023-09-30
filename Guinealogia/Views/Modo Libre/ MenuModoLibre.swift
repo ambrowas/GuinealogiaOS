@@ -12,6 +12,7 @@ struct MenuModoLibre: View {
     @State private var scale: CGFloat = 1.0
        @State private var glowColor = Color.blue
        let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var isShowingMenuPrincipal = false
 
     
     private let playerNameKey = "PlayerName"
@@ -125,7 +126,7 @@ struct MenuModoLibre: View {
                 
                 Button(action: {
                     SoundManager.shared.playTransitionSound()
-                    presentationMode.wrappedValue.dismiss()
+                    isShowingMenuPrincipal = true
                 }) {
                     Text("SALIR")
                         .font(.headline)
@@ -139,7 +140,9 @@ struct MenuModoLibre: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-
+                .fullScreenCover(isPresented: $isShowingMenuPrincipal) {
+                    MenuPrincipal(player: .constant(nil))
+                }
                 
                 Spacer()
             }

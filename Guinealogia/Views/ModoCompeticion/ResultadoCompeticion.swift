@@ -41,7 +41,7 @@ struct ResultadoCompeticion: View {
     }
     
     var body: some View {
-        NavigationView {
+      
             ZStack {
                 Image("coolbackground")
                     .resizable()
@@ -120,7 +120,7 @@ struct ResultadoCompeticion: View {
                                 // you can show an alert or navigate to a login/registration page.
                             }
                         }) {
-                            Text("RANKING")
+                            Text("CLASIFICACION")
                                 .font(.headline)
                                 .foregroundColor(.white)
                                 .padding()
@@ -139,8 +139,11 @@ struct ResultadoCompeticion: View {
 
                         Button(action: {
                             SoundManager.shared.playTransitionSound()
-                            showConfirmationAlert = true
-                            
+                            if userViewModel.currentGamePuntuacion >= 2500 {
+                                showConfirmationAlert = true
+                            } else {
+                                goToMenuPrincipal = true
+                            }
                         }) {
                             Text("MENU PRINCIPAL")
                                 .font(.headline)
@@ -155,20 +158,21 @@ struct ResultadoCompeticion: View {
                                 )
                         }
                         .alert(isPresented: $showConfirmationAlert) {
-                                          Alert(
-                                              title: Text("Confirmar"),
-                                              message: Text("¿Seguro que quieres salir sin cobrar?"),
-                                              primaryButton: .default(Text("Si")) {
-                                                  SoundManager.shared.playTransitionSound()
-                                                  goToMenuPrincipal = true
-                                              },
-                                              secondaryButton: .cancel(Text("No"))
-                                          )
-                                      }
+                            Alert(
+                                title: Text("Confirmar"),
+                                message: Text("¿Seguro que quieres salir sin cobrar?"),
+                                primaryButton: .default(Text("Si")) {
+                                    SoundManager.shared.playTransitionSound()
+                                    goToMenuPrincipal = true
+                                },
+                                secondaryButton: .cancel(Text("No"))
+                            )
+                        }
                         .fullScreenCover(isPresented: $goToMenuPrincipal) {
                             MenuPrincipal(player: .constant(nil))
                         }
-                    }
+
+                        }
 
                         
                     }
@@ -186,7 +190,7 @@ struct ResultadoCompeticion: View {
                 
             }
         }
-    }
+    
     
     struct ResultadoCompeticion_Previews: PreviewProvider {
         static var previews: some View {

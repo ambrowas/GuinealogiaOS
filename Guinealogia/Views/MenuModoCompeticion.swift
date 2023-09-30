@@ -29,8 +29,7 @@ struct MenuModoCompeticion: View {
     @State private var showMenuPrincipalSheet = false
     @State private var isFlashing = false
     
-    
-    
+
     var body: some View {
         ZStack {
             Image("coolbackground")

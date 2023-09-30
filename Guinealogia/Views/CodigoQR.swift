@@ -162,7 +162,7 @@ struct CodigoQR: View {
         
             if isGuardarButtonDisabled {
                    isShowingAlert = true
-                   alertMessage = "Debes esperar 90 segundos antes de poder volver a guardar."
+                   alertMessage = "Debes esperar 3 minutos antes de poder volver a guardar."
                    return
                }
         
@@ -201,7 +201,7 @@ struct CodigoQR: View {
         func startCooldown() {
             isGuardarButtonDisabled = true
 
-            cooldownTimer = Timer.scheduledTimer(withTimeInterval: 90, repeats: false) { timer in
+            cooldownTimer = Timer.scheduledTimer(withTimeInterval: 180, repeats: false) { timer in
                 isGuardarButtonDisabled = false
                 cooldownTimer?.invalidate()
                 cooldownTimer = nil
