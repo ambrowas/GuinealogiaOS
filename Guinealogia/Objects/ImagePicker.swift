@@ -5,30 +5,21 @@
     import FirebaseFirestore
     import FirebaseAuth
 
-
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
     @Environment(\.presentationMode) private var presentationMode
-    @Binding var showSuccessAlertImagePicker: Bool
-    @Binding var alertMessage: String
-    @Binding var currentAlertType: ProfileAlertType?
     
-    
-
+    var profileViewModel: ProfileViewModel
     
     let storageRef: StorageReference
     let ref: DatabaseReference
     
-    init(selectedImage: Binding<UIImage?>, showSuccessAlertImagePicker: Binding<Bool>, alertMessage: Binding<String>, currentAlertType: Binding<ProfileAlertType?>, storageRef: StorageReference, ref: DatabaseReference) {
+    init(profileViewModel: ProfileViewModel, selectedImage: Binding<UIImage?>, storageRef: StorageReference, ref: DatabaseReference) {
+        self.profileViewModel = profileViewModel
         self._selectedImage = selectedImage
-        self._showSuccessAlertImagePicker = showSuccessAlertImagePicker  // initialize with the new binding
-        self._alertMessage = alertMessage // initialize the alertMessage binding
-        self._currentAlertType = currentAlertType // initialize the currentAlertType binding
         self.storageRef = storageRef
         self.ref = ref
     }
-
-
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
@@ -72,6 +63,9 @@ struct ImagePicker: UIViewControllerRepresentable {
                 self.updateUserProfileImage(downloadURL: downloadURL)
             case .failure(let error):
                 print("Error uploading image: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.profileViewModel.alertType = .imageChangeError(error.localizedDescription)
+                }
             }
         }
     }
@@ -88,16 +82,14 @@ struct ImagePicker: UIViewControllerRepresentable {
             if let error = error {
                 print("Error updating data: \(error)")
                 DispatchQueue.main.async {
-                    self.currentAlertType = .error("Failed to update profile image")
+                    self.profileViewModel.alertType = .imageChangeError("Failed to update profile image")
                 }
             } else {
                 print("Profile image updated successfully")
                 DispatchQueue.main.async {
-                    self.currentAlertType = .success("Foto de perfil actualizada")
+                    self.profileViewModel.alertType = .imageChangeSuccess
                 }
             }
         }
     }
 }
- 
-

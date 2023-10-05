@@ -14,15 +14,23 @@ struct Profile: View {
     @State private var showAlert: Bool = false
     @State private var showGestionarSesionView: Bool = false
     @State private var showMenuPrincipalView: Bool = false
-
-
+    @State private var showMenuModoCompeticion: Bool = false
+    @State private var showSuccessAlertImagePicker = false
+    private let storageRef = Storage.storage().reference()
+    private let ref = Database.database().reference()
+    @State private var showCambiodeFotoAlert: Bool = false
+    @State private var alertMessage: String = ""
+    @State private var currentAlertType: AlertType? = nil
+    
+    
+    
     @Environment(\.presentationMode) var presentationMode
     
     var alertTypeBinding: Binding<Bool> {
         Binding<Bool>(
             get: {
                 switch profileViewModel.alertType {
-                case .deleteConfirmation, .deletionSuccess, .deletionFailure:
+                case .deleteConfirmation, .deletionSuccess, .deletionFailure, .imageChangeSuccess, .imageChangeError(_):
                     return true
                 case .none:
                     return false
@@ -30,12 +38,13 @@ struct Profile: View {
             },
             set: { newValue in
                 if !newValue {
-                    profileViewModel.alertType = nil
+                    profileViewModel.alertType = .none
                 }
             }
         )
     }
-
+    
+    
     
     var body: some View {
         ZStack {
@@ -71,6 +80,7 @@ struct Profile: View {
                 .onTapGesture {
                     self.isImagePickerDisplayed = true
                 }
+                
                 
                 Circle()
                     .stroke(Color.black, lineWidth: 2)
@@ -166,24 +176,66 @@ struct Profile: View {
                             message: Text("Reinicia la sesión para poder borrar la cuenta"),
                             dismissButton: .default(Text("OK")){
                                 SoundManager.shared.playTransitionSound()
-                            showGestionarSesionView = true
+                                showGestionarSesionView = true
                             }
-                                )
+                        )
+                        
+                    case .imageChangeSuccess:
+                        return Alert(
+                            title: Text("Exito"),
+                            message: Text("¡Foto de pefilf actualizada!"),
+                            dismissButton: .default(Text("OK")){
+                                SoundManager.shared.playTransitionSound()
+                                showMenuModoCompeticion = true
                             }
-                        }
-                        .fullScreenCover(isPresented: $showGestionarSesionView) {
-                            GestionarSesion() // Assuming GestionarSesion is a View you have defined
-                        }
-            }
-            .fullScreenCover(isPresented: $showMenuPrincipalView) {
-                MenuPrincipal(player: .constant(nil))
-            }
-                .onAppear {
-                    profileViewModel.fetchProfileData()
+                        )
+                    case .imageChangeError(let errorMessage):
+                        return Alert(
+                            title: Text("Error"),
+                            message: Text(errorMessage),
+                            dismissButton: .default(Text("OK"))
+                        )
+                    }
                 }
             }
         }
-    }
+        .fullScreenCover(isPresented: $showGestionarSesionView) {
+            GestionarSesion() // Assuming GestionarSesion is a View you have defined
+        }
+        
+        .fullScreenCover(isPresented: $showMenuPrincipalView) {
+            MenuPrincipal(player: .constant(nil))
+        }
+        .fullScreenCover(isPresented: $showMenuModoCompeticion) {
+            MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())
+        }
+    
+        .sheet(isPresented: $isImagePickerDisplayed) {
+            ImagePicker(
+                profileViewModel: profileViewModel,
+                selectedImage: $profileViewModel.profileImage,
+                storageRef: Storage.storage().reference(),
+                ref: Database.database().reference()
+            )
+        }
+        
+        .onChange(of: profileViewModel.alertType) { alertType in
+            switch alertType {
+            case .imageChangeSuccess, .imageChangeError(_):
+                // No action is needed here as the alert will be shown based on the alertType value
+                break
+            default:
+                break
+            }
+        }
+        
+    
+             .onAppear {
+                 profileViewModel.fetchProfileData()
+             }
+         }
+     
+    
     struct TextRowView: View {
         let title: String
         let content: String
@@ -215,4 +267,5 @@ struct Profile: View {
             Profile()
         }
     }
-
+    
+}

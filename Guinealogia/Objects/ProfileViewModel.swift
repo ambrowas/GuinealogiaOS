@@ -21,19 +21,21 @@ class ProfileViewModel: ObservableObject {
     @Published var accumulatedAciertos: Int = 0
     @Published var accumulatedFallos: Int = 0
     @Published var profileFetchStatus: ProfileFetchStatus?
-    @Published var alertMessage: String = ""
-    @Published var showAlert: Bool = false
-    @Published var alertType: AlertType?
     @Published var shouldNavigateToMenuModoCompeticion = false
     @Published var showAlertLogInToDelete = false
     @Published var showAlertUsuarioBorrado = false
     @Published var showAlertBorrarUsuario = false
+    @Published var alertMessage: String = ""
+    @Published var showAlert: Bool = false
+    @Published var alertType: AlertType?
    
     
-    enum AlertType: Identifiable {
+    enum AlertType: Identifiable, Equatable {
         case deleteConfirmation
         case deletionSuccess
-        case deletionFailure(String) // Assuming you have an associated value for error messages
+        case deletionFailure(String)
+        case imageChangeSuccess
+        case imageChangeError(String)
 
         // This computed property will give a unique ID for each alert type
         var id: Int {
@@ -44,10 +46,14 @@ class ProfileViewModel: ObservableObject {
                 return 1
             case .deletionFailure:
                 return 2
+            case .imageChangeSuccess:
+                return 4
+            case .imageChangeError:
+                return 5
             }
         }
     }
-    
+
     
     private var ref = Database.database().reference()
     private var storageRef = Storage.storage().reference(forURL: "gs://trivial-guineologia.appspot.com/images")
@@ -187,32 +193,32 @@ class ProfileViewModel: ObservableObject {
     
 
 
-    private func logDeletedUser(userFullName: String, email: String) {
-        let deletedUsersRef = Database.database().reference().child("deleted_users")
-        let userRef = deletedUsersRef.childByAutoId()
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "ddMMyy HHmmss"
-        let currentTimestamp = dateFormatter.string(from: Date())
-        
-        let calendar = Calendar.current
-        if let finalDeletionDate = calendar.date(byAdding: .hour, value: 48, to: Date()) {
-            let finalDeletionTimestamp = dateFormatter.string(from: finalDeletionDate)
+        private func logDeletedUser(userFullName: String, email: String) {
+            let deletedUsersRef = Database.database().reference().child("deleted_users")
+            let userRef = deletedUsersRef.childByAutoId()
             
-            userRef.setValue([
-                "fullName": userFullName,
-                "email": email,
-                "currentTimestamp": currentTimestamp,
-                "Final Deletion": finalDeletionTimestamp
-            ]) { (error, ref) in
-                if let error = error {
-                    print("Failed to save user to database:", error.localizedDescription)
-                    return
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "ddMMyy HHmmss"
+            let currentTimestamp = dateFormatter.string(from: Date())
+            
+            let calendar = Calendar.current
+            if let finalDeletionDate = calendar.date(byAdding: .hour, value: 48, to: Date()) {
+                let finalDeletionTimestamp = dateFormatter.string(from: finalDeletionDate)
+                
+                userRef.setValue([
+                    "fullName": userFullName,
+                    "email": email,
+                    "currentTimestamp": currentTimestamp,
+                    "Final Deletion": finalDeletionTimestamp
+                ]) { (error, ref) in
+                    if let error = error {
+                        print("Failed to save user to database:", error.localizedDescription)
+                        return
+                    }
+                    print("Successfully saved user to the database.")
                 }
-                print("Successfully saved user to the database.")
             }
         }
-    }
 
 
     
