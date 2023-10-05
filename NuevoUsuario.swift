@@ -70,12 +70,7 @@ struct NuevoUsuario: View {
                         )
                 }
                 .fullScreenCover(isPresented: $isShowingProfile) {
-                    Profile(
-                        shouldNavigateToProfile: .constant(true),
-                        leaderboardPosition: 1,
-                        dismissAction: {},
-                        shouldPresentProfile: $shouldPresentProfile
-                    )
+                    Profile()
                 }
                 .padding(.bottom, 5)
 

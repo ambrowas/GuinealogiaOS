@@ -164,13 +164,7 @@ struct MenuModoCompeticion: View {
                         )
                 }
                 .fullScreenCover(isPresented: $showProfile) {
-                    Profile(
-                        shouldNavigateToProfile: .constant(true),
-                        leaderboardPosition: 1,
-                        dismissAction: {
-                            showProfile = false
-                        }, shouldPresentProfile: $shouldPresentProfile
-                    )
+                    Profile ()
                 }
                 
                 Button(action: {

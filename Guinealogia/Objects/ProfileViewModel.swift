@@ -23,15 +23,30 @@ class ProfileViewModel: ObservableObject {
     @Published var profileFetchStatus: ProfileFetchStatus?
     @Published var alertMessage: String = ""
     @Published var showAlert: Bool = false
-    @Published var profileImageUpdateStatus: YourStatusType? = .none
+    @Published var alertType: AlertType?
     @Published var shouldNavigateToMenuModoCompeticion = false
+    @Published var showAlertLogInToDelete = false
+    @Published var showAlertUsuarioBorrado = false
+    @Published var showAlertBorrarUsuario = false
+   
     
-    enum YourStatusType {
-        case success
-        case failure(String)
-        case none
+    enum AlertType: Identifiable {
+        case deleteConfirmation
+        case deletionSuccess
+        case deletionFailure(String) // Assuming you have an associated value for error messages
+
+        // This computed property will give a unique ID for each alert type
+        var id: Int {
+            switch self {
+            case .deleteConfirmation:
+                return 0
+            case .deletionSuccess:
+                return 1
+            case .deletionFailure:
+                return 2
+            }
+        }
     }
-    
     
     
     private var ref = Database.database().reference()
@@ -47,7 +62,7 @@ class ProfileViewModel: ObservableObject {
         case noImage
         case none
     }
-
+    
     
     func fetchProfileImage(url: String) {
         guard let url = URL(string: url) else {
@@ -63,7 +78,7 @@ class ProfileViewModel: ObservableObject {
                 }
                 return
             }
-
+            
             guard let data = data else {
                 print("Failed to fetch data")
                 DispatchQueue.main.async {
@@ -71,7 +86,7 @@ class ProfileViewModel: ObservableObject {
                 }
                 return
             }
-
+            
             guard let image = UIImage(data: data) else {
                 print("Failed to convert data to image")
                 DispatchQueue.main.async {
@@ -87,7 +102,6 @@ class ProfileViewModel: ObservableObject {
             }
         }.resume()
     }
-
     
     
     func fetchProfileData() {
@@ -133,7 +147,91 @@ class ProfileViewModel: ObservableObject {
             }
         }
     }
+    
+    
+    func deleteUser(completion: @escaping (Bool) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            completion(false)
+            return
+        }
+        
+        // Delete user from Firebase Authentication
+        Auth.auth().currentUser?.delete { error in
+            if let error = error {
+                print("Error deleting user from Firebase Authentication: \(error.localizedDescription)")
+                completion(false)
+                return
+            }
+            
+            // Delete user data from Realtime Database
+            let ref = Database.database().reference().child("user").child(userID)
+            ref.removeValue { error, _ in
+                if let error = error {
+                    print("Error deleting user from Realtime Database: \(error.localizedDescription)")
+                    completion(false)
+                } else {
+                    print("User deleted successfully from Firebase and Realtime Database.")
+                    
+                    // Log deleted user
+                    self.logDeletedUser(userFullName: self.fullname, email: self.email)
+
+
+
+                    
+                    // Notify success and perform further actions if needed
+                    completion(true)
+                }
+            }
+        }
+    }
+    
+
+
+    private func logDeletedUser(userFullName: String, email: String) {
+        let deletedUsersRef = Database.database().reference().child("deleted_users")
+        let userRef = deletedUsersRef.childByAutoId()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "ddMMyy HHmmss"
+        let currentTimestamp = dateFormatter.string(from: Date())
+        
+        let calendar = Calendar.current
+        if let finalDeletionDate = calendar.date(byAdding: .hour, value: 48, to: Date()) {
+            let finalDeletionTimestamp = dateFormatter.string(from: finalDeletionDate)
+            
+            userRef.setValue([
+                "fullName": userFullName,
+                "email": email,
+                "currentTimestamp": currentTimestamp,
+                "Final Deletion": finalDeletionTimestamp
+            ]) { (error, ref) in
+                if let error = error {
+                    print("Failed to save user to database:", error.localizedDescription)
+                    return
+                }
+                print("Successfully saved user to the database.")
+            }
+        }
+    }
 
 
     
+    func deleteUserAndNotify() {
+        if let user = Auth.auth().currentUser {
+            // User is authenticated, proceed with deletion
+            deleteUser { success in
+                if success {
+                    self.alertType = .deletionSuccess
+                } else {
+                    self.alertType = .deletionFailure("Error al borrar el usuario.")
+                }
+            }
+        } else {
+            // User is not authenticated, show an alert asking the user to log in
+            // before deleting their account
+            self.alertType = .deletionFailure("Usuario no autenticado.")
+        }
+    }
 }
+
+
