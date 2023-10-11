@@ -193,7 +193,7 @@ class ProfileViewModel: ObservableObject {
     
 
 
-        private func logDeletedUser(userFullName: String, email: String) {
+     private func logDeletedUser(userFullName: String, email: String) {
             let deletedUsersRef = Database.database().reference().child("deleted_users")
             let userRef = deletedUsersRef.childByAutoId()
             

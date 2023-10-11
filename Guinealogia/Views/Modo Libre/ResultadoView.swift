@@ -17,6 +17,8 @@ struct ResultadoView: View {
     @State private var highScore: Int = 0
     @State private var isNewHighScore: Bool = false
     @State private var showAlert = false
+    @State private var isAnimating: Bool = false
+    
     
     var body: some View {
             ZStack {
@@ -31,11 +33,17 @@ struct ResultadoView: View {
                         .padding(.top, -100.0)
                         .frame(width: 300, height: 250)
                         .opacity(isShowingImage ? 1 : 0)
-                        .onAppear {
-                            withAnimation(.easeIn(duration: 2.0)) {
-                                isShowingImage = true
-                            }
-                        }
+                        .scaleEffect(isAnimating ? 1.1 : 1.0) // Pulse animation
+                                  .onAppear {
+                                      withAnimation(.easeIn(duration: 2.0)) {
+                                          isShowingImage = true
+                                      }
+                                      // Pulse Animation
+                                      withAnimation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                                          isAnimating = true
+                                      }
+                                  }
+                          
                     
                     Text(textFieldText)
                         .foregroundColor(.black)

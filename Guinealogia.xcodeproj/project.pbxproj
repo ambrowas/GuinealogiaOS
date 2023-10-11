@@ -78,12 +78,12 @@
 		757BC3052A33FDD500CA7A16 /* ResultadoCompeticion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC3042A33FDD500CA7A16 /* ResultadoCompeticion.swift */; };
 		757BC3072A37997000CA7A16 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC3062A37997000CA7A16 /* UserViewModel.swift */; };
 		757BC3092A37A9C700CA7A16 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BC3082A37A9C700CA7A16 /* Profile.swift */; };
-		75A41F862ABE110500E46C13 /* swoosh.wav in Resources */ = {isa = PBXBuildFile; fileRef = 75A41F852ABE110500E46C13 /* swoosh.wav */; };
 		75A4A2852AAA56860086EA79 /* NuevoUsuario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A4A2842AAA56860086EA79 /* NuevoUsuario.swift */; };
 		75A4A2872AAA57A10086EA79 /* NuevoUsuarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A4A2862AAA57A10086EA79 /* NuevoUsuarioViewModel.swift */; };
 		75AA53512A9D3ADF0014FAA9 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53502A9D3ADF0014FAA9 /* ProfileViewModel.swift */; };
 		75AA53592A9E4B320014FAA9 /* InputFieldViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53582A9E4B320014FAA9 /* InputFieldViews.swift */; };
 		75B542B62AAF8BE3001D9437 /* ProfileAlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B542B52AAF8BE3001D9437 /* ProfileAlertType.swift */; };
+		75BAAA0C2AD6450E003C0DCA /* swoosh.wav in Resources */ = {isa = PBXBuildFile; fileRef = 75BAAA0B2AD6450E003C0DCA /* swoosh.wav */; };
 		75CD8E342AB39D560077E950 /* LeadersProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CD8E332AB39D560077E950 /* LeadersProfileViewModel.swift */; };
 		75CD8E362AB3A1330077E950 /* ProfileUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CD8E352AB3A1330077E950 /* ProfileUser.swift */; };
 		75D44C392A3D1AC400E16F86 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D44C382A3D1AC400E16F86 /* ImagePicker.swift */; };
@@ -160,12 +160,12 @@
 		757BC3062A37997000CA7A16 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		757BC3082A37A9C700CA7A16 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		757BC30B2A37B2D800CA7A16 /* SDWebImage-SDWebImage-fedc884 */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "SDWebImage-SDWebImage-fedc884"; path = "../../Downloads/SDWebImage-SDWebImage-fedc884"; sourceTree = "<group>"; };
-		75A41F852ABE110500E46C13 /* swoosh.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = swoosh.wav; path = ../../Downloads/swoosh.wav; sourceTree = "<group>"; };
 		75A4A2842AAA56860086EA79 /* NuevoUsuario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuevoUsuario.swift; sourceTree = "<group>"; };
 		75A4A2862AAA57A10086EA79 /* NuevoUsuarioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuevoUsuarioViewModel.swift; sourceTree = "<group>"; };
 		75AA53502A9D3ADF0014FAA9 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		75AA53582A9E4B320014FAA9 /* InputFieldViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldViews.swift; sourceTree = "<group>"; };
 		75B542B52AAF8BE3001D9437 /* ProfileAlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAlertType.swift; sourceTree = "<group>"; };
+		75BAAA0B2AD6450E003C0DCA /* swoosh.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = swoosh.wav; sourceTree = "<group>"; };
 		75CD8E332AB39D560077E950 /* LeadersProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadersProfileViewModel.swift; sourceTree = "<group>"; };
 		75CD8E352AB3A1330077E950 /* ProfileUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUser.swift; sourceTree = "<group>"; };
 		75D44C382A3D1AC400E16F86 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -314,7 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				75F2664D2ABE01D10023FE69 /* SoundManager.swift */,
-				75A41F852ABE110500E46C13 /* swoosh.wav */,
+				75BAAA0B2AD6450E003C0DCA /* swoosh.wav */,
 				7557A7C12A242B90007C2A07 /* maeledjidalot.mp3 */,
 				7557A7DB2A257FC7007C2A07 /* notright.wav */,
 				757BC2B32A2989CA00CA7A16 /* mixkit.wav */,
@@ -547,7 +547,7 @@
 				7557A7DC2A257FC7007C2A07 /* right.wav in Resources */,
 				757BC2C02A2FF97E00CA7A16 /* GoogleService-Info.plist in Resources */,
 				757BC2B52A2989CB00CA7A16 /* mixkit.wav in Resources */,
-				75A41F862ABE110500E46C13 /* swoosh.wav in Resources */,
+				75BAAA0C2AD6450E003C0DCA /* swoosh.wav in Resources */,
 				75D44C412A40EDEE00E16F86 /* gameover.mp3 in Resources */,
 				7557A7DD2A257FC7007C2A07 /* notright.wav in Resources */,
 				7557A7D42A251DAD007C2A07 /* Sources in Resources */,
