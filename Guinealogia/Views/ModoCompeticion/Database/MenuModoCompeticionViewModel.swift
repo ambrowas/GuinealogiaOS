@@ -5,6 +5,8 @@ import FirebaseDatabase
 
 
 
+
+
 class MenuModoCompeticionViewModel: ObservableObject {
     
     @Published var userFullName = ""
@@ -26,13 +28,18 @@ class MenuModoCompeticionViewModel: ObservableObject {
     var shouldPresentResultado: Bool = false
     var shouldNavigateToProfile: Bool = false
     @Published var isAuthenticated: Bool = false
+    @Published var currentBatchNumber: Int = 0
+    @Published var questionManager: QuestionManager?
+
 
     
     
     
     init() {
-        fetchCurrentUserData()
-    }
+           fetchCurrentUserData()
+      
+       }
+    
     func fetchCurrentUserData() {
         
 
@@ -47,6 +54,7 @@ class MenuModoCompeticionViewModel: ObservableObject {
         
         
         self.isAuthenticated = true
+        setupQuestionManager()
         
         let ref = Database.database().reference().child("user").child(user.uid)
         
@@ -61,9 +69,110 @@ class MenuModoCompeticionViewModel: ObservableObject {
             print("Error fetching data: \(error.localizedDescription)")
         }
     }
-
-
     
+    func setupQuestionManager() {
+           // Initialize the questionManager with the required parameters.
+           // Assuming you have some method to obtain realTimeDatabaseReference, firestore, and userID
+           let realTimeDatabaseReference = Database.database().reference()
+           let firestore = Firestore.firestore()
+           let userID = getCurrentUserID() // This should be a method that retrieves the current user ID
+           
+           questionManager = QuestionManager(realTimeDatabaseReference: realTimeDatabaseReference, firestore: firestore, userID: userID)
+       }
+    
+    private func getCurrentUserID() -> String {
+            // Access the authentication system of your app to get the user ID
+            // For Firebase Auth, it might look like this:
+            return Auth.auth().currentUser?.uid ?? ""
+        }
+    
+    func checkAndStartBatchProcess() {
+        // Ensure the QuestionManager is initialized
+        guard let questionManager = questionManager else {
+            print("QuestionManager is not initialized.")
+            return
+        }
+        
+        // Check the Firebase Authentication for a valid user ID
+        guard let userID = Auth.auth().currentUser?.uid, userID == questionManager.userID else {
+            print("Error: User is not authenticated or user ID mismatch.")
+            // Handle the unauthenticated user situation here, such as showing a login prompt
+            return
+        }
+
+        // Determine the count of unused questions in the local database
+        let unusedQuestionsCount = DatabaseManager.shared.countUnusedQuestions()
+        print("Checking unused questions count: \(unusedQuestionsCount)")
+
+        if unusedQuestionsCount <= 5 {
+            print("Not enough unused questions. Need to fetch more from the server.")
+
+            // Fetch the current batch number for the user
+            questionManager.fetchCurrentBatchForUser { [weak self] batchNumber in
+                guard self != nil else { return }
+                print("Fetched batch number: \(batchNumber). Fetching shuffled order.")
+
+                // Fetch the shuffled order for the current batch
+                questionManager.fetchShuffledOrderForBatch(batchNumber: batchNumber) { shuffledOrder in
+                    // Log details about the fetched data
+                    if shuffledOrder.isEmpty {
+                        print("Shuffled order array is empty. This is unexpected.")
+                        // Handle error appropriately
+                    } else {
+                        print("Fetched shuffled order: \(shuffledOrder)")
+                    }
+                    
+                    // Ensure the shuffled order is not empty and is correctly formatted
+                    guard let shuffledOrderFirstElement = shuffledOrder.first, !shuffledOrderFirstElement.isEmpty else {
+                        print("Error: Shuffled order array is either empty or not in the expected format.")
+                        // Handle the error scenario here
+                        return
+                    }
+
+                    // Fetch questions using the shuffled order
+                    questionManager.fetchQuestionsBasedOnShuffledOrder(shuffledOrder: shuffledOrder) { fetchedDocuments in
+                        // Updating local database
+                        DatabaseManager.shared.deleteAllButLastFiveUnusedQuestions()
+
+                        let group = DispatchGroup()
+                        var totalInsertedQuestions = 0
+
+                        for document in fetchedDocuments {
+                            group.enter()
+                            if let question = QuestionII(document: document) {
+                                print("Inserting question with ID: \(question.number)")
+                                
+                                DatabaseManager.shared.insertQuestion(question: question) { success in
+                                    if success {
+                                        totalInsertedQuestions += 1
+                                    } else {
+                                        print("Failed to insert question with ID: \(question.number)")
+                                    }
+                                    group.leave()
+                                }
+                            } else {
+                                print("Document conversion to Question failed.")
+                                group.leave()
+                            }
+                        }
+
+                        group.notify(queue: .main) {
+                            print("Insertion complete. Total inserted: \(totalInsertedQuestions)")
+                            // Present the next available question
+                            questionManager.presentNextAvailableQuestion()
+                        }
+                    }
+                }
+            }
+        } else {
+            print("Adequate unused questions available.")
+            // Present the next available question
+            questionManager.presentNextAvailableQuestion()
+        }
+    }
+
+
+
     func validateCurrentGameFallos() -> Bool {
         return currentGameFallos >= 5
     }
@@ -148,8 +257,6 @@ class MenuModoCompeticionViewModel: ObservableObject {
         }
     }
 
-
-    
     func handleVolverButtonPressed() {
         goToMenuPrincipal = true
         }

@@ -121,7 +121,7 @@ struct JugarModoCompeticion: View {
                     .fontWeight(.bold)
                     .padding(.top, -20)
                 
-                Text(viewModel.currentQuestion)
+                Text(viewModel.currentQuestion?.questionText ?? "Loading question...")
                     .foregroundColor(.black)
                     .font(.headline)
                     .padding(.horizontal, 20)
@@ -228,7 +228,9 @@ struct JugarModoCompeticion: View {
                     .transition(.asymmetric(insertion: .scale, removal: .opacity))
                         }
                         }
-                    .onAppear(perform: viewModel.fetchQuestion)
+        .onAppear {
+            viewModel.fetchNextQuestion()
+        }
                     .navigationBarHidden(true)
                     .navigationBarBackButtonHidden(true)
                     .alert(item: $viewModel.activeAlert) { item -> Alert in

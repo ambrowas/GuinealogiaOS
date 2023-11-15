@@ -1,0 +1,343 @@
+
+import Foundation
+import SQLite3
+
+class DatabaseManager {
+    var db: OpaquePointer?
+    
+    static let shared = DatabaseManager()
+    init() {}
+    
+    func openDatabase() -> Bool {
+        print("openDatabase - Attempting to open the database.")
+        let fileURL = try! FileManager.default
+            .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            .appendingPathComponent("PreguntasDatabase.sqlite")
+        
+        if sqlite3_open(fileURL.path, &db) != SQLITE_OK {
+            print("openDatabase - Error opening database: \(String(cString: sqlite3_errmsg(db)))")
+            return false
+        }
+        print("openDatabase - Database opened successfully.")
+        return true
+    }
+    
+    func createTable() {
+        print("createTable - Attempting to create the table.")
+        guard openDatabase() else {
+            print("createTable - Unable to open the database.")
+            return
+        }
+        
+        let createTableString = """
+        CREATE TABLE IF NOT EXISTS Preguntas(
+            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            QUESTION TEXT,
+            OPTION_A TEXT,
+            OPTION_B TEXT,
+            OPTION_C TEXT,
+            ANSWER TEXT,
+            CATEGORY TEXT,
+            IMAGE TEXT,
+            NUMBER TEXT UNIQUE,
+            USED INTEGER DEFAULT 0
+        );
+        """
+        
+        var createTableStatement: OpaquePointer?
+        // Prepare the create table statement
+        if sqlite3_prepare_v2(db, createTableString, -1, &createTableStatement, nil) == SQLITE_OK {
+            // Execute the create table statement
+            if sqlite3_step(createTableStatement) == SQLITE_DONE {
+                print("createTable - Successfully created table Preguntas.")
+            } else {
+                let errmsg = String(cString: sqlite3_errmsg(db))
+                print("createTable - Could not create table. Error: \(errmsg)")
+            }
+        } else {
+            let errmsg = String(cString: sqlite3_errmsg(db))
+            print("createTable - CREATE TABLE statement could not be prepared. Error: \(errmsg)")
+        }
+        // Finalize the statement to release its resources
+        sqlite3_finalize(createTableStatement)
+        print("createTable - Exited table creation.")
+    }
+    
+    func insertQuestion(question: QuestionII, completion: @escaping (Bool) -> Void) {
+        print("insertQuestion - Attempting to insert \(question.number)")
+        guard openDatabase() else {
+            print("insertQuestion - Unable to open the database.")
+            completion(false)
+            return
+        }
+        
+        let insertStatementString = """
+        INSERT INTO Preguntas (QUESTION, OPTION_A, OPTION_B, OPTION_C, ANSWER, CATEGORY, IMAGE, NUMBER) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        """
+        var insertStatement: OpaquePointer?
+        
+        if sqlite3_prepare_v2(db, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK {
+            defer { sqlite3_finalize(insertStatement) }
+            // Binding the question properties to the INSERT statement
+            sqlite3_bind_text(insertStatement, 1, (question.questionText as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(insertStatement, 2, (question.optionA as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(insertStatement, 3, (question.optionB as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(insertStatement, 4, (question.optionC as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(insertStatement, 5, (question.answer as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(insertStatement, 6, (question.category as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(insertStatement, 7, (question.image as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(insertStatement, 8, (question.number as NSString).utf8String, -1, nil)
+            
+            if sqlite3_step(insertStatement) == SQLITE_DONE
+            {
+                print("insertQuestion - Successfully inserted question with NUMBER: \(question.number).")
+                completion(true)
+            } else {
+                let errmsg = String(cString: sqlite3_errmsg(db))
+                print("insertQuestion - Could not insert question with NUMBER: \(question.number). Error: \(errmsg)")
+                completion(false)
+            }
+        } else {
+            let errmsg = String(cString: sqlite3_errmsg(db))
+            print("insertQuestion - INSERT statement could not be prepared for question with NUMBER: \(question.number). Error: \(errmsg)")
+            
+            
+            completion(false)
+            
+            
+        }
+        print("insertQuestion - Exited.")
+    }
+    
+    func fetchRandomQuestionFromLocalDatabase() -> QuestionII? {
+        print("fetchRandomQuestionFromLocalDatabase - Retrieving a random question from the local database.")
+        guard openDatabase() else {
+            print("fetchRandomQuestionFromLocalDatabase - Unable to open the database.")
+            return nil
+        }
+        
+        let querySQL = """
+        SELECT QUESTION, OPTION_A, OPTION_B, OPTION_C, ANSWER, CATEGORY, IMAGE, NUMBER
+        FROM Preguntas WHERE Used = 0 ORDER BY RANDOM() LIMIT 1;
+        """
+        var queryStatement: OpaquePointer?
+        var question: QuestionII?
+        
+        if sqlite3_prepare_v2(db, querySQL, -1, &queryStatement, nil) == SQLITE_OK {
+            if sqlite3_step(queryStatement) == SQLITE_ROW {
+                let questionText = String(cString: sqlite3_column_text(queryStatement, 0))
+                let optionA = String(cString: sqlite3_column_text(queryStatement, 1))
+                let optionB = String(cString: sqlite3_column_text(queryStatement, 2))
+                let optionC = String(cString: sqlite3_column_text(queryStatement, 3))
+                let answer = String(cString: sqlite3_column_text(queryStatement, 4))
+                let category = String(cString: sqlite3_column_text(queryStatement, 5))
+                let image = String(cString: sqlite3_column_text(queryStatement, 6))
+                let number = String(cString: sqlite3_column_text(queryStatement, 7))
+                
+                question = QuestionII(
+                    answer: answer,
+                    category: category,
+                    image: image,
+                    number: number,
+                    optionA: optionA,
+                    optionB: optionB,
+                    optionC: optionC,
+                    questionText: questionText
+                )
+                print("fetchRandomQuestionFromLocalDatabase - Retrieved question with NUMBER: \(question!.number).")
+            } else {
+                print("fetchRandomQuestionFromLocalDatabase - No random question could be retrieved.")
+            }
+            sqlite3_finalize(queryStatement)
+        } else {
+            let errmsg = String(cString: sqlite3_errmsg(db))
+            print("fetchRandomQuestionFromLocalDatabase - SELECT statement could not be prepared. Error: \(errmsg)")
+        }
+        
+        return question
+    }
+    
+    func countUnusedQuestions() -> Int {
+        print("countUnusedQuestions - Counting unused questions in the local database.")
+        guard openDatabase() else {
+            print("countUnusedQuestions - Unable to open the database.")
+            return 0
+        }
+        
+        let queryStatementString = "SELECT COUNT(*) FROM Preguntas WHERE Used = 0;"
+        var queryStatement: OpaquePointer?
+        var count = 0
+        
+        if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
+            if sqlite3_step(queryStatement) == SQLITE_ROW {
+                count = Int(sqlite3_column_int(queryStatement, 0))
+                print("countUnusedQuestions - Count of unused questions: \(count).")
+            } else {
+                print("countUnusedQuestions - Count query did not return any rows, which is unexpected.")
+            }
+            sqlite3_finalize(queryStatement)
+        } else {
+            let errmsg = String(cString: sqlite3_errmsg(db))
+            print("countUnusedQuestions - SELECT statement could not be prepared. Error: \(errmsg)")
+        }
+        return count
+    }
+    
+    func markQuestionAsUsed(questionNumber: String) {
+        print("markQuestionAsUsed - Marking question NUMBER: \(questionNumber) as used.")
+        guard openDatabase() else {
+            print("markQuestionAsUsed - Unable to open the database.")
+            return
+        }
+        let updateStatementString = "UPDATE Preguntas SET Used = 1 WHERE NUMBER = ?;"
+        var updateStatement: OpaquePointer?
+        
+        if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) == SQLITE_OK {
+            sqlite3_bind_text(updateStatement, 1, (questionNumber as
+                                                   NSString).utf8String, -1, nil)
+            if sqlite3_step(updateStatement) == SQLITE_DONE {
+                print("markQuestionAsUsed - Successfully marked question NUMBER: \(questionNumber) as used.")
+            } else {
+                let errmsg = String(cString: sqlite3_errmsg(db))
+                print("markQuestionAsUsed - Could not mark question NUMBER: \(questionNumber) as used. Error: \(errmsg)")
+            }
+            sqlite3_finalize(updateStatement)
+        } else {
+            let errmsg = String(cString: sqlite3_errmsg(db))
+            print("markQuestionAsUsed - UPDATE statement could not be prepared. Error: \(errmsg)")
+        }
+        print("markQuestionAsUsed - Exited.")
+    }
+    
+    func markFortyRandomQuestionsAsUsed() {
+        print("markFortyRandomQuestionsAsUsed - Attempting to mark 40 random questions as used.")
+        guard openDatabase() else {
+            print("markFortyRandomQuestionsAsUsed - Unable to open the database.")
+            return
+        }
+        let updateStatementString = """
+                    UPDATE Preguntas
+                    SET Used = 1
+                    WHERE Id IN (
+                        SELECT Id FROM Preguntas
+                        WHERE Used = 0
+                        ORDER BY RANDOM()
+                        LIMIT 40
+                    );
+                    """
+        var updateStatement: OpaquePointer?
+        
+        if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) == SQLITE_OK {
+            if sqlite3_step(updateStatement) == SQLITE_DONE {
+                let affectedRows = sqlite3_changes(db)
+                print("markFortyRandomQuestionsAsUsed - Successfully marked \(affectedRows) questions as used.")
+            } else {
+                let errmsg = String(cString: sqlite3_errmsg(db))
+                print("markFortyRandomQuestionsAsUsed - Could not mark 40 random questions as used. Error: \(errmsg)")
+            }
+            sqlite3_finalize(updateStatement)
+        } else {
+            let errmsg = String(cString: sqlite3_errmsg(db))
+            print("markFortyRandomQuestionsAsUsed - UPDATE statement could not be prepared. Error: \(errmsg)")
+        }
+        print("markFortyRandomQuestionsAsUsed - Exited.")
+    }
+    
+    func refreshQuestionsInLocalDatabase(newQuestions: [QuestionII]) {
+        print("refreshQuestionsInLocalDatabase - Entered.")
+        guard openDatabase() else {
+            print("refreshQuestionsInLocalDatabase - Unable to open the database.")
+            return
+        }
+        deleteAllButLastFiveUnusedQuestions()
+        var insertedQuestionsCount = 0  // Counter for successful insertions
+        let dispatchGroup = DispatchGroup()
+        
+        for question in newQuestions {
+            dispatchGroup.enter()  // Indicate that we are entering the group
+            insertQuestion(question: question) { success in
+                if success {
+                    insertedQuestionsCount += 1
+                    print("refreshQuestionsInLocalDatabase - Inserted question NUMBER: \(question.number)")
+                } else {
+                    print("refreshQuestionsInLocalDatabase - Failed to insert question NUMBER: \(question.number)")
+                }
+                dispatchGroup.leave()  // Indicate that we are leaving the group
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            // This block will be called when all insertions have been completed
+            print("refreshQuestionsInLocalDatabase - Completed. Total of \(insertedQuestionsCount) new questions were inserted.")
+            // You can place any additional code here that should run after all questions have been inserted
+        }
+    }
+    
+    func deleteAllButLastFiveUnusedQuestions(completion: (() -> Void)? = nil) {
+        print("deleteAllButLastFiveUnusedQuestions - Entered.")
+        
+        guard openDatabase() else {
+            print("deleteAllButLastFiveUnusedQuestions - Unable to open the database.")
+            completion?()
+            return
+        }
+        
+        // Start the transaction
+        sqlite3_exec(db, "BEGIN TRANSACTION", nil, nil, nil)
+        
+        // First, count the total number of unused questions.
+        let countSQL = "SELECT COUNT(*) FROM Preguntas WHERE Used = 0;"
+        var countStmt: OpaquePointer?
+        var countUnusedQuestions = 0
+        
+        if sqlite3_prepare_v2(db, countSQL, -1, &countStmt, nil) == SQLITE_OK {
+            if sqlite3_step(countStmt) == SQLITE_ROW {
+                countUnusedQuestions = Int(sqlite3_column_int(countStmt, 0))
+            }
+            print("deleteAllButLastFiveUnusedQuestions - Total unused questions: \(countUnusedQuestions)")
+            sqlite3_finalize(countStmt)
+        } else {
+            print("deleteAllButLastFiveUnusedQuestions - Error preparing COUNT statement: \(String(cString: sqlite3_errmsg(db)))")
+        }
+        
+        // If there are more than 5 unused questions, delete until only 5 remain
+        if countUnusedQuestions > 5 {
+            let deleteSQL = """
+                DELETE FROM Preguntas
+                WHERE id IN (
+                    SELECT id FROM Preguntas
+                    WHERE Used = 0
+                    ORDER BY RANDOM()
+                    LIMIT (?)
+                );
+                """
+            var deleteStmt: OpaquePointer?
+            
+            if sqlite3_prepare_v2(db, deleteSQL, -1, &deleteStmt, nil) == SQLITE_OK {
+                // Bind the parameter (number of questions to delete)
+                let questionsToDelete = countUnusedQuestions - 5
+                sqlite3_bind_int(deleteStmt, 1, Int32(questionsToDelete))
+                
+                if sqlite3_step(deleteStmt) == SQLITE_DONE {
+                    let deletedQuestionsCount = questionsToDelete
+                    print("deleteAllButLastFiveUnusedQuestions - Successfully deleted \(deletedQuestionsCount) unused questions.")
+                } else {
+                    print("deleteAllButLastFiveUnusedQuestions - Error executing DELETE statement: \(String(cString: sqlite3_errmsg(db)))")
+                }
+                sqlite3_finalize(deleteStmt)
+            } else {
+                print("deleteAllButLastFiveUnusedQuestions - Error preparing DELETE statement: \(String(cString: sqlite3_errmsg(db)))")
+            }
+        }
+        // Correcting the if statement to check the result of sqlite3_exec
+        if sqlite3_exec(db, "COMMIT TRANSACTION", nil, nil, nil) == SQLITE_OK {
+            print("deleteAllButLastFiveUnusedQuestions - TRANSACTION COMMIT successful.")
+        } else {
+            print("deleteAllButLastFiveUnusedQuestions - TRANSACTION COMMIT failed: \(String(cString: sqlite3_errmsg(db)))")
+        }
+        
+        // Invoke the completion handler.
+        completion?()
+        print("deleteAllButLastFiveUnusedQuestions - Exited.")
+    }
+}

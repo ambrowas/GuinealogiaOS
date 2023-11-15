@@ -21,6 +21,16 @@ class NuevoUsuarioViewModel: ObservableObject {
     @Published var mostrarAlerta: Bool = false
     @Published var alertaTipo: AlertaTipo?
     @Published var navegarAlPerfil: Bool = false
+    var userID: String
+    var questionManager: QuestionManager
+
+    init() {
+        let realTimeDatabaseReference = Database.database().reference()
+        let firestore = Firestore.firestore()
+        self.userID = Auth.auth().currentUser?.uid ?? "UnknownUserID" // Default value if not logged in
+        self.questionManager = QuestionManager(realTimeDatabaseReference: realTimeDatabaseReference, firestore: firestore, userID: userID)
+    }
+
 
     
     
@@ -116,6 +126,8 @@ class NuevoUsuarioViewModel: ObservableObject {
                 return
             }
             print("Data saved successfully!")
+            let dbManager = DatabaseManager()
+                       dbManager.createTable()
             self.IngresarUsuario()
         }
 
@@ -166,28 +178,53 @@ class NuevoUsuarioViewModel: ObservableObject {
         }
     
     func IngresarUsuario() {
-        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-            if let error = error {
-                print("Error signing in: \(error.localizedDescription)")
-                // Here you might want to update the UI to notify the user about the error
-                self.mostrarError(.signInError(description: error.localizedDescription))
-                return
-            }
-
-            self.alertaTipo = .exito(message: "Usuario Creado. Completa tu perfil agregando una foto.")
-            self.mostrarAlerta = true
-            
-            UserDefaults.standard.set(self.fullname, forKey: "fullname")
-            UserDefaults.standard.set(0, forKey: "highestScore")  // Setting initial values as 0
-            UserDefaults.standard.set(0, forKey: "currentGameFallos")
-            
-            
-            
-            print("User signed in successfully")
-            // You can retrieve user information from 'authResult'
-        }
-    }
-
+           Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+               guard let strongSelf = self else { return }
+               
+               if let error = error {
+                   // Handle sign-in error
+                   strongSelf.mostrarError(.signInError(description: error.localizedDescription))
+                   return
+               }
+               
+               // Ensure a valid user ID is retrieved
+               guard let userID = authResult?.user.uid else {
+                   // Handle error: failed to get user ID
+                   return
+               }
+               
+               // Set UserDefaults for this session
+               UserDefaults.standard.set(strongSelf.fullname, forKey: "fullname")
+               UserDefaults.standard.set(0, forKey: "highestScore")
+               UserDefaults.standard.set(0, forKey: "currentGameFallos")
+               
+               // Assign a random batch to the user
+               strongSelf.questionManager.countTotalBatches { totalBatches in
+                   guard totalBatches > 0 else {
+                       // Handle error: no batches available
+                       return
+                   }
+                   
+                   // Generate a random batch number and set it for the user
+                   let randomBatchNumber = Int.random(in: 1...totalBatches)
+                   strongSelf.questionManager.setNumeroDeBatch(userId: userID) { success, error in
+                       if let error = error {
+                           // Handle error in setting batch number
+                           return
+                       }
+                       if success {
+                           
+                       }
+                   }
+               }
+               
+               // Success message for sign-in (not dependent on the batch assignment)
+               strongSelf.alertaTipo = .exito(message: "Usuario Creado. Completa tu perfil agregando una foto.")
+               strongSelf.mostrarAlerta = true
+           }
+       }
+    
+   
     
 
     

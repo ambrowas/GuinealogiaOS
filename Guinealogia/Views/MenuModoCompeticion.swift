@@ -214,6 +214,18 @@ struct MenuModoCompeticion: View {
                         .cornerRadius(10)
                     
                 }
+                Button {
+                    SoundManager.shared.playTransitionSound()
+                    DatabaseManager.shared.markFortyRandomQuestionsAsUsed()
+                } label: {
+                    Text("MARCAR CUARENTA")
+                        .font(.headline)
+                        .foregroundColor(.black)
+                        .padding()
+                        .frame(width: 300, height: 55)
+                        .cornerRadius(10)
+                    
+                }
                 .fullScreenCover(isPresented: $showMenuPrincipalSheet) {
                     MenuPrincipal(player: .constant(nil))
                 }
@@ -223,8 +235,10 @@ struct MenuModoCompeticion: View {
                 return Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
             .onAppear {
+                viewModel.checkAndStartBatchProcess()
                 if viewModel.userFullName.isEmpty {
                     viewModel.fetchCurrentUserData()
+                    
                
                     }
                 }
