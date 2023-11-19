@@ -36,6 +36,7 @@ class ProfileViewModel: ObservableObject {
         case deletionFailure(String)
         case imageChangeSuccess
         case imageChangeError(String)
+        case volveratras
 
         // This computed property will give a unique ID for each alert type
         var id: Int {
@@ -50,6 +51,8 @@ class ProfileViewModel: ObservableObject {
                 return 4
             case .imageChangeError:
                 return 5
+            case .volveratras:
+                return 6
             }
         }
     }

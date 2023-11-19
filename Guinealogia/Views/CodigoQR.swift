@@ -53,7 +53,7 @@ struct CodigoQR: View {
                 if let qrData = qrData {
                     QRCodeView(data: qrData)
                 } else {
-                    Text("Generating QR Code...")
+                    Text("Generando Códio QR...")
                 }
                 
                 Text(qrCodeKey)
@@ -99,7 +99,7 @@ struct CodigoQR: View {
                 setupQRCodeData()
             }
             .alert(isPresented: $isShowingAlert) {
-                Alert(title: Text("Resultado"),
+                Alert(title: Text(""),
                       message: Text(alertMessage),
                       dismissButton: .default(Text("OK")))
             }
@@ -125,16 +125,23 @@ struct CodigoQR: View {
     }
             
     
-        func setupQRCodeData() {
-                if let userId = Auth.auth().currentUser?.uid {
-                    self.userViewModel.fetchUserData(userId: userId) {
-                        self.qrCodeKey = self.generateQRCodeKey()
-                        self.qrData = self.generateQRCodeData()
-                    }
+    func setupQRCodeData() {
+        self.userViewModel.fetchUserData { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success():
+                    // Handle successful fetch and update relevant properties or UI here:
+                    // e.g., generate QR code based on fetched user data:
+                    self.qrCodeKey = self.generateQRCodeKey()
+                    self.qrData = self.generateQRCodeData()
+                case .failure(let error):
+                    // Handle error - could be due to no user being logged in or an error fetching data
+                    print("Error fetching user data: \(error.localizedDescription)")
+                    // Handle the error, possibly by updating the UI to reflect that the data could not be fetched
                 }
             }
-    
-    
+        }
+    }   
         func generateQRCodeData() -> Data? {
             guard let userId = Auth.auth().currentUser?.uid else {
                 return nil
@@ -162,7 +169,7 @@ struct CodigoQR: View {
         
             if isGuardarButtonDisabled {
                    isShowingAlert = true
-                   alertMessage = "Debes esperar 3 minutos antes de poder volver a guardar."
+                   alertMessage = "Ya guardaste este código."
                    return
                }
         

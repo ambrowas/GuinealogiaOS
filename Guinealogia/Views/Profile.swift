@@ -30,7 +30,7 @@ struct Profile: View {
         Binding<Bool>(
             get: {
                 switch profileViewModel.alertType {
-                case .deleteConfirmation, .deletionSuccess, .deletionFailure, .imageChangeSuccess, .imageChangeError(_):
+                case .deleteConfirmation, .deletionSuccess, .deletionFailure,  .imageChangeSuccess, .imageChangeError(_), .volveratras:
                     return true
                 case .none:
                     return false
@@ -114,9 +114,15 @@ struct Profile: View {
                 .padding(.horizontal, 3)
                 
                 Button(action: {
-                    SoundManager.shared.playTransitionSound()
-                    presentationMode.wrappedValue.dismiss()
-                    
+                    if profileViewModel.profileImage == nil {
+                        // If no profile picture is set, prompt the user with the alert
+                        profileViewModel.alertType = .volveratras
+                        showAlert = true
+                    } else {
+                        // If a profile picture is set, directly navigate to the desired view
+                        SoundManager.shared.playTransitionSound()
+                        showMenuModoCompeticion = true
+                    }
                 }) {
                     Text("VOLVER")
                         .font(.headline)
@@ -195,77 +201,90 @@ struct Profile: View {
                             message: Text(errorMessage),
                             dismissButton: .default(Text("OK"))
                         )
+                    case .volveratras:
+                        return Alert(
+                            title: Text(""),
+                            message: Text("¿Seguro que quieres volver sin poner una foto?"),
+                            primaryButton: .default(Text("OK")){
+                                SoundManager.shared.playTransitionSound()
+                                showMenuModoCompeticion = true
+                            },
+                            secondaryButton: .cancel()
+                            
+                            
+                        )
+                        
                     }
                 }
             }
+            .fullScreenCover(isPresented: $showGestionarSesionView) {
+                GestionarSesion() // Assuming GestionarSesion is a View you have defined
+            }
+            
+            .fullScreenCover(isPresented: $showMenuPrincipalView) {
+                MenuPrincipal(player: .constant(nil))
+            }
+            .fullScreenCover(isPresented: $showMenuModoCompeticion) {
+                MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())
+            }
+            
+            .sheet(isPresented: $isImagePickerDisplayed) {
+                ImagePicker(
+                    profileViewModel: profileViewModel,
+                    selectedImage: $profileViewModel.profileImage,
+                    storageRef: Storage.storage().reference(),
+                    ref: Database.database().reference()
+                )
+            }
+            
+            .onChange(of: profileViewModel.alertType) { alertType in
+                switch alertType {
+                case .imageChangeSuccess, .imageChangeError(_):
+                    // No action is needed here as the alert will be shown based on the alertType value
+                    break
+                default:
+                    break
+                }
+            }
+            
+            
+            .onAppear {
+                profileViewModel.fetchProfileData()
+            }
         }
-        .fullScreenCover(isPresented: $showGestionarSesionView) {
-            GestionarSesion() // Assuming GestionarSesion is a View you have defined
-        }
+    }
         
-        .fullScreenCover(isPresented: $showMenuPrincipalView) {
-            MenuPrincipal(player: .constant(nil))
-        }
-        .fullScreenCover(isPresented: $showMenuModoCompeticion) {
-            MenuModoCompeticion(userId: "DummyuserId", userData: UserData(), viewModel: MenuModoCompeticionViewModel())
-        }
-    
-        .sheet(isPresented: $isImagePickerDisplayed) {
-            ImagePicker(
-                profileViewModel: profileViewModel,
-                selectedImage: $profileViewModel.profileImage,
-                storageRef: Storage.storage().reference(),
-                ref: Database.database().reference()
-            )
-        }
-        
-        .onChange(of: profileViewModel.alertType) { alertType in
-            switch alertType {
-            case .imageChangeSuccess, .imageChangeError(_):
-                // No action is needed here as the alert will be shown based on the alertType value
-                break
-            default:
-                break
+        struct TextRowView: View {
+            let title: String
+            let content: String
+            
+            var body: some View {
+                HStack(alignment: .center, spacing: 10) {
+                    Text(title)
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundColor(.black)
+                    
+                    Text(content)
+                        .font(.system(size: 14))
+                        .padding(3)
+                        .foregroundColor(.black)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                    Spacer()
+                }
+                .padding([.leading, .trailing])
+                .environment(\.colorScheme, .light)
             }
         }
         
-    
-             .onAppear {
-                 profileViewModel.fetchProfileData()
-             }
-         }
-     
-    
-    struct TextRowView: View {
-        let title: String
-        let content: String
-        
-        var body: some View {
-            HStack(alignment: .center, spacing: 10) {
-                Text(title)
-                    .font(.subheadline)
-                    .bold()
-                    .foregroundColor(.black)
-                
-                Text(content)
-                    .font(.system(size: 14))
-                    .padding(3)
-                    .foregroundColor(.black)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 5)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                Spacer()
+        struct Profile_Previews: PreviewProvider {
+            static var previews: some View {
+                Profile()
             }
-            .padding([.leading, .trailing])
-            .environment(\.colorScheme, .light)
         }
+        
     }
-    
-    struct Profile_Previews: PreviewProvider {
-        static var previews: some View {
-            Profile()
-        }
-    }
-    
-}
+

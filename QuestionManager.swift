@@ -15,6 +15,8 @@ class QuestionManager {
     @Published var currentAnswer: String = ""
     @Published var currentCategory: String = ""
     @Published var currentImageURL: String = ""
+    
+    
   
     
     // MARK: - Initializer
