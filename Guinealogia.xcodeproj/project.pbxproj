@@ -17,6 +17,7 @@
 		752EB76C2A478ED500013A73 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752EB76B2A478ED500013A73 /* UserManager.swift */; };
 		753536382A549EDE006A3779 /* Clasificacion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536372A549EDE006A3779 /* Clasificacion.swift */; };
 		7535363A2A54B231006A3779 /* LeadersProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753536392A54B231006A3779 /* LeadersProfile.swift */; };
+		754FEBF52B15431600DE16F2 /* maeledjidalot.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 754FEBF42B15431600DE16F2 /* maeledjidalot.mp3 */; };
 		7557A7912A2400D4007C2A07 /* GuinealogiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7902A2400D4007C2A07 /* GuinealogiaApp.swift */; };
 		7557A7932A2400D4007C2A07 /* FlashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7922A2400D4007C2A07 /* FlashView.swift */; };
 		7557A7952A2400D6007C2A07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7557A7942A2400D6007C2A07 /* Assets.xcassets */; };
@@ -24,11 +25,9 @@
 		7557A7A32A2400D6007C2A07 /* GuinealogiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7A22A2400D6007C2A07 /* GuinealogiaTests.swift */; };
 		7557A7AD2A2400D6007C2A07 /* GuinealogiaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7AC2A2400D6007C2A07 /* GuinealogiaUITests.swift */; };
 		7557A7AF2A2400D6007C2A07 /* GuinealogiaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7AE2A2400D6007C2A07 /* GuinealogiaUITestsLaunchTests.swift */; };
-		7557A7C22A242B90007C2A07 /* maeledjidalot.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7557A7C12A242B90007C2A07 /* maeledjidalot.mp3 */; };
 		7557A7C42A2446C8007C2A07 /* MenuPrincipal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7C32A2446C8007C2A07 /* MenuPrincipal.swift */; };
 		7557A7C82A24548E007C2A07 /*  MenuModoLibre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7C72A24548E007C2A07 /*  MenuModoLibre.swift */; };
 		7557A7CC2A2516BB007C2A07 /* Quiz Contract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7CB2A2516BB007C2A07 /* Quiz Contract.swift */; };
-		7557A7CE2A25190B007C2A07 /* Guinealogia.db in Resources */ = {isa = PBXBuildFile; fileRef = 7557A7CD2A251778007C2A07 /* Guinealogia.db */; };
 		7557A7D22A251D6C007C2A07 /* QuizDBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7557A7D12A251D6C007C2A07 /* QuizDBHelper.swift */; };
 		7557A7D42A251DAD007C2A07 /* Sources in Resources */ = {isa = PBXBuildFile; fileRef = 7557A7D32A251DAD007C2A07 /* Sources */; };
 		7557A7D72A251EF3007C2A07 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 7557A7D62A251EF3007C2A07 /* SQLite */; };
@@ -85,6 +84,7 @@
 		75A4A2872AAA57A10086EA79 /* NuevoUsuarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A4A2862AAA57A10086EA79 /* NuevoUsuarioViewModel.swift */; };
 		75AA53512A9D3ADF0014FAA9 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53502A9D3ADF0014FAA9 /* ProfileViewModel.swift */; };
 		75AA53592A9E4B320014FAA9 /* InputFieldViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AA53582A9E4B320014FAA9 /* InputFieldViews.swift */; };
+		75AB72FC2B18BDFE0017669C /* Guinealogia.db in Resources */ = {isa = PBXBuildFile; fileRef = 75AB72FB2B18B8C80017669C /* Guinealogia.db */; };
 		75B542B62AAF8BE3001D9437 /* ProfileAlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B542B52AAF8BE3001D9437 /* ProfileAlertType.swift */; };
 		75BAAA0C2AD6450E003C0DCA /* swoosh.wav in Resources */ = {isa = PBXBuildFile; fileRef = 75BAAA0B2AD6450E003C0DCA /* swoosh.wav */; };
 		75CD8E342AB39D560077E950 /* LeadersProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CD8E332AB39D560077E950 /* LeadersProfileViewModel.swift */; };
@@ -125,6 +125,7 @@
 		752EB76B2A478ED500013A73 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		753536372A549EDE006A3779 /* Clasificacion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Clasificacion.swift; sourceTree = "<group>"; };
 		753536392A54B231006A3779 /* LeadersProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadersProfile.swift; sourceTree = "<group>"; };
+		754FEBF42B15431600DE16F2 /* maeledjidalot.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = maeledjidalot.mp3; sourceTree = "<group>"; };
 		7557A78D2A2400D4007C2A07 /* Guinealogia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guinealogia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7557A7902A2400D4007C2A07 /* GuinealogiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuinealogiaApp.swift; sourceTree = "<group>"; };
 		7557A7922A2400D4007C2A07 /* FlashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashView.swift; sourceTree = "<group>"; };
@@ -136,11 +137,9 @@
 		7557A7A82A2400D6007C2A07 /* GuinealogiaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GuinealogiaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7557A7AC2A2400D6007C2A07 /* GuinealogiaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuinealogiaUITests.swift; sourceTree = "<group>"; };
 		7557A7AE2A2400D6007C2A07 /* GuinealogiaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuinealogiaUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		7557A7C12A242B90007C2A07 /* maeledjidalot.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = maeledjidalot.mp3; sourceTree = "<group>"; };
 		7557A7C32A2446C8007C2A07 /* MenuPrincipal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPrincipal.swift; sourceTree = "<group>"; };
 		7557A7C72A24548E007C2A07 /*  MenuModoLibre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " MenuModoLibre.swift"; sourceTree = "<group>"; };
 		7557A7CB2A2516BB007C2A07 /* Quiz Contract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Quiz Contract.swift"; sourceTree = "<group>"; };
-		7557A7CD2A251778007C2A07 /* Guinealogia.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = Guinealogia.db; sourceTree = "<group>"; };
 		7557A7D12A251D6C007C2A07 /* QuizDBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizDBHelper.swift; sourceTree = "<group>"; };
 		7557A7D32A251DAD007C2A07 /* Sources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sources; sourceTree = "<group>"; };
 		7557A7D82A2578D8007C2A07 /* ResultadoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultadoView.swift; sourceTree = "<group>"; };
@@ -170,6 +169,7 @@
 		75A4A2862AAA57A10086EA79 /* NuevoUsuarioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuevoUsuarioViewModel.swift; sourceTree = "<group>"; };
 		75AA53502A9D3ADF0014FAA9 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		75AA53582A9E4B320014FAA9 /* InputFieldViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldViews.swift; sourceTree = "<group>"; };
+		75AB72FB2B18B8C80017669C /* Guinealogia.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = Guinealogia.db; sourceTree = "<group>"; };
 		75B542B52AAF8BE3001D9437 /* ProfileAlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAlertType.swift; sourceTree = "<group>"; };
 		75BAAA0B2AD6450E003C0DCA /* swoosh.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = swoosh.wav; sourceTree = "<group>"; };
 		75CD8E332AB39D560077E950 /* LeadersProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadersProfileViewModel.swift; sourceTree = "<group>"; };
@@ -324,7 +324,7 @@
 				75A1CD102AF9EF680016705E /* QuestionManager.swift */,
 				75F2664D2ABE01D10023FE69 /* SoundManager.swift */,
 				75BAAA0B2AD6450E003C0DCA /* swoosh.wav */,
-				7557A7C12A242B90007C2A07 /* maeledjidalot.mp3 */,
+				754FEBF42B15431600DE16F2 /* maeledjidalot.mp3 */,
 				7557A7DB2A257FC7007C2A07 /* notright.wav */,
 				757BC2B32A2989CA00CA7A16 /* mixkit.wav */,
 				757BC2B42A2989CA00CA7A16 /* noluck.mp3 */,
@@ -340,8 +340,8 @@
 				75A4A2842AAA56860086EA79 /* NuevoUsuario.swift */,
 				7565B5432A5F4AF30020E6E1 /* CheckCodigo.swift */,
 				753536392A54B231006A3779 /* LeadersProfile.swift */,
+				75AB72FB2B18B8C80017669C /* Guinealogia.db */,
 				757BC30A2A37B2D800CA7A16 /* Packages */,
-				7557A7CD2A251778007C2A07 /* Guinealogia.db */,
 				7557A78F2A2400D4007C2A07 /* Guinealogia */,
 				7557A7A12A2400D6007C2A07 /* GuinealogiaTests */,
 				7557A7AB2A2400D6007C2A07 /* GuinealogiaUITests */,
@@ -549,8 +549,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				757BC2B82A2989DA00CA7A16 /* hallelujah.mp3 in Resources */,
-				7557A7CE2A25190B007C2A07 /* Guinealogia.db in Resources */,
-				7557A7C22A242B90007C2A07 /* maeledjidalot.mp3 in Resources */,
+				75AB72FC2B18BDFE0017669C /* Guinealogia.db in Resources */,
 				756F9BDF2A62089100B9CEEC /* WhatsApp Image 2023-05-17 at 7.21.33 PM.jpeg in Resources */,
 				7557A7992A2400D6007C2A07 /* Preview Assets.xcassets in Resources */,
 				7557A7DC2A257FC7007C2A07 /* right.wav in Resources */,
@@ -562,6 +561,7 @@
 				7557A7D42A251DAD007C2A07 /* Sources in Resources */,
 				757BC2B62A2989CB00CA7A16 /* noluck.mp3 in Resources */,
 				757BC2BA2A2989F500CA7A16 /* countdown.wav in Resources */,
+				754FEBF52B15431600DE16F2 /* maeledjidalot.mp3 in Resources */,
 				7557A7952A2400D6007C2A07 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -700,7 +700,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
-				ENABLE_ON_DEMAND_RESOURCES = YES;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -765,7 +765,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_ON_DEMAND_RESOURCES = YES;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -793,12 +793,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Guinealogia/Guinealogia.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.0;
 				DEVELOPMENT_ASSET_PATHS = "\"Guinealogia/Preview Content\"";
 				DEVELOPMENT_TEAM = B5X8QR4N34;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Guinealogia;
@@ -817,7 +818,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iniciativaselebi.guinealogia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -834,13 +835,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Guinealogia/Guinealogia.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.0;
 				DEVELOPMENT_ASSET_PATHS = "\"Guinealogia/Preview Content\"";
 				DEVELOPMENT_TEAM = B5X8QR4N34;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Guinealogia;
@@ -859,7 +861,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iniciativaselebi.guinealogia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -878,6 +880,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -900,6 +903,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -921,6 +925,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -942,6 +947,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_ON_DEMAND_RESOURCES = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;

@@ -153,12 +153,8 @@ struct ResultadoCompeticion: View {
                     // MENU PRINCIPAL Button
                     Button(action: {
                         SoundManager.shared.playTransitionSound()
-                        if userViewModel.currentGamePuntuacion >= 2500 {
                             activeAlert = .confirmarSalida
-                        } else {
-                            
-
-                        }
+                 
                     }) {
                         Text("MENU PRINCIPAL")
                             .font(.headline)

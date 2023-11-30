@@ -109,7 +109,7 @@ struct CodigoQR: View {
     
     
     
-    func generateQRCodeKey() -> String {
+         func generateQRCodeKey() -> String {
         let allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         let length = 18
         
@@ -124,8 +124,7 @@ struct CodigoQR: View {
         return randomKey
     }
             
-    
-    func setupQRCodeData() {
+         func setupQRCodeData() {
         self.userViewModel.fetchUserData { result in
             DispatchQueue.main.async {
                 switch result {
@@ -141,7 +140,8 @@ struct CodigoQR: View {
                 }
             }
         }
-    }   
+    }
+    
         func generateQRCodeData() -> Data? {
             guard let userId = Auth.auth().currentUser?.uid else {
                 return nil

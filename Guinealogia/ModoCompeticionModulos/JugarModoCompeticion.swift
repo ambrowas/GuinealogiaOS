@@ -226,62 +226,100 @@ struct JugarModoCompeticion: View {
                         }
                     }
                     .transition(.asymmetric(insertion: .scale, removal: .opacity))
-                        }
-                        }
+            }
+        }
         .onAppear {
+            NotificationCenter.default.addObserver(
+                forName: UIApplication.didEnterBackgroundNotification,
+                object: nil, queue: .main) { _ in
+                    viewModel.appMovedToBackground()
+            }
+
+            NotificationCenter.default.addObserver(
+                forName: UIApplication.willEnterForegroundNotification,
+                object: nil, queue: .main) { _ in
+                    viewModel.appReturnsToForeground()
+            }
+
+            // Existing code to fetch the next question
             viewModel.fetchNextQuestion()
         }
-                    .navigationBarHidden(true)
-                    .navigationBarBackButtonHidden(true)
-                    .alert(item: $viewModel.activeAlert) { item -> Alert in
-                        switch item {
-                        case .showAlert:
-                            return Alert(title: Text("ATENCION"), message: Text("Sin miedo, escoge una opción."), dismissButton: .default(Text("OK")))
-                            
-                        case .showEndGameAlert:
-                            print("Show End Game Alert")
-                            return Alert(
-                                title: Text("Confirmación"),
-                                message: Text("¿Seguro que quieres terminar la partida?"),
-                                primaryButton: .destructive(Text("SI")) {
-                                    viewModel.terminar {
-                                        shouldPresentGameOver = true
-                                    }
-                                },
-                                secondaryButton: .cancel(Text("NO"))
-                            )
-                            
-                        case .showGameOverAlert:
-                            return Alert(
-                                title: Text("Game Over"),
-                                message: Text("Has cometido 5 errores. Fin de la partida."),
-                                dismissButton: .default(Text("OK")) {
-                                    viewModel.terminar {
-                                        shouldPresentGameOver = true
-                                    }
-                                }
-                            )
-                            
-                        case .showManyMistakesAlert:
-                            return Alert(title: Text("Cuidado"), message: Text("Llevas 4 fallos. Uno más y la partida se acaba."), dismissButton: .default(Text("OK")))
+        
+        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
+        .alert(item: $viewModel.activeAlert) { item -> Alert in
+            switch item {
+            case .showAlert:
+                return Alert(title: Text("ATENCION"), message: Text("Sin miedo, escoge una opción."), dismissButton: .default(Text("OK")))
+                
+            case .showEndGameAlert:
+                print("Show End Game Alert")
+                return Alert(
+                    title: Text("Confirmación"),
+                    message: Text("¿Seguro que quieres terminar la partida?"),
+                    primaryButton: .destructive(Text("SI")) {
+                        viewModel.terminar {
+                            shouldPresentGameOver = true
+                        }
+                    },
+                    secondaryButton: .cancel(Text("NO"))
+                )
+                
+            case .showGameOverAlert:
+                return Alert(
+                    title: Text("Game Over"),
+                    message: Text("Has cometido 5 errores. Fin de la partida."),
+                    dismissButton: .default(Text("OK")) {
+                        viewModel.terminar {
+                            shouldPresentGameOver = true
                         }
                     }
-                  
-                    .fullScreenCover(isPresented: $shouldPresentGameOver){
-                        GameOver(userId: userId)
-                            .onDisappear{
-                                presentationMode.wrappedValue.dismiss()
-                            }
+                )
+                
+            case .showManyMistakesAlert:
+                return Alert(title: Text("Cuidado"), message: Text("Llevas 4 fallos. Uno más y la partida se acaba."), dismissButton: .default(Text("OK")))
+                
+            case .showReturnToAppAlert:
+                return Alert(
+                    title: Text("Aviso"),
+                    message: Text("No debes salir mientras haya una pregunta activa"),
+                    dismissButton: .default(Text("OK")) {
+                        viewModel.penalizeForLeavingApp() // Process as a wrong answer after dismissing the alert
                     }
-                    .onChange(of: viewModel.activeAlert) { newAlert in
-                        viewModel.isAlertBeingDisplayed = (newAlert != nil)
-                    }
-                    .onReceive(viewModel.timeExpired, perform: { newValue in
-                        showAnswerStatusForMistakes = newValue
-                    })
+                )
+            }
+            
+        }
+                .fullScreenCover(isPresented: $shouldPresentGameOver){
+                    GameOver(userId: userId)
+                        .onDisappear{
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                }
+                .onChange(of: viewModel.activeAlert) { newAlert in
+                    viewModel.isAlertBeingDisplayed = (newAlert != nil)
+                }
+                .onDisappear {
+                    NotificationCenter.default.removeObserver(
+                        self,
+                        name: UIApplication.didEnterBackgroundNotification,
+                        object: nil
+                    )
+                    NotificationCenter.default.removeObserver(
+                        self,
+                        name: UIApplication.willEnterForegroundNotification,
+                        object: nil
+                    )
+                }
+
+                .onReceive(viewModel.timeExpired, perform: { newValue in
+                    showAnswerStatusForMistakes = newValue
+                    
+                })
                 
             }
-    }
+        }
+    
     
     struct GameOverPresented: Identifiable {
         var id = UUID() // changes
@@ -292,4 +330,5 @@ struct JugarModoCompeticion: View {
             JugarModoCompeticion(userId: "DummyuserId", userData: UserData())
         }
     }
+    
 

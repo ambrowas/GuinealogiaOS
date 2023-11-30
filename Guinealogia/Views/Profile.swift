@@ -159,7 +159,7 @@ struct Profile: View {
                     case .deleteConfirmation:
                         return Alert(
                             title: Text("Confirmación"),
-                            message: Text("¿Estás seguro de que quieres borrar esta cuenta? Esta acción no se puede deshacer."),
+                            message: Text("¿Seguro de que quieres borrar esta cuenta? Esta acción no se puede deshacer."),
                             primaryButton: .destructive(Text("Borrar")) {
                                 
                                 profileViewModel.deleteUserAndNotify()

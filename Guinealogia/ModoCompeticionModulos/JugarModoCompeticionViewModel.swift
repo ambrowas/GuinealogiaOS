@@ -58,6 +58,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
     var questionManager: QuestionManager?
     var currentQuestion: QuestionII?
     var selectedOptionIndex: Int?
+    @Published var timerIsActive = false
     var currentQuestionNumber: String? { // Computed property to get the question number
         return currentQuestion?.number // Or however you access the number in your Question type
         }
@@ -65,7 +66,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
     
         
         enum ActiveAlert: Identifiable {
-            case showAlert, showEndGameAlert, showGameOverAlert, showManyMistakesAlert
+            case showAlert, showEndGameAlert, showGameOverAlert, showManyMistakesAlert,  showReturnToAppAlert
             
             var id: Int {
                 switch self {
@@ -77,6 +78,8 @@ class JugarModoCompeticionViewModel: ObservableObject {
                     return 2
                 case .showManyMistakesAlert:
                     return 3
+                case .showReturnToAppAlert:
+                    return 4
                 }
             }
         }
@@ -121,7 +124,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
     
     
            
-                func fetchNextQuestion() {
+            func fetchNextQuestion() {
             let unusedQuestionsCount = DatabaseManager.shared.countUnusedQuestions()
             print("fetchNextQuestion - Remaining unused questions in the database: \(unusedQuestionsCount)")
 
@@ -136,18 +139,15 @@ class JugarModoCompeticionViewModel: ObservableObject {
             } else {
                 print("fetchNextQuestion - \(unusedQuestionsCount) or fewer unused questions available, presenting random question while waiting for more.")
                 presentRandomQuestionAndUpdateUI()
+                questionProcessed = false // Reset for new question
+                    timerIsActive = false // Reset timer state
             }
         }
 
-          private func startNewBatchProcess() {
-// Implement the logic to start a new batch process
-// For example, creating a new instance of ViewModel or calling a method to start the process
-//let viewModel = MenuModoCompeticionViewModel()
-//viewModel.checkAndStartBatchProcess()
+            private func startNewBatchProcess() {
    self.fetchQuestionBatch()
               
 }
-    
     
             private func updateBatchIfNeeded() {
         guard let questionManager = questionManager else {
@@ -172,7 +172,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
         }
     }
 
-    func fetchQuestionBatch() {
+            func fetchQuestionBatch() {
         print("fetchQuestionBatch - Starting background fetch process for new questions.")
 
         questionManager?.fetchCurrentBatchForUser { [weak self] batchNumber in
@@ -234,11 +234,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
             }
         }
     }
-
-
-    
           
-    
             func presentRandomQuestion() {
 if let question = DatabaseManager.shared.fetchRandomQuestionFromLocalDatabase() {
 DispatchQueue.main.async {
@@ -265,7 +261,6 @@ self.startTimer()
         print("fetchNextQuestion - UI updated with new question details.")
     }
 
-        
             func handleQuestionDocument(document: DocumentSnapshot) {
         let data = document.data()
         
@@ -317,7 +312,7 @@ self.startTimer()
                 }
                 answerIsCorrect = false
             }
-            
+            questionProcessed = true // Question is now processed
             // Mark the question as used regardless of the answer's correctness
             if let questionNumber = currentQuestion?.number {
                 DatabaseManager.shared.markQuestionAsUsed(questionNumber: questionNumber)
@@ -341,8 +336,9 @@ self.startTimer()
     }
     
             func startTimer() {
-                initializeTimer()
-            }
+    initializeTimer()
+    timerIsActive = true // Timer is now active
+}
             
             func initializeTimer() {
             timeRemaining = 15
@@ -352,36 +348,43 @@ self.startTimer()
         }
             
             func reduceTime() {
-                // Check if the alert is being displayed
-                if isAlertBeingDisplayed {
-                    // If the alert is being displayed, do not reduce the time
-                    return
-                }
-                
-                timeRemaining -= 1
-                
-                if timeRemaining <= 5 && timeRemaining > 0 {
-                    playCountdownSound()
-                }
-                
-                if timeRemaining == 0 {
-                    handleTimeExpiry()
-                }
-            }
-            
+    // Check if the alert is being displayed
+    if isAlertBeingDisplayed {
+        // If the alert is being displayed, do not reduce the time
+        // Optionally, you can set timerIsActive to false here if you want the timer to be considered inactive during alerts.
+        return
+    }
+    
+    // Since the timer is reducing time, we can consider it active
+    timerIsActive = true
+
+    timeRemaining -= 1
+
+    if timeRemaining <= 5 && timeRemaining > 0 {
+        playCountdownSound()
+    }
+
+    if timeRemaining == 0 {
+        handleTimeExpiry()
+        // The timer is no longer active as the time has expired
+        timerIsActive = false
+    }
+}
+
             func handleTimeExpiry() {
-            print("handleTimeExpiry called")
-            
-            timer?.invalidate()
-            playWrongSoundEffect()
-            
-            answerChecked = true
-            answerIsCorrect = false
-            mistakes += 1
-            timeExpired.send(true) // Modified line
-            questionProcessed = true
-            
-            buttonText = "SIGUIENTE"
+        print("handleTimeExpiry called")
+
+        timer?.invalidate()
+        timerIsActive = false // Timer is no longer active
+
+        playWrongSoundEffect()
+        answerChecked = true
+        answerIsCorrect = false
+        mistakes += 1
+        timeExpired.send(true)
+        questionProcessed = true // Question is now processed
+
+        buttonText = "SIGUIENTE"
             
             // Check the number of mistakes and trigger the appropriate alert
             if self.mistakes == 4 {
@@ -395,7 +398,13 @@ self.startTimer()
                 print("Triggered Game Over Alert")
             }
         }
-            
+    
+            func resetTimer() {
+        timer?.invalidate()
+        timer = nil
+        timerIsActive = false // Timer is no longer active
+    }
+ 
             func triggerGameOverAlert() {
                 print("Triggering Game Overalert...")
                 isAlertBeingDisplayed = true
@@ -416,12 +425,25 @@ self.startTimer()
                 activeAlert = .showEndGameAlert
                 objectWillChange.send() // If needed, trigger a manual view update
             }
-            
-            func resetTimer() {
-                timer?.invalidate()
-                timer = nil
-            }
-            
+    
+            func triggerReturnToAppAlert() {
+        print("Triggering Return to App Alert...")
+        isAlertBeingDisplayed = true
+        activeAlert = .showReturnToAppAlert
+        objectWillChange.send() // If needed, trigger a manual view update
+    }
+    
+            func appMovedToBackground() {
+            // Logic for when the app moves to the background
+            // E.g., pause the game, etc.
+        }
+
+            func appReturnsToForeground() {
+        if timerIsActive && !questionProcessed && !isAlertBeingDisplayed && mistakes <= 3    {
+            triggerReturnToAppAlert()
+        }
+    }
+
             func playCountdownSound() {
                 countdownSound?.play()
             }
@@ -578,6 +600,39 @@ self.startTimer()
                 }
                 return 0 // Return 0 if the current user is not found in the sorted array
             }
+    
+            func penalizeForLeavingApp() {
+        // Penalize as if the user selected a wrong answer
+        playWrongSoundEffect()
+        mistakes += 1
+        totalScore -= 500
+
+        // Check for game over condition
+        if mistakes >= 5 {
+            terminar {}
+            return
+        }
+
+        // Mark the question as incorrect
+        answerIsCorrect = false
+
+        // Mark the current question as used
+        if let questionNumber = currentQuestion?.number {
+            DatabaseManager.shared.markQuestionAsUsed(questionNumber: questionNumber)
+        } else {
+            print("Error: currentQuestionNumber is nil")
+        }
+
+        // Prepare for the next question
+        answerChecked = true
+        resetTimer()
+        buttonText = "SIGUIENTE"
+        shouldShowTerminar = true
+
+        // Reset the selected option index as no option was actually selected
+        selectedOptionIndex = nil
+                timerIsActive = false
+    }
             
         }
         

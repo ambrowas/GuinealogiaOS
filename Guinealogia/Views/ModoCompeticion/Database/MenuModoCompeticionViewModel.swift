@@ -171,8 +171,6 @@ class MenuModoCompeticionViewModel: ObservableObject {
         }
     }
 
-
-
     func validateCurrentGameFallos() -> Bool {
         return currentGameFallos >= 5
     }
