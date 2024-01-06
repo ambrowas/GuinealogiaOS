@@ -20,7 +20,7 @@ struct ContactanosView: View {
                     .padding(.top, -180)
                     .frame(width: 200, height: 150)
                 
-                Text("Para ruegos, sugerencias, correciones, quejas, insultos y amenazas, contáctenos por Whatsapp e intentaremos arreglarlo. Gracias por apoyarnos, saludos.")
+                Text("Para ruegos, preguntas, propuestas, sugerencias, correciones, quejas, insultos amenazas o intimidaciones, contáctanos a atrvés del botón de Whatsapp más abajo intentaremos arreglarlo. Gracias por apoyarnos, saludos.")
                     .font(.system(size: 16))
                     .foregroundColor(.black)
                     .multilineTextAlignment(.leading)

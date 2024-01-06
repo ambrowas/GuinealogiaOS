@@ -2,6 +2,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseFirestore
 
+
 class NuevoUsuarioViewModel: ObservableObject {
     @Published var fullname: String = ""
     @Published var email: String = ""
@@ -9,14 +10,20 @@ class NuevoUsuarioViewModel: ObservableObject {
     @Published var telefono: String = ""
     @Published var barrio: String = ""
     @Published var ciudad: String = ""
-    @Published var pais: String = ""
+    @Published var selectedCountry: String = ""
+    @Published var selectedDevice: String = "Android"
     @Published var error: NuevoUsuarioError?
     @Published var mostrarAlerta: Bool = false
     @Published var alertaTipo: AlertaTipo?
     @Published var navegarAlPerfil: Bool = false
+    @Published var searchText = ""
     var userID: String = ""
     private var questionManager: QuestionManager?
+    @Published var isCountrySelected: Bool = false
+
+  
     
+   
     private enum FieldType {
           case name, address, phoneNumber, email, password
       }
@@ -63,6 +70,13 @@ class NuevoUsuarioViewModel: ObservableObject {
             }
         }
     }
+    
+    init() {
+            let realTimeDatabaseReference = Database.database().reference()
+            let firestore = Firestore.firestore()
+            self.userID = Auth.auth().currentUser?.uid ?? "UnknownUserID" // Default value if not logged in
+            self.questionManager = QuestionManager(realTimeDatabaseReference: realTimeDatabaseReference, firestore: firestore, userID: userID)
+        }
 
 
     func crearUsuario() {
@@ -110,20 +124,21 @@ class NuevoUsuarioViewModel: ObservableObject {
         }
     }
 
-
-
     private func guardarUsuario(userId: String) {
+        // Define date format and get the current formatted date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd-MM-yyyy"
         let formattedDate = dateFormatter.string(from: Date())
 
+        // Prepare user data for saving
         let userData: [String: Any] = [
-            "fullname": self.fullname,
-            "email": self.email,
-            "telefono": self.telefono,
-            "barrio": self.barrio,
-            "ciudad": self.ciudad,
-            "pais": self.pais,
+            "fullname": fullname,
+            "email": email,
+            "telefono": telefono,
+            "barrio": barrio,
+            "ciudad": ciudad,
+            "pais": selectedCountry, //  Use selected country
+            "dispositivo": selectedDevice,
             "accumulatedAciertos": 0,
             "accumulatedFallos": 0,
             "accumulatedPuntuacion": 0,
@@ -131,28 +146,67 @@ class NuevoUsuarioViewModel: ObservableObject {
             "FechadeCreacion": formattedDate
         ]
 
+        // Reference to Firebase database
         let ref = Database.database().reference()
-        ref.child("user").child(userId).setValue(userData) { [weak self] error, _ in
-            guard let strongSelf = self else { return }
 
+        // Save user data in Firebase
+        ref.child("user").child(userId).setValue(userData) { [weak self] error, _ in
+            guard let self = self else { return }
+
+            // Handle any error during saving
             if let error = error {
                 print("Error al guardar datos adicionales del usuario en Firebase: \(error.localizedDescription)")
-                strongSelf.error = .signInError(description: error.localizedDescription)
-                strongSelf.alertaTipo = .error(message: "Error al guardar datos del usuario: \(error.localizedDescription)")
-                strongSelf.mostrarAlerta = true
+                self.error = .signInError(description: error.localizedDescription)
+                self.alertaTipo = .error(message: "Error al guardar datos del usuario: \(error.localizedDescription)")
+                self.mostrarAlerta = true
                 return
             }
 
             print("Datos adicionales del usuario guardados exitosamente en Firebase.")
-            // Set UserDefaults here
-            UserDefaults.standard.set(strongSelf.fullname, forKey: "fullname")
+
+            // Set user default values
+            UserDefaults.standard.set(self.fullname, forKey: "fullname")
             UserDefaults.standard.set(0, forKey: "highestScore")
             UserDefaults.standard.set(0, forKey: "currentGameFallos")
+            
+            // Create the local table in the database
+            let dbManager = DatabaseManager()
+            dbManager.createTable()
 
+            // Assign a random batch to the user
+            self.questionManager?.setNumeroDeBatch(userId: userId) { success, error in
+                if let error = error {
+                    print("Error in setNumeroDeBatch: \(error.localizedDescription)")
+                    // Handle error in setting batch number
+                    return
+                }
+                if success {
+                    print("Batch number successfully set for user.")
+                    // Handle successful batch number assignment
+                    
+                    self.updateUserDeviceTokenInDatabase()
+                }
+            }
+        }
+    }
+ 
+    func updateUserDeviceTokenInDatabase() {
+        if let userID = Auth.auth().currentUser?.uid,
+           let token = UserDefaults.standard.string(forKey: "deviceToken") {
+            let ref = Database.database().reference()
+            ref.child("user").child(userID).updateChildValues(["Token": token]) { error, _ in
+                if let error = error {
+                    print("Error saving token to database: \(error.localizedDescription)")
+                } else {
+                    print("Device token successfully saved to database")
+                    // Optionally, clear the token from UserDefaults after successful upload
+                    UserDefaults.standard.removeObject(forKey: "deviceToken")
+                }
+            }
         }
     }
 
-    
+
     private func validarCampos() -> (isValid: Bool, errors: [NuevoUsuarioError]) {
         var errors = [NuevoUsuarioError]()
 
@@ -175,8 +229,11 @@ class NuevoUsuarioViewModel: ObservableObject {
         if ciudad.isEmpty {
             errors.append(.emptyField(fieldName: "Ciudad"))
         }
-        if pais.isEmpty {
-            errors.append(.emptyField(fieldName: "País"))
+        if selectedCountry == "Escoge tu país de residencia" { // Replace with your default or placeholder value
+                errors.append(.emptyField(fieldName: "País"))
+        }
+        if selectedDevice == "Selecciona tu dispositivo" { // Replace with your default or placeholder value
+                errors.append(.emptyField(fieldName: "Dispositivo"))
         }
 
         // Check for invalid email format
@@ -204,7 +261,7 @@ class NuevoUsuarioViewModel: ObservableObject {
         if !ciudad.isLessRestrictiveAlphanumeric {
             errors.append(.invalidCharacters(fieldName: "Ciudad"))
         }
-        if !pais.isLessRestrictiveAlphanumeric {
+        if !selectedCountry.isLessRestrictiveAlphanumeric {
             errors.append(.invalidCharacters(fieldName: "País"))
         }
 
@@ -223,7 +280,7 @@ class NuevoUsuarioViewModel: ObservableObject {
         self.telefono = sanitizeString(telefono, forFieldType: .phoneNumber)
         self.barrio = sanitizeString(barrio, forFieldType: .address)
         self.ciudad = sanitizeString(ciudad, forFieldType: .address)
-        self.pais = sanitizeString(pais, forFieldType: .address)
+      
         // Email is not sanitized to maintain format
         print("Sanitización completada para: nombre completo, teléfono, barrio, ciudad y país.")
     }

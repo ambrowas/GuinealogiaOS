@@ -8,6 +8,8 @@ import FirebaseAuth
 @main
 struct GuinealogiaApp: App {
     @StateObject private var authService = AuthService()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
 
     init() {
         FirebaseApp.configure()

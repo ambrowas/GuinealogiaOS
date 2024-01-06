@@ -5,7 +5,6 @@ import FirebaseDatabase
     struct User: Identifiable {
         var id: String
         var fullname: String
-        var ciudad: String
         var accumulatedPuntuacion: Int
         var leaderboardPosition: Int
         var scoreAchievedAt: Date? // making this optional
@@ -24,7 +23,7 @@ import FirebaseDatabase
     func fetchUsers() {
         db.child("user")
             .queryOrdered(byChild: "accumulatedPuntuacion")
-            .queryLimited(toLast: 15)
+            .queryLimited(toLast: 20)
             .observe(.value) { (snapshot) in
                 //print("Number of snapshots fetched: \(snapshot.childrenCount)")
                 var newUsers = [User]()
@@ -64,28 +63,27 @@ import FirebaseDatabase
     }
 }
 
-    extension User {
-        init?(snapshot: DataSnapshot) {
-            guard let value = snapshot.value as? [String: Any],
-                let fullname = value["fullname"] as? String,
-                let ciudad = value["ciudad"] as? String else {
-                print("Failed to parse required fields for snapshot: \(snapshot.key)")
-                return nil
-            }
-            
-            self.id = snapshot.key
-            self.fullname = fullname
-            self.ciudad = ciudad
-            self.accumulatedPuntuacion = value["accumulatedPuntuacion"] as? Int ?? 0 // provide default value if missing
-            self.leaderboardPosition = 0 // Placeholder value, it will be updated later
-            
-            if let scoreAchievedAt = value["scoreAchievedAt"] as? Double {
-                self.scoreAchievedAt = Date(timeIntervalSince1970: scoreAchievedAt)
-            } else {
-                self.scoreAchievedAt = nil
-            }
+extension User {
+    init?(snapshot: DataSnapshot) {
+        guard let value = snapshot.value as? [String: Any],
+            let fullname = value["fullname"] as? String,
+            let accumulatedPuntuacion = value["accumulatedPuntuacion"] as? Int else {
+            print("Failed to parse required fields for snapshot: \(snapshot.key)")
+            return nil
+        }
+
+        self.id = snapshot.key
+        self.fullname = fullname
+        self.accumulatedPuntuacion = accumulatedPuntuacion
+        self.leaderboardPosition = 0 // Placeholder value, it will be updated later
+
+        if let scoreAchievedAt = value["scoreAchievedAt"] as? Double {
+            self.scoreAchievedAt = Date(timeIntervalSince1970: scoreAchievedAt)
+        } else {
+            self.scoreAchievedAt = nil
         }
     }
+}
     
     struct FlashingText: View {
         let text: String
@@ -150,34 +148,12 @@ struct ClasificacionView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.bottom, 10)
                         .foregroundColor(.black)
-                        .padding(.top, 35)
-                    
-                    Button(action: {
-                        SoundManager.shared.playTransitionSound()
-                        self.presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Text("VOLVER")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(width: 300, height: 55)
-                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
-                            .cornerRadius(10)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.black, lineWidth: 3)
-                            )
-                    }
+                        .padding(.top, 15)
+                
                     
                     List {
                         Section(header: HStack {
-                            Text("POS.").fontWeight(.bold)
-                            Spacer()
-                            Text("NOMBRE").fontWeight(.bold)
-                            Spacer()
-                            Text("CIUDAD").fontWeight(.bold)
-                            Spacer()
-                            Text("FCFA").fontWeight(.bold)
+                         
                         }) {
                             
                             ForEach(userData.users) { user in
@@ -196,19 +172,32 @@ struct ClasificacionView: View {
                                                           .font(.system(size: 12))
                                                           .foregroundColor(.black)
                                                           .frame(maxWidth: .infinity, alignment: .leading)
-                                                      Spacer()
-                                                      FlashingText(text: user.ciudad, shouldFlash: user.id == userId)
-                                                          .font(.system(size: 12))
-                                                          .foregroundColor(.black)
-                                                          .frame(maxWidth: .infinity, alignment: .leading) 
+                                                    
                                                       Spacer()
                                                       FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
                                                           .font(.system(size: 12))
                                                           .foregroundColor(.black)
                                     }
                                 }
+                                
                             }
                             
+                        }
+                        Button(action: {
+                            SoundManager.shared.playTransitionSound()
+                            self.presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Text("VOLVER")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: 300, height: 50)
+                                .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
                         }
                         
                     }

@@ -18,6 +18,9 @@ struct ResultadoView: View {
     @State private var isNewHighScore: Bool = false
     @State private var showAlert = false
     @State private var isAnimating: Bool = false
+    @State private var dbHelper = QuizDBHelper()
+    @State private var showNoUnusedQuestionsAlert = false
+   @State private var isShowingMenuPrincipal = false
     
     
     var body: some View {
@@ -134,7 +137,7 @@ struct ResultadoView: View {
                         
                         Button(action: {
                             SoundManager.shared.playTransitionSound()
-                            showMenuModoLibre = true
+                            checkForUnusedQuestionsBeforeExiting()
                         }) {
                             Text("SALIR")
                                 .font(.headline)
@@ -151,6 +154,16 @@ struct ResultadoView: View {
                         .fullScreenCover(isPresented: $showMenuModoLibre) {
                             MenuModoLibre()
                         }
+                        .alert(isPresented: $showNoUnusedQuestionsAlert) {
+                            Alert(
+                                title: Text("Felicidades"),
+                                message: Text("Has completado el Modo Libre. Prueba el Modo Competición."),
+                                dismissButton: .default(Text("OK"), action: {
+                                    dbHelper.resetShownQuestions()
+                                    isShowingMenuPrincipal = true
+                                })
+                            )
+                        }
                     }
                 }
             }
@@ -166,7 +179,19 @@ struct ResultadoView: View {
                     dismissButton: .default(Text("Ok"))
                 )
             }
+        
         }
+    
+    private func checkForUnusedQuestionsBeforeExiting() {
+        let unusedQuestions = dbHelper.getRandomQuestions(count: 10)
+        if unusedQuestions.isEmpty {
+            // No more unused questions, show alert
+            showNoUnusedQuestionsAlert = true
+        } else {
+            // Unused questions available, proceed to MenuPrincipal
+            isShowingMenuPrincipal = true
+        }
+    }
     
     
     private func checkHighScore() {

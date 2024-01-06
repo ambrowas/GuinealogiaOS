@@ -1,5 +1,6 @@
 import Foundation
 import Firebase
+import FirebaseDatabase
 
 class QuestionManager {
     // MARK: - Properties
@@ -47,7 +48,7 @@ class QuestionManager {
             print("setNumeroDeBatch - Generated random batch number: \(randomBatchNumber)")
             
             let ref = Database.database().reference()
-            ref.child("Users").child(userId).updateChildValues(["currentBatch": randomBatchNumber]) { error, _ in
+                ref.child("user").child(userId).updateChildValues(["currentBatch": randomBatchNumber]) { error, _ in
                 if let error = error {
                     print("setNumeroDeBatch - Error: Failed to set batch number - \(error.localizedDescription)")
                     completion(false, error)
@@ -85,9 +86,13 @@ class QuestionManager {
 
                 let newBatchNumber = currentBatch >= totalBatches ? 1 : currentBatch + 1
                 print("updateCurrentBatchInRealtime - New batch number to set: \(newBatchNumber)")
+                
+                // Log the completed batch
+                          self.logCompletedBatch(userId: userID, completedBatch: currentBatch)
 
-                let userRef = self.realTimeDatabaseReference.child("Users").child(userID)
-                userRef.updateChildValues(["currentBatch": newBatchNumber]) { error, _ in
+
+                let userRef = self.realTimeDatabaseReference.child("user").child(userID)
+                   userRef.updateChildValues(["currentBatch": newBatchNumber]) { error, _ in
                     if let error = error {
                         print("updateCurrentBatchInRealtime - Error updating current batch: \(error.localizedDescription)")
                         completion(false, error)
@@ -101,6 +106,35 @@ class QuestionManager {
 
         print("updateCurrentBatchInRealtime - Exited")
     }
+    
+    func logCompletedBatch(userId: String, completedBatch: Int) {
+        print("logCompletedBatch - Started for userID: \(userId) and batch: \(completedBatch)")
+        
+        let userRef = Database.database().reference().child("user").child(userId).child("CompletedBatch")
+        userRef.observeSingleEvent(of: .value, with: { snapshot in
+            if let existingBatches = snapshot.value as? String {
+                print("logCompletedBatch - Existing batches found: \(existingBatches)")
+                
+                let updatedBatches = existingBatches.isEmpty ? "\(completedBatch)" : "\(existingBatches), \(completedBatch)"
+                userRef.setValue(updatedBatches) { error, _ in
+                    if let error = error {
+                        print("logCompletedBatch - Error updating completed batches: \(error.localizedDescription)")
+                    } else {
+                        print("logCompletedBatch - Successfully updated completed batches to: \(updatedBatches)")
+                    }
+                }
+            } else {
+                print("logCompletedBatch - No existing batches found. Setting first completed batch to: \(completedBatch)")
+                userRef.setValue("\(completedBatch)") { error, _ in
+                    if let error = error {
+                        print("logCompletedBatch - Error setting first completed batch: \(error.localizedDescription)")
+                    } else {
+                        print("logCompletedBatch - Successfully set first completed batch to: \(completedBatch)")
+                    }
+                }
+            }
+        })
+    }
 
     
     func fetchCurrentBatchForUser(completion: @escaping (Int) -> Void) {
@@ -112,9 +146,9 @@ class QuestionManager {
 
         print("fetchCurrentBatchForUser - Entered for userID: \(currentUserID)")
         
-        let userRef = self.realTimeDatabaseReference.child("Users").child(currentUserID)
-        userRef.observeSingleEvent(of: .value, with: { snapshot in
-            let currentBatch = snapshot.childSnapshot(forPath: "currentBatch").value as? Int ?? 1
+        let userRef = self.realTimeDatabaseReference.child("user").child(currentUserID)
+            userRef.observeSingleEvent(of: .value, with: { snapshot in
+                let currentBatch = snapshot.childSnapshot(forPath: "currentBatch").value as? Int ?? 1
             print("fetchCurrentBatchForUser - Current batch retrieved: \(currentBatch)")
             completion(currentBatch)
         })

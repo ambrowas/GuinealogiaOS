@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>880260787416-s2pst3o23f9tfb8v2kmec1g5061ouo5l.apps.googleusercontent.com</string>
+	<string>880260787416-mfvaf2h5jl3fphoao11061d3djqkte1k.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.880260787416-s2pst3o23f9tfb8v2kmec1g5061ouo5l</string>
+	<string>com.googleusercontent.apps.880260787416-mfvaf2h5jl3fphoao11061d3djqkte1k</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>880260787416-l85cs268a5m6gqni4t9gm7rlk92sbkkl.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.iniviativaselebi.guinealogia</string>
+	<string>com.iniciativaselebi.guinealogia</string>
 	<key>PROJECT_ID</key>
 	<string>trivial-guineologia</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:880260787416:ios:194a83be2fe0a5f0917bad</string>
+	<string>1:880260787416:ios:c91029b178f73b06917bad</string>
 	<key>DATABASE_URL</key>
 	<string>https://trivial-guineologia-default-rtdb.firebaseio.com</string>
 </dict>

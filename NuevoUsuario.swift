@@ -10,13 +10,15 @@ struct NuevoUsuario: View {
     @State private var isShowingMenuModoCompeticion = false
     @StateObject private var userData = UserData() // Create an instance of UserData
     @StateObject private var menuModoCompeticionViewModel = MenuModoCompeticionViewModel() //
-
+    @State var isCountrySelected = false
+    
+    
     var body: some View {
         ZStack {
             Image("coolbackground")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
-
+            
             VStack(spacing: 10) {
                 Image("logotrivial")
                     .resizable()
@@ -43,17 +45,19 @@ struct NuevoUsuario: View {
                             glowColor = .blue
                         }
                     }
-
+                
                 InputFieldsView(
-                    fullname: $viewModel.fullname,
-                    email: $viewModel.email,
-                    password: $viewModel.password,
-                    telefono: $viewModel.telefono,
-                    barrio: $viewModel.barrio,
-                    ciudad: $viewModel.ciudad,
-                    pais: $viewModel.pais
-                )
-
+                            fullname: $viewModel.fullname,
+                            email: $viewModel.email,
+                            password: $viewModel.password,
+                            telefono: $viewModel.telefono,
+                            barrio: $viewModel.barrio,
+                            ciudad: $viewModel.ciudad,
+                            selectedCountry: $viewModel.selectedCountry,
+                            selectedDevice: $viewModel.selectedDevice,
+                            viewModel: viewModel // Providing the viewModel
+                        )
+                
                 Button(action: {
                     viewModel.crearUsuario()
                 }) {
@@ -73,7 +77,7 @@ struct NuevoUsuario: View {
                     Profile()
                 }
                 .padding(.bottom, 5)
-
+                
                 Button(action: {
                     SoundManager.shared.playTransitionSound()
                     isShowingMenuModoCompeticion.toggle()
@@ -90,14 +94,14 @@ struct NuevoUsuario: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-
+                
                 .fullScreenCover(isPresented: $isShowingMenuModoCompeticion) {
-                               MenuModoCompeticion(userId: "DummyuserId", userData: userData, viewModel: menuModoCompeticionViewModel)
-                           }
-
+                    MenuModoCompeticion(userId: "DummyuserId", userData: userData, viewModel: menuModoCompeticionViewModel)
+                }
+                
                 .padding(.top, 2)
             }
-       
+            
         }
         .alert(item: $viewModel.alertaTipo) { alertaTipo in
             switch alertaTipo {
@@ -125,6 +129,8 @@ struct NuevoUsuario: View {
     struct NuevoUsuario_Previews: PreviewProvider {
         static var previews: some View {
             NuevoUsuario()
+                .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
         }
     }
 }
+

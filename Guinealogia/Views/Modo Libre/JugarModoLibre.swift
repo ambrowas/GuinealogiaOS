@@ -7,6 +7,7 @@ struct JugarModoLibre: View {
     @State private var isShowingResultadoView = false
     @Binding var player: AVAudioPlayer?
     @State private static var playerName = ""
+
     
     
     init(player: Binding<AVAudioPlayer?>) {
@@ -63,16 +64,17 @@ struct JugarModoLibre: View {
                 .padding(.top, -250)
                 
                 Text(quizState.currentQuestion.question)
-                    .foregroundColor(quizState.currentQuestion.textColor) // Set the text color based on the textColor property of currentQuestion
+                    .foregroundColor(quizState.questionTextColor)
                     .font(.headline)
                     .padding(.horizontal, 20)
                     .padding(.top, -120)
 
                 
                 VStack(alignment: .leading, spacing: 10) {
-                    RadioButton(text: quizState.currentQuestion.option1, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion)
-                    RadioButton(text: quizState.currentQuestion.option2, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion)
-                    RadioButton(text: quizState.currentQuestion.option3, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion)
+                    RadioButton(text: quizState.currentQuestion.option1, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
+                    RadioButton(text: quizState.currentQuestion.option2, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
+                    RadioButton(text: quizState.currentQuestion.option3, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
+
                 }
                 .padding(.bottom, 200)
                 
@@ -123,6 +125,18 @@ struct JugarModoLibre: View {
         }
         .onAppear {
             quizState.startCountdownTimer()
+            quizState.showNextQuestion()
+        }
+        .alert(isPresented: $quizState.showAlert) {
+            Alert(
+                title: Text(quizState.alertMessage),
+                message: Text(quizState.displayMessage),
+                dismissButton: .default(Text("OK")) {
+                    quizState.showAlert = false  // Dismiss the alert
+                    quizState.dbHelper.resetShownQuestions()  // Reset shown questions
+                    quizState.finishQuiz()                    // Finish the quiz
+                }
+            )
         }
         .alert(isPresented: $showAlert) {
             Alert(
@@ -139,58 +153,92 @@ struct RadioButton: View {
     var text: String
     @Binding var selectedOptionIndex: Int
     var currentQuestion: QuizQuestion
-    
+    @ObservedObject var quizState: QuizState
+    @State private var isFlashing = false
+    @State private var flashCount = 0
+
     var body: some View {
-        Button(action: {
-            selectedOptionIndex = optionIndex
-        }) {
-            Text(text)
-                .font(.headline)
-                .foregroundColor(.white)
-                .padding()
-                .frame(width: 300, height: 75)
-                .background(optionBackground)
-                .cornerRadius(10)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 3)
-                )
-        }
-        .onChange(of: selectedOptionIndex) { newValue in
-            updateOptionBackground(newValue)
+           Button(action: {
+               selectedOptionIndex = optionIndex
+           }) {
+               Text(text.uppercased())
+                   .font(.headline)
+                   .foregroundColor(.white)
+                   .padding()
+                   .frame(width: 300, height: 75)
+                   .background(optionBackground)
+                   .cornerRadius(10)
+                   .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 3))
+           }
+           .opacity(isFlashing ? 0.5 : 1) // Properly chained modifier
+           .animation(isFlashing ? .easeInOut(duration: 0.5).repeatForever(autoreverses: true) : nil, value: isFlashing)  // Properly chained modifier
+        .onChange(of: selectedOptionIndex) { _ in
+            updateOptionBackground()
         }
         .onAppear {
-            updateOptionBackground(selectedOptionIndex)
+            updateOptionBackground()
+        }
+        .onChange(of: isFlashing) { newValue in
+            if newValue {
+                startFlashing()
+            }
+        }
+        .onReceive(quizState.$resetFlashingSignal) { resetSignal in
+            if resetSignal {
+                resetFlashingState()
+                quizState.resetFlashingSignal = false // Reset the signal to avoid repeated resets
+            }
+        }
+        .onReceive(quizState.$shouldFlashCorrectAnswer) { shouldFlash in
+            if shouldFlash && shouldFlashCondition {
+                isFlashing = true
+            }
         }
     }
+
+    private func startFlashing() {
+        guard flashCount < 3 else {
+            isFlashing = false
+            return
+        }
+        
+        isFlashing = true
+        
+        withAnimation(.easeInOut(duration: 0.5).repeatCount(1, autoreverses: true)) {
+            isFlashing = false
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            flashCount += 1
+            startFlashing()
+        }
+    }
+    private var shouldFlashCondition: Bool {
+        optionIndex == currentQuestion.correctAnswerIndex && quizState.selectedIncorrectAnswer
+    }
     
+    func resetFlashingState() {
+            isFlashing = false
+            flashCount = 0
+        }
+    
+
     private var optionIndex: Int {
         switch text {
-        case currentQuestion.option1:
-            return 0
-        case currentQuestion.option2:
-            return 1
-        case currentQuestion.option3:
-            return 2
-        default:
-            return -1
+        case currentQuestion.option1: return 0
+        case currentQuestion.option2: return 1
+        case currentQuestion.option3: return 2
+        default: return -1
         }
     }
-    
+
     @State private var optionBackground: Color = Color(hue: 0.663, saturation: 0.811, brightness: 0.631)
     
-    private func updateOptionBackground(_ selectedIndex: Int) {
-        if optionIndex == selectedIndex {
+    private func updateOptionBackground() {
+        if optionIndex == selectedOptionIndex {
             optionBackground = Color(hue: 0.315, saturation: 0.953, brightness: 0.335)
         } else {
             optionBackground = Color(hue: 0.663, saturation: 0.811, brightness: 0.631)
         }
     }
 }
-
-struct JugarModoLibre_Previews: PreviewProvider {
-    static var previews: some View {
-        JugarModoLibre(player: .constant(nil))
-    }
-}
-

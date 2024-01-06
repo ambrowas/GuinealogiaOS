@@ -275,69 +275,69 @@ class DatabaseManager {
     
     func deleteAllButLastFiveUnusedQuestions(completion: (() -> Void)? = nil) {
         print("deleteAllButLastFiveUnusedQuestions - Entered.")
-        
+
         guard openDatabase() else {
             print("deleteAllButLastFiveUnusedQuestions - Unable to open the database.")
             completion?()
             return
         }
-        
+
         // Start the transaction
         sqlite3_exec(db, "BEGIN TRANSACTION", nil, nil, nil)
-        
-        // First, count the total number of unused questions.
-        let countSQL = "SELECT COUNT(*) FROM Preguntas WHERE Used = 0;"
+
+        var countToDelete = 0
+        var totalQuestions = 0
+        var unusedQuestions = 0
+        var usedQuestions = 0
+
+        // Count the number of used questions to be deleted
+        let countToDeleteSQL = "SELECT COUNT(*) FROM Preguntas WHERE Used = 1;"
         var countStmt: OpaquePointer?
-        var countUnusedQuestions = 0
-        
-        if sqlite3_prepare_v2(db, countSQL, -1, &countStmt, nil) == SQLITE_OK {
+        if sqlite3_prepare_v2(db, countToDeleteSQL, -1, &countStmt, nil) == SQLITE_OK {
             if sqlite3_step(countStmt) == SQLITE_ROW {
-                countUnusedQuestions = Int(sqlite3_column_int(countStmt, 0))
+                countToDelete = Int(sqlite3_column_int(countStmt, 0))
             }
-            print("deleteAllButLastFiveUnusedQuestions - Total unused questions: \(countUnusedQuestions)")
             sqlite3_finalize(countStmt)
-        } else {
-            print("deleteAllButLastFiveUnusedQuestions - Error preparing COUNT statement: \(String(cString: sqlite3_errmsg(db)))")
         }
-        
-        // If there are more than 5 unused questions, delete until only 5 remain
-        if countUnusedQuestions > 5 {
-            let deleteSQL = """
-                DELETE FROM Preguntas
-                WHERE id IN (
-                    SELECT id FROM Preguntas
-                    WHERE Used = 0
-                    ORDER BY RANDOM()
-                    LIMIT (?)
-                );
-                """
-            var deleteStmt: OpaquePointer?
-            
-            if sqlite3_prepare_v2(db, deleteSQL, -1, &deleteStmt, nil) == SQLITE_OK {
-                // Bind the parameter (number of questions to delete)
-                let questionsToDelete = countUnusedQuestions - 5
-                sqlite3_bind_int(deleteStmt, 1, Int32(questionsToDelete))
-                
-                if sqlite3_step(deleteStmt) == SQLITE_DONE {
-                    let deletedQuestionsCount = questionsToDelete
-                    print("deleteAllButLastFiveUnusedQuestions - Successfully deleted \(deletedQuestionsCount) unused questions.")
-                } else {
-                    print("deleteAllButLastFiveUnusedQuestions - Error executing DELETE statement: \(String(cString: sqlite3_errmsg(db)))")
-                }
-                sqlite3_finalize(deleteStmt)
+
+        // DELETE all used questions
+        let deleteSQL = "DELETE FROM Preguntas WHERE Used = 1;"
+        var deleteStmt: OpaquePointer?
+        if sqlite3_prepare_v2(db, deleteSQL, -1, &deleteStmt, nil) == SQLITE_OK {
+            if sqlite3_step(deleteStmt) == SQLITE_DONE {
+                print("deleteAllButLastFiveUnusedQuestions - Successfully deleted \(countToDelete) used questions.")
             } else {
-                print("deleteAllButLastFiveUnusedQuestions - Error preparing DELETE statement: \(String(cString: sqlite3_errmsg(db)))")
+                print("deleteAllButLastFiveUnusedQuestions - Error executing DELETE statement: \(String(cString: sqlite3_errmsg(db)))")
             }
+            sqlite3_finalize(deleteStmt)
         }
-        // Correcting the if statement to check the result of sqlite3_exec
+
+        // Count total, unused, and used questions after deletion
+        let countAllSQL = "SELECT COUNT(*), SUM(CASE WHEN Used = 0 THEN 1 ELSE 0 END), SUM(CASE WHEN Used = 1 THEN 1 ELSE 0 END) FROM Preguntas;"
+        if sqlite3_prepare_v2(db, countAllSQL, -1, &countStmt, nil) == SQLITE_OK {
+            if sqlite3_step(countStmt) == SQLITE_ROW {
+                totalQuestions = Int(sqlite3_column_int(countStmt, 0))
+                unusedQuestions = Int(sqlite3_column_int(countStmt, 1))
+                usedQuestions = Int(sqlite3_column_int(countStmt, 2))
+            }
+            sqlite3_finalize(countStmt)
+        }
+
+        // Commit the transaction
         if sqlite3_exec(db, "COMMIT TRANSACTION", nil, nil, nil) == SQLITE_OK {
             print("deleteAllButLastFiveUnusedQuestions - TRANSACTION COMMIT successful.")
         } else {
             print("deleteAllButLastFiveUnusedQuestions - TRANSACTION COMMIT failed: \(String(cString: sqlite3_errmsg(db)))")
         }
-        
+
+        print("Total questions deleted: \(countToDelete)")
+        print("Total questions remaining: \(totalQuestions)")
+        print("Total unused questions remaining: \(unusedQuestions)")
+        print("Total used questions remaining: \(usedQuestions)")
+
         // Invoke the completion handler.
         completion?()
         print("deleteAllButLastFiveUnusedQuestions - Exited.")
     }
+
 }
