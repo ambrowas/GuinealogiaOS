@@ -241,7 +241,7 @@ struct JugarModoCompeticion: View {
                     viewModel.appReturnsToForeground()
             }
 
-            // Existing code to fetch the next question
+            viewModel.resetButtonColors()
             viewModel.fetchNextQuestion()
         }
         

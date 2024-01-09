@@ -9,8 +9,8 @@ struct NuevoUsuario: View {
     @State private var isShowingProfile = false // New state variable for the profile presentation
     @State private var isShowingMenuModoCompeticion = false
     @StateObject private var userData = UserData() // Create an instance of UserData
-    @StateObject private var menuModoCompeticionViewModel = MenuModoCompeticionViewModel() //
-    @State var isCountrySelected = false
+    @StateObject private var menuModoCompeticionViewModel = MenuModoCompeticionViewModel()
+    @State private var showCountryPicker = false
     
     
     var body: some View {
@@ -20,32 +20,12 @@ struct NuevoUsuario: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 10) {
-                Image("logotrivial")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 200, height: 150)
-                    .shadow(color: glowColor.opacity(0.8), radius: 10, x: 0.0, y: 0.0)
-                    .scaleEffect(scale)
-                    .animation(
-                        Animation.easeInOut(duration: 1.3)
-                            .repeatForever(autoreverses: true)
-                    )
-                    .onAppear {
-                        scale = 1.01
-                    }
-                    .onReceive(timer) { _ in
-                        switch glowColor {
-                        case Color.blue:
-                            glowColor = .green
-                        case Color.green:
-                            glowColor = .red
-                        case Color.red:
-                            glowColor = .white
-                        default:
-                            glowColor = .blue
-                        }
-                    }
                 
+                Text("REGISTRAR NUEVO USUARIO")
+                               .font(.headline)
+                               .foregroundColor(.black)
+                               .padding(.top, 0)
+                               .padding(.bottom, 20)
                 InputFieldsView(
                             fullname: $viewModel.fullname,
                             email: $viewModel.email,
@@ -77,6 +57,7 @@ struct NuevoUsuario: View {
                     Profile()
                 }
                 .padding(.bottom, 5)
+                .padding(.top, 25)
                 
                 Button(action: {
                     SoundManager.shared.playTransitionSound()

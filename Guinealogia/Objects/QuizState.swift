@@ -4,47 +4,56 @@ import AVFoundation
 
 class QuizState: ObservableObject {
     let dbHelper = QuizDBHelper()
-       var randomQuestions: [QuizQuestion]
-       private var rightSoundEffect: AVAudioPlayer?
-       private var wrongSoundEffect: AVAudioPlayer?
-       private var countdownSound: AVAudioPlayer?
-       private var timer: Timer? // Declare timer here
-       @Published var showAlert = false
-       @Published var alertMessage = "Atención"
-       @Published var currentQuestionIndex = 0
-       @Published var selectedOptionIndex = -1
-       @Published var timeRemaining = 15
-       @Published var isAnswered = false
-       @Published var score = 0
-       @Published var totalScore = 0
-       @Published var preguntaCounter = 1
-       @Published var isShowingResultadoView = false
-       @Published var buttonText = "CONFIRMAR"
-       @Published var displayMessage = "Sin miedo, elige una opción"
-       @Published var isOptionSelected = false
-       @Published var mistakes = 0
-       @Published var answerIsCorrect: Bool? = nil
-       @Published var isQuizCompleted = false
-       @Published var selectedIncorrectAnswer = false
-       @Published var questionTextColor = Color.black
-       @Published var shouldFlashCorrectAnswer = false
-       @Binding var player: AVAudioPlayer?
-       @Published var selectedAnswerIsIncorrect = false
-       @Published var resetFlashingSignal = false
-
-
+    var randomQuestions: [QuizQuestion]
+    private var rightSoundEffect: AVAudioPlayer?
+    private var wrongSoundEffect: AVAudioPlayer?
+    private var countdownSound: AVAudioPlayer?
+    private var timer: Timer? // Declare timer here
+    @Published var showAlert = false
+    @Published var alertMessage = "Atención"
+    @Published var currentQuestionIndex = 0
+    @Published var selectedOptionIndex = -1
+    @Published var timeRemaining = 15
+    @Published var isAnswered = false
+    @Published var score = 0
+    @Published var totalScore = 0
+    @Published var preguntaCounter = 1
+    @Published var isShowingResultadoView = false
+    @Published var buttonText = "CONFIRMAR"
+    @Published var displayMessage = "Sin miedo, elige una opción"
+    @Published var isOptionSelected = false
+    @Published var mistakes = 0
+    @Published var answerIsCorrect: Bool? = nil
+    @Published var isQuizCompleted = false
+    @Published var selectedIncorrectAnswer = false
+    @Published var questionTextColor = Color.black
+    @Published var shouldFlashCorrectAnswer = false
+    @Binding var player: AVAudioPlayer?
+    @Published var selectedAnswerIsIncorrect = false
+    @Published var resetFlashingSignal = false
+    @Published var answerStatusMessage: String = ""
+    @Published var questionsShownCount = 0
+    
+    
+    
+    
     init(player: Binding<AVAudioPlayer?> = .constant(nil)) {
         self._player = player
-        self.randomQuestions = dbHelper.getRandomQuestions(count: 10)
+        if let questions = dbHelper.getRandomQuestions(count: 10) {
+            self.randomQuestions = questions
+        } else {
+            self.randomQuestions = [] // or handle this situation appropriately
+        }
         loadSoundEffects(player: player)
         startCountdownTimer()
+        print("Fetched \(self.randomQuestions.count) random questions.")
     }
     
-    lazy var currentQuestion: QuizQuestion = {
-        var question = randomQuestions[currentQuestionIndex]
-        return question
-    }()
-
+    
+    var currentQuestion: QuizQuestion {
+        return randomQuestions[currentQuestionIndex]
+    }
+    
     func startCountdownTimer() {
         timer?.invalidate()
         if currentQuestionIndex < randomQuestions.count {
@@ -65,97 +74,115 @@ class QuizState: ObservableObject {
             }
         }
     }
-
+    
+    
+    
+    
     func playCountdownSound() {
         countdownSound?.play()
     }
+    
+
+    private func updateButtonTextForNextAction() {
+        buttonText = preguntaCounter < randomQuestions.count ? "SIGUIENTE" : "TERMINAR"
+    }
+    
+    private func handleCorrectAnswer() {
+        score += 1
+        totalScore += 500
+        rightSoundEffect?.play()
+        answerStatusMessage = "RESPUESTA CORRECTA"
+        answerIsCorrect = true
+        selectedIncorrectAnswer = false
+        questionTextColor = Color(hue: 0.315, saturation: 0.953, brightness: 0.335)
+    }
+
+    
+    func handleIncorrectAnswer() {
+        mistakes += 1
+        wrongSoundEffect?.play()
+        answerStatusMessage = "RESPUESTA INCORRECTA"
+        answerIsCorrect = false
+        selectedIncorrectAnswer = true
+        selectedAnswerIsIncorrect = true
+        shouldFlashCorrectAnswer = true
+        questionTextColor = Color(hue: 1.0, saturation: 0.984, brightness: 0.699)
+    }
 
     func checkAnswer() {
-           guard !isAnswered else { return }
-           isAnswered = true
-           timer?.invalidate()
+        guard !isAnswered else { return }
+        isAnswered = true
+        timer?.invalidate()
 
-           let correctOptionIndex = currentQuestion.correctAnswerIndex
-           print("Selected Option Index: \(selectedOptionIndex), Correct Option: \(correctOptionIndex)")
+        let correctOptionIndex = randomQuestions[currentQuestionIndex].correctAnswerIndex
+        print("Question ID: \(randomQuestions[currentQuestionIndex].id), Selected Option Index: \(selectedOptionIndex), Correct Option: \(correctOptionIndex)")
 
-           if selectedOptionIndex == correctOptionIndex {
-               handleCorrectAnswer()
-           } else {
-               handleIncorrectAnswer()
-           }
+        if selectedOptionIndex == correctOptionIndex {
+            handleCorrectAnswer()
+        } else {
+            handleIncorrectAnswer()
+        }
 
+        // Update the button text after checking the answer
+        updateButtonTextPostAnswer()
+    }
+    
+    private func updateButtonTextPostAnswer() {
+        if preguntaCounter >= 10 {
+            buttonText = "TERMINAR"
+        } else {
+            buttonText = "SIGUIENTE"
+        }
+    }
+    
+    func showNextQuestion() {
+            if questionsShownCount < 9 { // 9 because we start counting from 0
+                currentQuestionIndex += 1
+                prepareForNewQuestion()
+                questionsShownCount += 1
+            } else {
+                // This is the last question, handle the end of the quiz
+                print("Last question answered. Preparing to finish quiz.")
+                finishQuiz()
+            }
+        }
 
-           updateButtonTextForNextAction()
-       }
+    
+    private func prepareForNewQuestion() {
+        print("Preparing for new question. Index: \(currentQuestionIndex), ID: \(randomQuestions[currentQuestionIndex].id), Pregunta Counter: \(preguntaCounter + 1)")
+        isAnswered = false
+        selectedOptionIndex = -1
+        answerStatusMessage = "" // Reset the answer status message
+        questionTextColor = .black // Reset the question text color
 
-     
+        // No need to assign currentQuestion, it's computed based on currentQuestionIndex
 
-       private func updateButtonTextForNextAction() {
-           buttonText = preguntaCounter < randomQuestions.count ? "SIGUIENTE" : "TERMINAR"
-       }
-
-       private func handleCorrectAnswer() {
-           score += 1
-           totalScore += 500
-           rightSoundEffect?.play()
-           currentQuestion.question = "RESPUESTA CORRECTA"
-           answerIsCorrect = true
-           selectedIncorrectAnswer = false
-           questionTextColor = Color(hue: 0.315, saturation: 0.953, brightness: 0.335)
-       }
-
-      
-       func handleIncorrectAnswer() {
-           mistakes += 1
-           wrongSoundEffect?.play()
-           currentQuestion.question = "RESPUESTA INCORRECTA"
-           answerIsCorrect = false
-           selectedIncorrectAnswer = true
-           selectedAnswerIsIncorrect = true
-           shouldFlashCorrectAnswer = true // Indicate that the correct answer should flash
-           questionTextColor = Color(hue: 1.0, saturation: 0.984, brightness: 0.699)
-       }
-
-       func showNextQuestion() {
-           if currentQuestionIndex < randomQuestions.count - 1 {
-               currentQuestionIndex += 1
-               prepareForNewQuestion()
-           } else {
-               showAlertCompletedQuestions()
-           }
-       }
-
-       
-       private func prepareForNewQuestion() {
-           isAnswered = false
-           selectedOptionIndex = -1
-           currentQuestion = randomQuestions[currentQuestionIndex]
-           preguntaCounter += 1
-           resetForNewQuestion()
-           resetFlashingSignal = true
-       }
+        preguntaCounter += 1
+        resetForNewQuestion()
+        resetFlashingSignal = true
+        print("New question prepared. Current Question Index: \(currentQuestionIndex), Question ID: \(randomQuestions[currentQuestionIndex].id)")
+    }
 
 
-       private func resetForNewQuestion() {
-           timeRemaining = 15
-           answerIsCorrect = nil
-           buttonText = "CONFIRMAR"
-           startCountdownTimer()
-           selectedIncorrectAnswer = false
-           shouldFlashCorrectAnswer = false
-           questionTextColor = Color.black
-       
-       }
+    private func resetForNewQuestion() {
+        timeRemaining = 15
+        answerIsCorrect = nil
+        buttonText = "CONFIRMAR"
+        startCountdownTimer()
+        selectedIncorrectAnswer = false
+        shouldFlashCorrectAnswer = false
+        questionTextColor = Color.black
+    
+    }
     
     private func showAlertCompletedQuestions() {
-        // Set properties to show the completion alert
+        print("All questions completed. Showing completion alert.")
         alertMessage = "Atención."
         displayMessage = "Felicidades campeón. Has completado el Modo Libre. Prueba el Modo Competición"
         showAlert = true
     }
 
-
-     func finishQuiz() {
+    func finishQuiz() {
         let aciertos = score
         let puntuacion = totalScore
         let errores = mistakes
@@ -163,6 +190,7 @@ class QuizState: ObservableObject {
         UserDefaults.standard.set(puntuacion, forKey: "puntuacion")
         UserDefaults.standard.set(errores, forKey: "errores")
         isQuizCompleted = true
+        print("Quiz finished. Correct Answers: \(aciertos), Total Score: \(puntuacion), Mistakes: \(errores), Quiz Completed: \(isQuizCompleted)")
     }
 
     private func loadSoundEffects(player: Binding<AVAudioPlayer?>) {

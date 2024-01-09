@@ -10,10 +10,13 @@ struct MenuModoLibre: View {
     @State private var colorIndex: Int = 0
     @Environment(\.presentationMode) var presentationMode
     @State private var scale: CGFloat = 1.0
-       @State private var glowColor = Color.blue
-       let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var glowColor = Color.blue
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var isShowingMenuPrincipal = false
-
+    @State private var showNoQuestionsLeftAlert = false
+    @State private var dbHelper = QuizDBHelper()
+    
+    
     
     private let playerNameKey = "PlayerName"
     private let highScoreKey = "HighScore"
@@ -31,29 +34,29 @@ struct MenuModoLibre: View {
             
             VStack(spacing: 20) {
                 Image("logotrivial")
-                   .resizable()
-                   .aspectRatio(contentMode: .fit)
-                   .frame(width: 200, height: 150)
-                   .padding(.top, 20)
-                   .shadow(color: glowColor.opacity(0.8), radius: 10, x: 0.0, y: 0.0)
-                   .onAppear {
-                       scale = 1.01
-                   }
-                   .onReceive(timer) { _ in
-                       switch glowColor {
-                       case Color.blue:
-                           glowColor = .green
-                       case Color.green:
-                           glowColor = .red
-                       case Color.red:
-                           glowColor = .white
-                       default:
-                           glowColor = .blue
-                       }
-                   }
-                   .padding(.bottom, 10)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 200, height: 150)
+                    .padding(.top, 20)
+                    .shadow(color: glowColor.opacity(0.8), radius: 10, x: 0.0, y: 0.0)
+                    .onAppear {
+                        scale = 1.01
+                    }
+                    .onReceive(timer) { _ in
+                        switch glowColor {
+                        case Color.blue:
+                            glowColor = .green
+                        case Color.green:
+                            glowColor = .red
+                        case Color.red:
+                            glowColor = .white
+                        default:
+                            glowColor = .blue
+                        }
+                    }
+                    .padding(.bottom, 10)
                 
-
+                
                 if jugadorGuardado.isEmpty {
                     TextField("INTRODUCE TU NOMBRE", text: $playerName)
                         .foregroundColor(.black)
@@ -61,8 +64,8 @@ struct MenuModoLibre: View {
                         .frame(width: 220, height: 50)
                         .multilineTextAlignment(.center)
                         .background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.black, lineWidth: 2))
-                            .background(RoundedRectangle(cornerRadius: 1).fill(Color.white))
-                        
+                        .background(RoundedRectangle(cornerRadius: 1).fill(Color.white))
+                    
                 } else {
                     Text("¡Mbolan \(jugadorGuardado)! ")
                         .foregroundColor(.black)
@@ -70,7 +73,7 @@ struct MenuModoLibre: View {
                         .padding(.horizontal, 20)
                         .padding(.top, 200)
                 }
-            
+                
                 Text("El record actual es de \(highScore) puntos")
                     .foregroundColor(getFlashingColor())
                     .font(.headline)
@@ -81,7 +84,7 @@ struct MenuModoLibre: View {
                     }
                     .padding(.top, 0)
                 
-            
+                
                 Button(action: {
                     SoundManager.shared.playTransitionSound()
                     savePlayerName()
@@ -103,7 +106,7 @@ struct MenuModoLibre: View {
                 
                 Button(action: {
                     SoundManager.shared.playTransitionSound()
-                    jugarModoLibreActive = true
+                    checkForQuestionsBeforePlaying()
                 }) {
                     Text("JUGAR")
                         .font(.headline)
@@ -117,12 +120,7 @@ struct MenuModoLibre: View {
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
-                .onTapGesture {
-                    jugarModoLibreActive.toggle()
-                }
-                .fullScreenCover(isPresented: $jugarModoLibreActive) {
-                    JugarModoLibre(player: .constant(nil))
-                      }
+                
                 
                 Button(action: {
                     SoundManager.shared.playTransitionSound()
@@ -147,13 +145,33 @@ struct MenuModoLibre: View {
                 Spacer()
             }
         }
-        .navigationBarBackButtonHidden(true)
-        .onAppear {
-            loadPlayerName()
-            loadHighScore()
+            .fullScreenCover(isPresented: $jugarModoLibreActive) {
+                        JugarModoLibre(player: .constant(nil))
+                    }
+                       .alert(isPresented: $showNoQuestionsLeftAlert) {
+                           Alert(
+                               title: Text("Felicidades campeon@"),
+                               message: Text("Has completado el Modo Libre. Deberías probar el Modo Competición."),
+                               dismissButton: .default(Text("OK"), action: {
+                                   dbHelper.resetShownQuestions()
+                               })
+                           )
+                       }
+                       .navigationBarBackButtonHidden(true)
+                       .onAppear {
+                           loadPlayerName()
+                           loadHighScore()
+                       }
+                   }
+
+    private func checkForQuestionsBeforePlaying() {
+        if let unusedQuestions = dbHelper.getRandomQuestions(count: 10), !unusedQuestions.isEmpty {
+            jugarModoLibreActive = true
+        } else {
+            showNoQuestionsLeftAlert = true
         }
     }
-    
+
     private func savePlayerName() {
         UserDefaults.standard.set(playerName, forKey: playerNameKey)
     }

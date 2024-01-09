@@ -29,30 +29,32 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
 
     func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { [weak self] granted, error in
-            guard let strongSelf = self else { return }
+           print("Requesting notification permission")
+           UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { [weak self] granted, error in
+               guard let strongSelf = self else { return }
+               print("Notification permission response received")
 
-            if let error = error {
-                print("Error requesting notification permissions: \(error.localizedDescription)")
-                // Additional error handling can be implemented here
-                return
-            }
+               if let error = error {
+                   print("Error requesting notification permissions: \(error.localizedDescription)")
+                   return
+               }
 
-            if granted {
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            } else {
-                print("Notification permission not granted")
-                // Show an alert to the user
-                DispatchQueue.main.async {
-                    strongSelf.showNotificationPermissionAlert()
-                }
-            }
-        }
-    }
+               if granted {
+                   print("Notification permission granted")
+                   DispatchQueue.main.async {
+                       UIApplication.shared.registerForRemoteNotifications()
+                   }
+               } else {
+                   print("Notification permission not granted, showing alert")
+                   DispatchQueue.main.async {
+                       strongSelf.showNotificationPermissionAlert()
+                   }
+               }
+           }
+       }
 
     func showNotificationPermissionAlert() {
+        print("Presenting notification permission alert")
         let alertController = UIAlertController(
             title: "Notificaciones Desactivadas",
             message: "Activa las notificaciones para recibir los códigos y otros mensajes importantes. ¿Quieres activarlo?",
@@ -74,6 +76,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         // Find the topmost view controller to present the alert
         if let topController = getTopViewController() {
             topController.present(alertController, animated: true)
+            print("Notification permission alert presented")
+        } else {
+                    print("Unable to find top view controller to present alert")
         }
     }
 
@@ -177,25 +182,20 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     }
 
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                  willPresent notification: UNNotification,
-                                  withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-          // Handle the notification while the app is in the foreground
-          // You might want to show an alert, update the UI, etc.
-          completionHandler([.banner, .sound])
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            print("Will present notification: \(notification)")
+            completionHandler([.banner, .sound])
+        }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+          print("Did receive response to notification: \(response)")
+          let notification = response.notification
+          logNotificationReceived(notification: notification)
+          completionHandler()
       }
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                   didReceive response: UNNotificationResponse,
-                                   withCompletionHandler completionHandler: @escaping () -> Void) {
-           // Handle the user's interaction with the notification
-           let notification = response.notification
-           logNotificationReceived(notification: notification)
-
-           completionHandler()
-       }
     
     private func logNotificationReceived(notification: UNNotification) {
+        print("Logging received notification: \(notification)")
         guard let userID = Auth.auth().currentUser?.uid else {
             print("User not logged in, deferring notification logging.")
             return  // Exit early if the user is not logged in

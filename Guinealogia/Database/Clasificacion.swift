@@ -128,14 +128,11 @@ struct ClasificacionView: View {
     @State private var selectedUser: User? = nil
     @State private var isShowingLeadersProfile = false
 
-  
     var body: some View {
-        
         ZStack {
             Image("coolbackground")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
-            
             
             VStack(spacing: 10) {
                 Spacer()
@@ -150,73 +147,69 @@ struct ClasificacionView: View {
                         .foregroundColor(.black)
                         .padding(.top, 15)
                 
-                    
                     List {
-                        Section(header: HStack {
-                         
-                        }) {
-                            
+                        Section(header: HStack {}) {
                             ForEach(userData.users) { user in
                                 Button(action: {
                                     SoundManager.shared.playTransitionSound()
-                                    self.selectedUser = user     
+                                    self.selectedUser = user
                                     self.isShowingLeadersProfile = true
                                 }) {
                                     HStack {
-                                                      FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
-                                                          .font(.system(size: 12))
-                                                          .foregroundColor(.black)
+                                        FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.black)
                                         
-                                                      Spacer()
-                                                      FlashingText(text: user.fullname, shouldFlash: user.id == userId)
-                                                          .font(.system(size: 12))
-                                                          .foregroundColor(.black)
-                                                          .frame(maxWidth: .infinity, alignment: .leading)
-                                                    
-                                                      Spacer()
-                                                      FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
-                                                          .font(.system(size: 12))
-                                                          .foregroundColor(.black)
+                                        Spacer()
+                                        FlashingText(text: user.fullname, shouldFlash: user.id == userId)
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.black)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        
+                                        Spacer()
+                                        FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.black)
                                     }
                                 }
-                                
                             }
-                            
                         }
-                        Button(action: {
-                            SoundManager.shared.playTransitionSound()
-                            self.presentationMode.wrappedValue.dismiss()
-                        }) {
-                            Text("VOLVER")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(width: 300, height: 50)
-                                .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
-                                .cornerRadius(10)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.black, lineWidth: 3)
-                                )
-                        }
-                        
                     }
-                    .id(userData.refreshID)                
+                    .id(userData.refreshID)
                     .environment(\.colorScheme, .light)
                 }
                 .fullScreenCover(item: $selectedUser) { user in
                     LeadersProfile(userId: user.id)
                 }
-
-             .onAppear {
+                .onAppear {
                     self.viewModel.fetchUserDataFromRealtimeDatabase()
-                    
                 }
-             }
+
+                // Button moved outside the List
+                Button(action: {
+                    SoundManager.shared.playTransitionSound()
+                    self.presentationMode.wrappedValue.dismiss()
+                }) {
+                    Text("VOLVER")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 300, height: 50)
+                        .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                        .cornerRadius(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.black, lineWidth: 3)
+                        )
+                }
+                .padding(.bottom, 20)
+
+                Spacer()
             }
-       
+        }
     }
-    
+}
+
     
     struct ClasificacionView_Previews: PreviewProvider {
         static var previews: some View {
@@ -224,5 +217,5 @@ struct ClasificacionView: View {
         }
     }
     
-}
+
 

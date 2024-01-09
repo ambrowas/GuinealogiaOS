@@ -11,7 +11,6 @@ struct ResultadoView: View {
     @State private var isTextVisible = false
     @State private var player: AVAudioPlayer?
     @Environment(\.presentationMode) var presentationMode
-    @State private var showJugarModoLibre = false
     @State private var showMenuModoLibre = false
     @State private var playerName: String = ""
     @State private var highScore: Int = 0
@@ -19,181 +18,184 @@ struct ResultadoView: View {
     @State private var showAlert = false
     @State private var isAnimating: Bool = false
     @State private var dbHelper = QuizDBHelper()
-    @State private var showNoUnusedQuestionsAlert = false
-   @State private var isShowingMenuPrincipal = false
+    @State private var navigateToMenuPrincipal = false
+    @State private var jugarModoLibreActive: Bool = false
+    @State private var showNoQuestionsLeftAlert = false // Initialize the state variable
+    @State private var showCustomPopup = false
+
     
+
+   
     
     var body: some View {
-            ZStack {
-                Image("coolbackground")
+        ZStack {
+            Image("coolbackground")
+                .resizable()
+                .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                Image(imageName)
                     .resizable()
-                    .edgesIgnoringSafeArea(.all)
-                
-                VStack {
-                    Image(imageName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding(.top, -100.0)
-                        .frame(width: 300, height: 250)
-                        .opacity(isShowingImage ? 1 : 0)
-                        .scaleEffect(isAnimating ? 1.1 : 1.0) // Pulse animation
-                                  .onAppear {
-                                      withAnimation(.easeIn(duration: 2.0)) {
-                                          isShowingImage = true
-                                      }
-                                      // Pulse Animation
-                                      withAnimation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
-                                          isAnimating = true
-                                      }
-                                  }
-                          
-                    
-                    Text(textFieldText)
-                        .foregroundColor(.black)
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .padding(.top, -50)
-                        .opacity(isTextVisible ? 1 : 0)
-                        .onAppear {
-                            withAnimation(Animation.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) {
-                                self.isTextVisible.toggle()
-                            }
+                    .aspectRatio(contentMode: .fit)
+                    .padding(.top, -100.0)
+                    .frame(width: 300, height: 250)
+                    .opacity(isShowingImage ? 1 : 0)
+                    .scaleEffect(isAnimating ? 1.1 : 1.0) // Pulse animation
+                    .onAppear {
+                        withAnimation(.easeIn(duration: 2.0)) {
+                            isShowingImage = true
                         }
-                    
-                    TextField("", text: $playerName)
-                        .font(.title)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300, height: 65)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
-                        .overlay(
-                            Text("PREGUNTAS ACERTADAS: \(aciertos)")
-                                .font(.headline)
-                                .foregroundColor(Color(hue: 0.617, saturation: 0.831, brightness: 0.591))
-                                .padding(.horizontal)
-                        )
-                    
-                    TextField("", text: .constant(""))
-                        .font(.title)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300, height: 65)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
-                        .overlay(
-                            Text("ERRORES COMETIDOS: \(errores)")
-                                .font(.headline)
-                                .foregroundColor(Color(hue: 0.994, saturation: 0.963, brightness: 0.695))
-                                .padding(.horizontal)
-                        )
-                    
-                    TextField("", text: .constant(""))
-                        .font(.title)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300, height: 65)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
-                        .overlay(
-                            Text("PUNTUACION OBTENIDA: \(puntuacion)")
-                                .font(.headline)
-                                .foregroundColor(Color(hue: 0.404, saturation: 0.934, brightness: 0.334))
-                                .padding(.horizontal)
-                        )
-                    
-                    HStack {
-                        Button(action: {
-                            SoundManager.shared.playTransitionSound()
-                            showJugarModoLibre = true
-                        }) {
-                            Text("JUGAR")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(width: 180, height: 60)
-                                .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 5)
-                                        .stroke(Color.black, lineWidth: 3)
-                                )
-                        }
-                        .padding(.top, 30)
-                        .fullScreenCover(isPresented: $showJugarModoLibre) {
-                            JugarModoLibre(player: .constant(nil))
-                        }
-                        
-                        Button(action: {
-                            SoundManager.shared.playTransitionSound()
-                            checkForUnusedQuestionsBeforeExiting()
-                        }) {
-                            Text("SALIR")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(width: 180, height: 60)
-                                .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 5)
-                                        .stroke(Color.black, lineWidth: 3)
-                                )
-                        }
-                        .padding(.top, 30)
-                        .fullScreenCover(isPresented: $showMenuModoLibre) {
-                            MenuModoLibre()
-                        }
-                        .alert(isPresented: $showNoUnusedQuestionsAlert) {
-                            Alert(
-                                title: Text("Felicidades"),
-                                message: Text("Has completado el Modo Libre. Prueba el Modo Competición."),
-                                dismissButton: .default(Text("OK"), action: {
-                                    dbHelper.resetShownQuestions()
-                                    isShowingMenuPrincipal = true
-                                })
-                            )
+                        // Pulse Animation
+                        withAnimation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                            isAnimating = true
                         }
                     }
+                
+                
+                Text(textFieldText)
+                    .foregroundColor(.black)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .padding(.top, -50)
+                    .opacity(isTextVisible ? 1 : 0)
+                    .onAppear {
+                        withAnimation(Animation.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) {
+                            self.isTextVisible.toggle()
+                        }
+                    }
+                
+                TextField("", text: $playerName)
+                    .font(.title)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 300, height: 65)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: 3)
+                    )
+                    .overlay(
+                        Text("PREGUNTAS ACERTADAS: \(aciertos)")
+                            .font(.headline)
+                            .foregroundColor(Color(hue: 0.617, saturation: 0.831, brightness: 0.591))
+                            .padding(.horizontal)
+                    )
+                
+                TextField("", text: .constant(""))
+                    .font(.title)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 300, height: 65)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: 3)
+                    )
+                    .overlay(
+                        Text("ERRORES COMETIDOS: \(errores)")
+                            .font(.headline)
+                            .foregroundColor(Color(hue: 0.994, saturation: 0.963, brightness: 0.695))
+                            .padding(.horizontal)
+                    )
+                
+                TextField("", text: .constant(""))
+                    .font(.title)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 300, height: 65)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: 3)
+                    )
+                    .overlay(
+                        Text("PUNTUACION OBTENIDA: \(puntuacion)")
+                            .font(.headline)
+                            .foregroundColor(Color(hue: 0.404, saturation: 0.934, brightness: 0.334))
+                            .padding(.horizontal)
+                    )
+                HStack {
+                    Button(action: {
+                        SoundManager.shared.playTransitionSound()
+                        print("JUGAR button tapped")
+                        checkForQuestionsBeforePlaying()
+                        
+                    }) {
+                        Text("JUGAR")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 180, height: 60)
+                            .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color.black, lineWidth: 3)
+                            )
+                    }
+                    .padding(.top, 30)
+                    .fullScreenCover(isPresented: $jugarModoLibreActive) {
+                        JugarModoLibre(player: .constant(nil))
+                    }
+                    
+                    Button(action: {
+                        SoundManager.shared.playTransitionSound()
+                        showMenuModoLibre = true
+                        
+                    }) {
+                        Text("SALIR")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 180, height: 60)
+                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color.black, lineWidth: 3)
+                            )
+                    }
+                    .padding(.top, 30)
+                    .fullScreenCover(isPresented: $showMenuModoLibre) {
+                        MenuModoLibre()
+                    }
+                    .alert(isPresented: $showNoQuestionsLeftAlert) {
+                        print("Showing No Questions Left Alert")
+                        return Alert(
+                            title: Text("Atención"),
+                            message: Text("Felicidades campeón@, has completado el Modo Libre. Deberías probar el Modo Competición."),
+                            dismissButton: .default(Text("OK"), action: {
+                                print("Alert dismiss button tapped.") // Debugging print
+                                dbHelper.resetShownQuestions()
+                            })
+                        )
+                    }
+                    
+                    
                 }
             }
-            .onAppear {
-                handleAciertos()
-                checkHighScore()
-            }
-            .navigationBarHidden(true)
-            .alert(isPresented: $showAlert) {
-                Alert(
-                    title: Text("Nuevo Record"),
-                    message: Text("¡Felicidades! Has establecido un nuevo record."),
-                    dismissButton: .default(Text("Ok"))
-                )
-            }
+        }
+        .onAppear {
+            print("ResultadoView appeared")
+            handleAciertos()
+            checkHighScore()
+            
+            
+        }
+        .navigationBarHidden(true)
         
-        }
-    
-    private func checkForUnusedQuestionsBeforeExiting() {
-        let unusedQuestions = dbHelper.getRandomQuestions(count: 10)
-        if unusedQuestions.isEmpty {
-            // No more unused questions, show alert
-            showNoUnusedQuestionsAlert = true
-        } else {
-            // Unused questions available, proceed to MenuPrincipal
-            isShowingMenuPrincipal = true
-        }
     }
     
-    
+    private func checkForQuestionsBeforePlaying() {
+        if let unusedQuestions = dbHelper.getRandomQuestions(count: 10), !unusedQuestions.isEmpty {
+            jugarModoLibreActive = true
+        } else {
+            showNoQuestionsLeftAlert = true
+        }
+    }
+
+
     private func checkHighScore() {
         let userDefaults = UserDefaults.standard
         let previousHighScore = userDefaults.integer(forKey: "HighScore")
@@ -202,7 +204,7 @@ struct ResultadoView: View {
             highScore = puntuacion
             isNewHighScore = true
             userDefaults.set(highScore, forKey: "HighScore")
-            showAlert = true
+          showAlert = true
         } else {
             highScore = previousHighScore
             isNewHighScore = false
