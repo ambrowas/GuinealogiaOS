@@ -1,5 +1,5 @@
 import SwiftUI
-import FirebaseDatabase
+
 import FirebaseStorage
 
 struct LeadersProfile: View {

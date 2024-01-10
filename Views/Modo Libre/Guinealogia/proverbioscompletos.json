@@ -1,0 +1,654 @@
+{
+  "proverbios": [
+    {
+      "numero": 1,
+      "idioma": "español",
+      "texto": "La sabiduría del anciano es el mapa del joven."
+    },
+    {
+      "numero": 2,
+      "idioma": "español",
+      "texto": "Un árbol no niega su sombra ni siquiera al leñador."
+    },
+    {
+      "numero": 3,
+      "idioma": "español",
+      "texto": "El que no escucha consejos no llega a viejo."
+    },
+    {
+      "numero": 4,
+      "idioma": "español",
+      "texto": "Más vale una palabra a tiempo que cien después de la desgracia."
+    },
+    {
+      "numero": 5,
+      "idioma": "español",
+      "texto": "La tierra no olvida las pisadas de quienes la cultivan."
+    },
+    {
+      "numero": 6,
+      "idioma": "español",
+      "texto": "La lengua del sabio sana, la del necio hiere."
+    },
+    {
+      "numero": 7,
+      "idioma": "español",
+      "texto": "El que siembra respeto, cosecha armonía."
+    },
+    {
+      "numero": 8,
+      "idioma": "español",
+      "texto": "Donde hay unión, la montaña se convierte en llano."
+    },
+    {
+      "numero": 9,
+      "idioma": "español",
+      "texto": "El tambor no habla, pero hace bailar a los pueblos."
+    },
+    {
+      "numero": 10,
+      "idioma": "español",
+      "texto": "Nadie bebe agua con la boca del otro."
+    },
+    {
+      "numero": 11,
+      "idioma": "español",
+      "texto": "El río no olvida su cauce aunque lo desvíen."
+    },
+    {
+      "numero": 12,
+      "idioma": "español",
+      "texto": "El pez grande no se burla del pez pequeño cuando el agua baja."
+    },
+    {
+      "numero": 13,
+      "idioma": "español",
+      "texto": "Quien se adelanta sin mirar, tropieza dos veces."
+    },
+    {
+      "numero": 14,
+      "idioma": "español",
+      "texto": "No hay sabiduría sin silencio."
+    },
+    {
+      "numero": 15,
+      "idioma": "español",
+      "texto": "La palabra que no construye, destruye."
+    },
+    {
+      "numero": 16,
+      "idioma": "español",
+      "texto": "Una sola brasa no hace fuego."
+    },
+    {
+      "numero": 17,
+      "idioma": "español",
+      "texto": "El árbol con frutos es el que más piedras recibe."
+    },
+    {
+      "numero": 18,
+      "idioma": "español",
+      "texto": "El que come solo muere solo."
+    },
+    {
+      "numero": 19,
+      "idioma": "español",
+      "texto": "No se puede esconder el humo con la mano."
+    },
+    {
+      "numero": 20,
+      "idioma": "español",
+      "texto": "La cabra que se aleja del rebaño es presa fácil del leopardo."
+    },
+    {
+      "numero": 21,
+      "idioma": "español",
+      "texto": "No todas las nubes traen lluvia."
+    },
+    {
+      "numero": 22,
+      "idioma": "español",
+      "texto": "El fuego prueba el oro y la adversidad al hombre."
+    },
+    {
+      "numero": 23,
+      "idioma": "español",
+      "texto": "El camino del respeto siempre llega a buen destino."
+    },
+    {
+      "numero": 24,
+      "idioma": "español",
+      "texto": "Donde el corazón va, los pies siguen."
+    },
+    {
+      "numero": 25,
+      "idioma": "español",
+      "texto": "La lluvia no elige a quién mojar."
+    },
+    {
+      "numero": 26,
+      "idioma": "español",
+      "texto": "Una sola mano no puede lavar la cara."
+    },
+    {
+      "numero": 27,
+      "idioma": "español",
+      "texto": "El orgullo hincha, pero no alimenta."
+    },
+    {
+      "numero": 28,
+      "idioma": "español",
+      "texto": "El que camina con sabios, sabio se vuelve."
+    },
+    {
+      "numero": 29,
+      "idioma": "español",
+      "texto": "La paciencia cocina la comida más dura."
+    },
+    {
+      "numero": 30,
+      "idioma": "español",
+      "texto": "No hay mentira que no encuentre su día."
+    },
+    {
+      "numero": 31,
+      "idioma": "español",
+      "texto": "La envidia es un veneno que mata al que lo guarda."
+    },
+    {
+      "numero": 32,
+      "idioma": "español",
+      "texto": "El viento no rompe el bambú que se inclina."
+    },
+    {
+      "numero": 33,
+      "idioma": "español",
+      "texto": "Quien no respeta su origen, pierde su rumbo."
+    },
+    {
+      "numero": 34,
+      "idioma": "español",
+      "texto": "El tambor nunca se toca solo."
+    },
+    {
+      "numero": 35,
+      "idioma": "español",
+      "texto": "Donde hay tambores, hay historia."
+    },
+    {
+      "numero": 36,
+      "idioma": "español",
+      "texto": "El que ignora su lengua, olvida su espíritu."
+    },
+    {
+      "numero": 37,
+      "idioma": "español",
+      "texto": "La palabra es flecha: una vez lanzada no vuelve."
+    },
+    {
+      "numero": 38,
+      "idioma": "español",
+      "texto": "Quien no ha cruzado el río no se burla del que se moja."
+    },
+    {
+      "numero": 39,
+      "idioma": "español",
+      "texto": "La sombra sigue al cuerpo, no al revés."
+    },
+    {
+      "numero": 40,
+      "idioma": "español",
+      "texto": "El sabio aprende del silencio del bosque."
+    },
+    {
+      "numero": 41,
+      "idioma": "español",
+      "texto": "Una sonrisa abre más puertas que un bastón."
+    },
+    {
+      "numero": 42,
+      "idioma": "español",
+      "texto": "Donde hay raíces, siempre hay hojas."
+    },
+    {
+      "numero": 43,
+      "idioma": "español",
+      "texto": "La lluvia no borra la huella del leopardo."
+    },
+    {
+      "numero": 44,
+      "idioma": "español",
+      "texto": "El que teme al fuego no debería acercarse al fogón."
+    },
+    {
+      "numero": 45,
+      "idioma": "español",
+      "texto": "La sabiduría no se encuentra en la prisa."
+    },
+    {
+      "numero": 46,
+      "idioma": "español",
+      "texto": "La danza no termina hasta que suena el último tambor."
+    },
+    {
+      "numero": 47,
+      "idioma": "español",
+      "texto": "El elefante no teme a las hormigas, pero las respeta."
+    },
+    {
+      "numero": 48,
+      "idioma": "español",
+      "texto": "Quien corre solo llega rápido, quien camina en grupo llega lejos."
+    },
+    {
+      "numero": 49,
+      "idioma": "español",
+      "texto": "La verdad no se pudre aunque se entierre."
+    },
+    {
+      "numero": 50,
+      "idioma": "español",
+      "texto": "Los árboles que crecen juntos se entrelazan en el viento."
+    },
+    {
+      "numero": 51,
+      "idioma": "español",
+      "texto": "El búho no canta, pero todo lo observa."
+    },
+    {
+      "numero": 52,
+      "idioma": "español",
+      "texto": "La tradición es el alma de un pueblo."
+    },
+    {
+      "numero": 53,
+      "idioma": "español",
+      "texto": "Un consejo no pesa, pero vale mucho."
+    },
+    {
+      "numero": 54,
+      "idioma": "español",
+      "texto": "Quien no siembra hoy, no cosecha mañana."
+    },
+    {
+      "numero": 55,
+      "idioma": "español",
+      "texto": "El mar no se llena con un solo río."
+    },
+    {
+      "numero": 56,
+      "idioma": "español",
+      "texto": "La sabiduría viene de la experiencia, no de los años."
+    },
+    {
+      "numero": 57,
+      "idioma": "español",
+      "texto": "Las estrellas no temen a la oscuridad."
+    },
+    {
+      "numero": 58,
+      "idioma": "español",
+      "texto": "El respeto es la raíz de la convivencia."
+    },
+    {
+      "numero": 59,
+      "idioma": "español",
+      "texto": "Ningún tambor retumba sin una mano que lo toque."
+    },
+    {
+      "numero": 60,
+      "idioma": "español",
+      "texto": "No se aprende el bosque en un solo día."
+    },
+    {
+      "numero": 61,
+      "idioma": "español",
+      "texto": "El que olvida su lengua es como el río seco."
+    },
+    {
+      "numero": 62,
+      "idioma": "español",
+      "texto": "Las palabras dulces curan heridas profundas."
+    },
+    {
+      "numero": 63,
+      "idioma": "español",
+      "texto": "Donde comen dos, pueden comer tres."
+    },
+    {
+      "numero": 64,
+      "idioma": "español",
+      "texto": "El gallo canta, pero no amanece por él."
+    },
+    {
+      "numero": 65,
+      "idioma": "español",
+      "texto": "El camino del egoísta siempre es estrecho."
+    },
+    {
+      "numero": 66,
+      "idioma": "español",
+      "texto": "Ningún pez desafía al río que lo alimenta."
+    },
+    {
+      "numero": 67,
+      "idioma": "español",
+      "texto": "La verdad tiene piernas largas: siempre alcanza."
+    },
+    {
+      "numero": 68,
+      "idioma": "español",
+      "texto": "Una casa sin respeto es como un río sin agua."
+    },
+    {
+      "numero": 69,
+      "idioma": "español",
+      "texto": "La sabiduría no se impone, se transmite."
+    },
+    {
+      "numero": 70,
+      "idioma": "español",
+      "texto": "El que teme a la verdad, teme a la vida."
+    },
+    {
+      "numero": 71,
+      "idioma": "español",
+      "texto": "Una boca cerrada guarda su sabiduría."
+    },
+    {
+      "numero": 72,
+      "idioma": "español",
+      "texto": "La raíz del árbol no se ve, pero lo sostiene."
+    },
+    {
+      "numero": 73,
+      "idioma": "español",
+      "texto": "Donde falta el tambor, falta el alma."
+    },
+    {
+      "numero": 74,
+      "idioma": "español",
+      "texto": "La serpiente muda de piel, pero no de instinto."
+    },
+    {
+      "numero": 75,
+      "idioma": "español",
+      "texto": "El bosque no se pierde a quien conoce sus árboles."
+    },
+    {
+      "numero": 76,
+      "idioma": "español",
+      "texto": "La palabra vieja enseña al niño nuevo."
+    },
+    {
+      "numero": 77,
+      "idioma": "español",
+      "texto": "La piedra no enseña a nadar al pez."
+    },
+    {
+      "numero": 78,
+      "idioma": "español",
+      "texto": "La mirada del anciano ve lo que el joven no imagina."
+    },
+    {
+      "numero": 79,
+      "idioma": "español",
+      "texto": "No hay mejor cuna que la tierra que te vio nacer."
+    },
+    {
+      "numero": 80,
+      "idioma": "español",
+      "texto": "La mano que ayuda es más fuerte que la que golpea."
+    },
+    {
+      "numero": 81,
+      "idioma": "español",
+      "texto": "El silencio del sabio pesa más que el grito del necio."
+    },
+    {
+      "numero": 82,
+      "idioma": "español",
+      "texto": "La memoria del pueblo vive en sus canciones."
+    },
+    {
+      "numero": 83,
+      "idioma": "español",
+      "texto": "Los caminos rectos no siempre son los más cortos."
+    },
+    {
+      "numero": 84,
+      "idioma": "español",
+      "texto": "El que sabe escuchar gana el doble."
+    },
+    {
+      "numero": 85,
+      "idioma": "español",
+      "texto": "La verdad hablada con respeto siempre se oye mejor."
+    },
+    {
+      "numero": 86,
+      "idioma": "español",
+      "texto": "La historia de un pueblo se lee en sus ojos."
+    },
+    {
+      "numero": 87,
+      "idioma": "español",
+      "texto": "El corazón no tiene arrugas aunque envejezca."
+    },
+    {
+      "numero": 88,
+      "idioma": "español",
+      "texto": "Un pueblo sin cultura es un árbol sin raíces."
+    },
+    {
+      "numero": 89,
+      "idioma": "español",
+      "texto": "El consejo del anciano no se tira al fuego."
+    },
+    {
+      "numero": 90,
+      "idioma": "español",
+      "texto": "La danza enseña lo que las palabras no pueden."
+    },
+    {
+      "numero": 91,
+      "idioma": "español",
+      "texto": "La lengua puede ser lanza o bálsamo."
+    },
+    {
+      "numero": 92,
+      "idioma": "español",
+      "texto": "El que olvida su historia, camina en la niebla."
+    },
+    {
+      "numero": 93,
+      "idioma": "español",
+      "texto": "La voz del pueblo es eco del pasado."
+    },
+    {
+      "numero": 94,
+      "idioma": "español",
+      "texto": "La vida no tiene prisa, pero siempre llega."
+    },
+    {
+      "numero": 95,
+      "idioma": "español",
+      "texto": "El mar y la sabiduría no tienen fondo."
+    },
+    {
+      "numero": 96,
+      "idioma": "español",
+      "texto": "Donde hay niños, hay esperanza."
+    },
+    {
+      "numero": 97,
+      "idioma": "español",
+      "texto": "La palabra justa vale más que mil monedas."
+    },
+    {
+      "numero": 98,
+      "idioma": "español",
+      "texto": "El que no sabe su nombre, no sabe quién es."
+    },
+    {
+      "numero": 99,
+      "idioma": "español",
+      "texto": "Los tambores hablan cuando el alma calla."
+    },
+    {
+      "numero": 100,
+      "idioma": "español",
+      "texto": "El camino largo enseña más que el atajo."
+    },
+    {
+      "numero": 101,
+      "idioma": "fang/bubi u otras",
+      "texto": "Ndɔbɔ mɛ nda anɔ̂",
+      "traduccion": "La calabaza no cae lejos de la planta."
+    },
+    {
+      "numero": 102,
+      "idioma": "fang/bubi u otras",
+      "texto": "Nkûé nkôé a bô a yè",
+      "traduccion": "El fuego de la discordia quema también al que lo provoca."
+    },
+    {
+      "numero": 103,
+      "idioma": "fang/bubi u otras",
+      "texto": "Ngui lôô na mengôn",
+      "traduccion": "La palabra es más afilada que el machete."
+    },
+    {
+      "numero": 104,
+      "idioma": "fang/bubi u otras",
+      "texto": "Ayôpâ okô ló olandê",
+      "traduccion": "El árbol no se dobla cuando ya está seco."
+    },
+    {
+      "numero": 105,
+      "idioma": "fang/bubi u otras",
+      "texto": "Mbâ na ôbí, bí nnam ôtôlô",
+      "traduccion": "La boca de hoy trae guerras de mañana."
+    },
+    {
+      "numero": 106,
+      "idioma": "fang/bubi u otras",
+      "texto": "Lobè y'ônò lôbè bôkô",
+      "traduccion": "El pez no olvida el agua donde nació."
+    },
+    {
+      "numero": 107,
+      "idioma": "fang/bubi u otras",
+      "texto": "Bata bata e mamé",
+      "traduccion": "Despacio se llega lejos."
+    },
+    {
+      "numero": 108,
+      "idioma": "fang/bubi u otras",
+      "texto": "Tôbô esá b'eyôn",
+      "traduccion": "El tambor suena según quien lo toque."
+    },
+    {
+      "numero": 109,
+      "idioma": "fang/bubi u otras",
+      "texto": "Ekôlo y'enye be mongó",
+      "traduccion": "El árbol fuerte se prueba con el viento."
+    },
+    {
+      "numero": 110,
+      "idioma": "fang/bubi u otras",
+      "texto": "Ntoma bosángo ngá",
+      "traduccion": "Nadie pesca sin mojarse."
+    },
+    {
+      "numero": 111,
+      "idioma": "fang/bubi u otras",
+      "texto": "Ma bwelé iñé bo",
+      "traduccion": "No se sube a la cima sin sudor."
+    },
+    {
+      "numero": 112,
+      "idioma": "fang/bubi u otras",
+      "texto": "Tanda bubi, tanda bubi",
+      "traduccion": "Respeta para que te respeten."
+    },
+    {
+      "numero": 113,
+      "idioma": "fang/bubi u otras",
+      "texto": "Moñeba ñá i tá i ké",
+      "traduccion": "Donde hay amor, hay perdón."
+    },
+    {
+      "numero": 114,
+      "idioma": "fang/bubi u otras",
+      "texto": "Nánkô bélé iñe",
+      "traduccion": "La sabiduría está en el silencio."
+    },
+    {
+      "numero": 115,
+      "idioma": "fang/bubi u otras",
+      "texto": "Botá ni ké tándé",
+      "traduccion": "No camines sin mirar atrás."
+    },
+    {
+      "numero": 116,
+      "idioma": "fang/bubi u otras",
+      "texto": "Ké têla fa kô kake",
+      "traduccion": "Lo que se planta, se cosecha."
+    },
+    {
+      "numero": 117,
+      "idioma": "fang/bubi u otras",
+      "texto": "Bôma bô lôko ké",
+      "traduccion": "La palabra dicha no se recoge."
+    },
+    {
+      "numero": 118,
+      "idioma": "fang/bubi u otras",
+      "texto": "Sêna kê bê ké ndá",
+      "traduccion": "El sabio escucha más de lo que habla."
+    },
+    {
+      "numero": 119,
+      "idioma": "fang/bubi u otras",
+      "texto": "Tundá môngô sôngo n’kôla",
+      "traduccion": "El agua tranquila puede ser profunda."
+    },
+    {
+      "numero": 120,
+      "idioma": "fang/bubi u otras",
+      "texto": "Pikín bo fê, bô bônî",
+      "traduccion": "El niño que no llora, no mama."
+    },
+    {
+      "numero": 121,
+      "idioma": "fang/bubi u otras",
+      "texto": "Mekô ndong mô nkôn",
+      "traduccion": "Una gallina no canta donde hay león."
+    },
+    {
+      "numero": 122,
+      "idioma": "fang/bubi u otras",
+      "texto": "Abam abam aba éyô",
+      "traduccion": "El eco repite lo que escucha."
+    },
+    {
+      "numero": 123,
+      "idioma": "fang/bubi u otras",
+      "texto": "Yem bo oyem, yem abé",
+      "traduccion": "Si no buscas, no encontrarás."
+    },
+    {
+      "numero": 124,
+      "idioma": "fang/bubi u otras",
+      "texto": "Mângô a lômô nnam",
+      "traduccion": "El mango cae solo cuando está maduro."
+    },
+    {
+      "numero": 125,
+      "idioma": "fang/bubi u otras",
+      "texto": "Mbía mângô ôla eya",
+      "traduccion": "El que siembra mango, no recoge cebolla."
+    }
+  ]
+}

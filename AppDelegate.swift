@@ -2,9 +2,8 @@ import UIKit
 import UserNotifications
 import Firebase
 import FirebaseInAppMessaging
-import FirebaseInAppMessagingSwift
 import FirebaseDatabase
-
+import FirebaseAuth 
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, InAppMessagingDisplayDelegate {
     
@@ -29,35 +28,37 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
 
     func requestNotificationPermission() {
-           print("Requesting notification permission")
-           UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { [weak self] granted, error in
-               guard let strongSelf = self else { return }
-               print("Notification permission response received")
+        print("Requesting notification permission")
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { [weak self] granted, error in
+            guard let strongSelf = self else { return }
+            print("Notification permission response received")
 
-               if let error = error {
-                   print("Error requesting notification permissions: \(error.localizedDescription)")
-                   return
-               }
+            if let error = error {
+                print("Error requesting notification permissions: \(error.localizedDescription)")
+                return
+            }
 
-               if granted {
-                   print("Notification permission granted")
-                   DispatchQueue.main.async {
-                       UIApplication.shared.registerForRemoteNotifications()
-                   }
-               } else {
-                   print("Notification permission not granted, showing alert")
-                   DispatchQueue.main.async {
-                       strongSelf.showNotificationPermissionAlert()
-                   }
-               }
-           }
-       }
+            if granted {
+                print("Notification permission granted")
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            } else {
+                print("Notification permission not granted, scheduling alert presentation")
+                // Schedule the alert presentation after a delay
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    strongSelf.showNotificationPermissionAlert()
+                }
+            }
+        }
+    }
+
 
     func showNotificationPermissionAlert() {
         print("Presenting notification permission alert")
         let alertController = UIAlertController(
-            title: "Notificaciones Desactivadas",
-            message: "Activa las notificaciones para recibir los códigos y otros mensajes importantes. ¿Quieres activarlo?",
+            title: "Atención",
+            message: "Activa las notificaciones para recibir códigos de juego y otros mensajes importantes. ¿Quieres activarlo?",
             preferredStyle: .alert
         )
 
@@ -242,7 +243,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         // Handle in-app message click
     }
 
-    func messageDismissed(_ inAppMessage: InAppMessagingDisplayMessage, dismissType: FIRInAppMessagingDismissType) {
+    func messageDismissed(_ inAppMessage: InAppMessagingDisplayMessage, dismissType: InAppMessagingDismissType) {
         print("In-app message dismissed: \(inAppMessage)")
         // Handle in-app message dismissal
     }
