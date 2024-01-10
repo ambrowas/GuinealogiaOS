@@ -1,6 +1,7 @@
 import Foundation
 import Firebase
 import FirebaseDatabase
+import FirebaseAuth
 
 class QuestionManager {
     // MARK: - Properties

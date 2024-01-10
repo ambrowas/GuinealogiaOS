@@ -1,0 +1,902 @@
+[
+  {
+    "_id": 1,
+    "question": "¿Qué grupo musical de finales de los 90 contaba con Tonton Luisini, Jon Petti, Abuelo Estanis, Extra Bony entre otros?",
+    "OPTION1": "Orquesta Machosky",
+    "OPTION2": "Los Nacionalistas",
+    "OPTION3": "Etofili",
+    "answer_nr": 1,
+    "explicacion": "La orquesta Machosky fue fundada en 1975 pero no fue hasta de finales de los 90 que alcanzó gran reconocimiento nacional."
+  },
+  {
+    "_id": 2,
+    "question": "¿Juan Eyimi se destacó en los 90 por su faceta como...?",
+    "OPTION1": "Futbolista",
+    "OPTION2": "Cantante",
+    "OPTION3": "Fotógrafo",
+    "answer_nr": 3,
+    "explicacion": "Juan Eyimi fue un respetado cantautor, precursor del ritmo 'aziko meñeksé'. Tambíen fue reconocido por su labor como fotógrafo. Falleció en 2025"
+  },
+  {
+    "_id": 3,
+    "question": "¿Con qué otro nombre más famoso es conocido el cantante Leoncio Bayeme Nzang Obiang?",
+    "OPTION1": "Negro Bey",
+    "OPTION2": "Fistong Boy",
+    "OPTION3": "Romy So Love",
+    "answer_nr": 2,
+    "explicacion": "Fistong Boy es uno de las cantantes de moda en GE. Es el flamante autor de éxitos populares como 'Tu y Yo', 'Modo Phone' y 'Metám'."
+  },
+  {
+    "_id": 4,
+    "question": "¿Qué divertida y desenfadada localidad de BN ha sido recientemente (Mayo 2025) elevada a categoría de distrito urbano?",
+    "OPTION1": "Sacriba",
+    "OPTION2": "Alegre",
+    "OPTION3": "Santa Cruz",
+    "answer_nr": 2,
+    "explicacion": "El poblado de Alegre se encuentra a tan solo 15 km de la capital ecuatoguineana. Es un lugar amable y pintoresco que hace honor a su nombre"
+  },
+  {
+    "_id": 5,
+    "question": "¿Qué famosa panadería de Malabo estaba situada entre la plaza del Ayuntamiento y Amilivia?",
+    "OPTION1": "Kateb",
+    "OPTION2": "Nora",
+    "OPTION3": "Santy",
+    "answer_nr": 2,
+    "explicacion": "La popular panadería Nora, ya desaparecida, era de propiedad libanesa, y estaba ubicada en el corazón del casco antiguo de Malabo."
+  },
+  {
+    "_id": 6,
+    "question": "Con qué país Guinea Ecuatorial firmó en 2016 el llamado Compromiso de Marrakech? ",
+    "OPTION1": "Marruecos",
+    "OPTION2": "Gabón",
+    "OPTION3": "Sao Tomé y Príncipe",
+    "answer_nr": 2,
+    "explicacion": "Con Gabón. La Corte Internacional de Justicia emitió en Mayo de 2025 una sentencia favorable a la soberanía de Guinea Ecuatorial sobre los territorios en disputa."
+  },
+  {
+    "_id": 7,
+    "question": "¿Qué localidad de Bioko Sur que recibe alrededor de 1.450 milímetros de lluvia anuales es considerada como el lugar más húmedo de África?",
+    "OPTION1": "Ureka",
+    "OPTION2": "Moka",
+    "OPTION3": "Baney",
+    "answer_nr": 1,
+    "explicacion": "Ureka, ubicada en Bioko Sur, es reconocida como una de las zonas más lluviosas (y remotas) del continente, si encanto deriva tambien del misterio que la rodea y su belleza natural"
+  },
+  {
+    "_id": 8,
+    "question": "¿Cuál es la superficie total de la Isla de Bioko?",
+    "OPTION1": "2017 Km2",
+    "OPTION2": "3935 Km2",
+    "OPTION3": "5935 Km2",
+    "answer_nr": 1,
+    "explicacion": "La superficie de Bioko es de aproximadamente 2.017 km², conviriendola en la isla más grande de las varias que componen el  país."
+  },
+  {
+    "_id": 9,
+    "question": "¿En qué distrito se encuentra la Reserva Natural del Estuario del Muni?",
+    "OPTION1": "Mikomeseng",
+    "OPTION2": "Akonibe",
+    "OPTION3": "Kogo",
+    "answer_nr": 3,
+    "explicacion": "Se encuentra en Kogo, a lo largo de la frontera suroeste con Gabón. La reserva constituye una de las areas protegidas más importantes de EG."
+  },
+  {
+    "_id": 10,
+    "question": "Con una altura aproximada de 3.011 metros sobre el nivel del mar, ¿cuál es el punto más elevado del país?",
+    "OPTION1": "Pico Basilé",
+    "OPTION2": "Monte Bata",
+    "OPTION3": "Monte Alén",
+    "answer_nr": 1,
+    "explicacion": "El Pico Basilé es un volcán extinto que forma parte de la cadena montañosa conocida como Camerun Volcanic Line. El monte da nombre al parque nacional que lo rodea "
+  },
+  {
+    "_id": 11,
+    "question": "¿De quién eran las almas a las que se refirió Ndjocu Davies en su famoso libro de poemas e historias cortas?",
+    "OPTION1": "de Cesar",
+    "OPTION2": "de Brandon",
+    "OPTION3": "de su santa madre",
+    "answer_nr": 2,
+    "explicacion": "Erán almas de Brandon. César Brandon Ndjocu Davies se dió a conocer tras ganar la edición 2018 de Got Talent España, gracias a sus magistrales poemas como 'el uno y el cero', 'los nùmeros y sobre todo el que dedicó a su madre en la final."
+  },
+  {
+    "_id": 12,
+    "question": "¿Qué religioso y cooperante vinculado con las Escuelas Cristianas de la Salle escribió Ana y Nino Leen, La Familia Etugu y Milang?",
+    "OPTION1": "Jacint Creus",
+    "OPTION2": "Modesto Gene Roig",
+    "OPTION3": "Manuel Fernandez Magaz",
+    "answer_nr": 3,
+    "explicacion": " Manuel Fernàndez Magaz fué una figura clave en la educación católica en GE donde trabajó como maestro, promotor cultural y escritor de obras didácticas para niños."
+  },
+  {
+    "_id": 13,
+    "question": "¿Melba, Zulema y Aisha son las enamoradas protagonistas de qué provocadora obra literaria?",
+    "OPTION1": "Tres almas para un corazón",
+    "OPTION2": "Las almas de Brandon",
+    "OPTION3": "El demonio existe: la mujer es la prueba",
+    "answer_nr": 1,
+    "explicacion": "‘Tres almas para un corazón’, de Guillermina Mekuy Obono (2011) narra las historias cruzadas de tres mujeres bantúes que aman al mismo hombre, Santiago Nvé."
+  },
+  {
+    "_id": 14,
+    "question": "¿Cómo se llama la principal compañía teatral que opera en el país?",
+    "OPTION1": "Bocamandja",
+    "OPTION2": "Mookata",
+    "OPTION3": "Atanga",
+    "answer_nr": 1,
+    "explicacion": "Bocamandja se fundó en el 2005 bajo la dirección de Liki Loribo y de Recadero Boturu y desde entonces no ha dejado de poner en escena obras clásicas y originales ."
+  },
+  {
+    "_id": 15,
+    "question": "¿Qué pintor presentó en enero de 2022 una exposición de cuadros titulada “Suya”?",
+    "OPTION1": "Mene Manresa Bodipo",
+    "OPTION2": "Ramón Esono Ebale",
+    "OPTION3": "Gaspar Gomán",
+    "answer_nr": 1,
+    "explicacion": "Mene Manresa Bodipo es un destacado artista ecuatoguineano afincado en los Estados Unidos, se formó en el Centro Cultural Hispano Guineano."
+  },
+  {
+    "_id": 16,
+    "question": "En términos de extensión que provincia es más grande, Bioko Norte o Bioko Sur",
+    "OPTION1": "Bioko Norte",
+    "OPTION2": "Bioko Sur",
+    "OPTION3": "Su extensión es la misma",
+    "answer_nr": 2,
+    "explicacion": "Aunque BN está obviamente más poblada y urbanizada, BS, con 1241 km2, es casi el doble de extensa que BN."
+  },
+  {
+    "_id": 17,
+    "question": "¿Qué político, diplomático y escritor es el actual Presidente de la Academia Ecuatoguineana de la Lengua Española?",
+    "OPTION1": "Federico Edjo Ovono",
+    "OPTION2": "Anatolio Ndong Mba",
+    "OPTION3": "Agustín Nzé Nfumu",
+    "answer_nr": 3,
+    "explicacion": "Agustín Nzé Nfumu, (Otong Ntam- Añisok, 18 de Mayo 1940)Es presidente de la AEGLE desde 2015."
+  },
+  {
+    "_id": 18,
+    "question": "¿Cuál de estos académicos no ha sido nunca Rector de la UNGE?",
+    "OPTION1": "Carlos Nze Nsuga",
+    "OPTION2": "Filiberto Ntutumu Nguema",
+    "OPTION3": "Jesús Engonga Ndong",
+    "answer_nr": 3,
+    "explicacion": "Jesús Engonga ha ocupado varios cargos en el Ministerio de Educación, pero hasta ahora no ha sido rector de la Universidad Nacional de Guinea Ecuatorial."
+  },
+  {
+    "_id": 19,
+    "question": "¿Qué escritora, diplomática y académica es considerada la primera mujer guineana en recibir educación universitaria?",
+    "OPTION1": "María Nsue Angue",
+    "OPTION2": "Trinidad Morgades Besari",
+    "OPTION3": "Raquel Ilombé",
+    "answer_nr": 2,
+    "explicacion": "Trinidad Morgades Besari (1931 – 2019) obtuvo la licenciatura de Filosofía y Letras de la Universidad de Barcelona en 1958"
+  },
+  {
+    "_id": 20,
+    "question": "\"Cenizas de Kalabo y Termes”, \"La Revuelta de los Disfraces\" y \"Autorretrato Con Un Infiel\" ¿son obras de qué consolidado autor?",
+    "OPTION1": "Sergio Nsue Ondo Mifumu",
+    "OPTION2": "José F. Siale Djangani",
+    "OPTION3": "Antimo Esono",
+    "answer_nr": 2,
+    "explicacion": "José F. Siale Djangani (9/7/1961) es jurista, escritor y miembro de la Academia Ecuatoguineana de la Lengua Española. Ocupa el sillón B desde 2020"
+  },
+  {
+    "_id": 21,
+    "question": "¿Que cargo ocupaba el Hermano Militante Faustino Ndong Esono Eyang antes de ser nombrado SG del PDGE?",
+    "OPTION1": "Ministro del Interior y Corporaciones Locales",
+    "OPTION2": "Gobernador de Bioko Norte",
+    "OPTION3": "Ministro de Justicia, Culto e Instituciones Penitenciarias",
+    "answer_nr": 1,
+    "explicacion": "Esono Eyang ejercía de Ministro de Interior hasta que fue llamado a sustituir a Gerónimo Osá Osá en la Oficina Nacional"
+  },
+  {
+    "_id": 22,
+    "question": "¿Natividad Mayé Santos Adá es la dinámica presentadora de qué programa estelar de TVGE?",
+    "OPTION1": "EG Nuevas Voces",
+    "OPTION2": "EG Shine",
+    "OPTION3": "NaWetin",
+    "answer_nr": 1,
+    "explicacion": "EG Nuevas Voces estrenó su quinta temporada el pasado mes de Marzo (2025)."
+  },
+  {
+    "_id": 23,
+    "question": "El Ndong Mbá es una de las principales danzas tradicionales fang. ¿Al final de qué rito se suele practicar?",
+    "OPTION1": "Del matrimonio consuetudinario",
+    "OPTION2": "De los actos de defunción",
+    "OPTION3": "Del nacimiento de un hijo primogénito",
+    "answer_nr": 2,
+    "explicacion": "El Ndong Mbá se suele bailar en los actos de defunción. Su principal exponente fue Esama Obiang, natural de Mbamebeñ en Añisok.."
+  },
+  {
+    "_id": 24,
+    "question": "¿Cual es el nombre completo del poblado de Ureka?",
+    "OPTION1": "San Juan de Ureka",
+    "OPTION2": "San Antonio de Ureka",
+    "OPTION3": "San Pedro de Ureka",
+    "answer_nr": 2,
+    "explicacion": "San Antonio de Ureka se encuentra a 60 km al sur de Malabo, su paisaje y tradición son un reclamado destino turístico."
+  },
+  {
+    "_id": 25,
+    "question": "¿Qué joven científica afincada en los EEUU ha presentado recientemente una novela del costumbrismo fang de titulo 'Estridente Melodía'?",
+    "OPTION1": "Dra. Bernarda Guillermina Avomo Mangue",
+    "OPTION2": "Dra. Raisa Carmen Andem Ela",
+    "OPTION3": "Dra. Josefina Mba Sima",
+    "answer_nr": 2,
+    "explicacion": "Raisa C. Andem Ela es doctorada en Ingeniería Química. Estridente Melodía es su primera publicación literaria."
+  },
+  {
+    "_id": 26,
+    "question": "¿En la gastronomía tradicional anobonesa, qué fruto tropical es el principal ingrediente del pissoj jojonjo?",
+    "OPTION1": "Coco",
+    "OPTION2": "Caña de azúcar",
+    "OPTION3": "Banana",
+    "answer_nr": 1,
+    "explicacion": "El pissoj jojonjo es un plato tradicional de Annobón elaborado a base de coco rallado y pan de yuca."
+  },
+  {
+    "_id": 27,
+    "question": "¿Qué nombre recibe la lengua criolla derivada del portugués que se habla en la isla de Annobón?",
+    "OPTION1": "Pagalú",
+    "OPTION2": "Portuñol",
+    "OPTION3": "Fa D'ambó",
+    "answer_nr": 3,
+    "explicacion": "El Fa D'ambó también se denomina Fa D'ambú, Falar de Ano Bom y/o Annobonés."
+  },
+  {
+    "_id": 28,
+    "question": "¿Qué famoso coro de animación de finales de los ochenta deleitó al pueblo con éxitos como OSIMANEMA ANEM, y CANDIDATO UNICO?",
+    "OPTION1": "Number Two",
+    "OPTION2": "Coro Bicomsua",
+    "OPTION3": "Añapsi",
+    "answer_nr": 1,
+    "explicacion": "El grupo Number Two contaba en sus filas con figuras como EuMa, Mami Nkura y Mercedes de Eló. Su música forma parte de la banda sonora de la historia de nuestro país."
+  },
+  {
+    "_id": 29,
+    "question": "ALUK BONG, algo así como 'matrimonio de jóvenes' en español, ¿es un éxito de qué aclamada cantante ya retirada?",
+    "OPTION1": "Mercedes de Eló",
+    "OPTION2": "Euma",
+    "OPTION3": "Pina Besosa",
+    "answer_nr": 2,
+    "explicacion": "Eulogia Ángela Obono, más conocida como Euma, lanzó su primer album en solitario en 1997 ganando gran aceptación y respeto entre público y crítica."
+  },
+  {
+    "_id": 30,
+    "question": "¿Qué actor hispano guineano ha participado en películas como Palmeras en la Nieve, Villaviciosa De Al Lado y Señor Dame Paciencia?",
+    "OPTION1": "Emilio Buale",
+    "OPTION2": "Malcolm Sitté",
+    "OPTION3": "Boré Buika",
+    "answer_nr": 3,
+    "explicacion": "Boré Buika es miembro de una exitosa familia bubi y balear que incluye a la cantante Concha Buika, al actor Armando Balboa Buika y el politico Guillém Balboa Buika."
+  },
+  {
+    "_id": 31,
+    "question": "¿La participación en qué película de 2020 le valió la nominación a un Goya en la categoría de actor revelación a Matías Janick?",
+    "OPTION1": "Desaparecidos",
+    "OPTION2": "Historias Lamentables",
+    "OPTION3": "Caronte",
+    "answer_nr": 2,
+    "explicacion": "Matías es una joya en ascenso que ha participado también en largometrajes como Desaparecidos, Caronte y Delfines de Plata ."
+  },
+  {
+    "_id": 32,
+    "question": "¿Qué hermosa joven representó a Guinea Ecuatorial en el certamen Miss Universo 2024?",
+    "OPTION1": "Diana-Lita Hinestrosa Eraul",
+    "OPTION2": "Diana Angono Mouhafo",
+    "OPTION3": "Alba Isabel Obama Moliko",
+    "answer_nr": 2,
+    "explicacion": "Diana Angono Mouhafo representó a GE en la edición 73 de Miss Universo, celebrada en México. La joven se coronó Miss GE por el distrito de Malabo"
+  },
+  {
+    "_id": 33,
+    "question": "A finales de 2023 el Presidente Obiang presentó su último libro hasta el momento, ¿se titula?",
+    "OPTION1": "El sueño de una Guinea Mejor. Mis retentivas",
+    "OPTION2": "Mi Vida Por Mi Pueblo",
+    "OPTION3": "Guinea Ecuatorial, País Joven",
+    "answer_nr": 1,
+    "explicacion": "El sueño de una Guinea Mejor contiene aportaciones personales de la filosofía del autor respecto a la vida, la familia y el orden mundial actual."
+  },
+  {
+    "_id": 34,
+    "question": "¿Qué asociación constituida en 2017 busca “la promoción de las lenguas y culturas de los pueblos de GE, en especial y principalmente la lengua y cultura bubi?",
+    "OPTION1": "Casa África",
+    "OPTION2": "Ëvóvë/Ëbóbë",
+    "OPTION3": "Ölöita lué Ésèsèmbè",
+    "answer_nr": 2,
+    "explicacion": "Entre otras muchas actividades culturales, cada año la asociación celebra el Día de la Lengua Materna Bubi."
+  },
+  {
+    "_id": 35,
+    "question": "¿Qué escritora de pseudónimo Imelda publicó “Sabor a Caracol” en el 2020?",
+    "OPTION1": "Trifonia Melibea Obono",
+    "OPTION2": "Carmela Oyono Ayingono",
+    "OPTION3": "Guillermina Mekuy",
+    "answer_nr": 2,
+    "explicacion": "Carmela Oyono es autora también de sendas biografías sobre el Presidente Obiang y sobre Acacio Mañe Elá"
+  },
+  {
+    "_id": 36,
+    "question": "¿Qué tipo de instrumento musical es el mendjang?",
+    "OPTION1": "Tambor",
+    "OPTION2": "Flauta",
+    "OPTION3": "Xilófono",
+    "answer_nr": 3,
+    "explicacion": "El mendjang es un xilófono tradicional de 11 o 21 palos que se suele atar a la cintura. Se utiliza en numerosos actos de la cultura fang, y en la actualidad es muy común en las celebraciones litúrgicas"
+  },
+  {
+    "_id": 37,
+    "question": "¿Cuál de estos políticos no ha sido nunca Ministro de Sanidad?",
+    "OPTION1": "Dario Tadeo Ndong Olomo",
+    "OPTION2": "Celestino Bacale Obiang",
+    "OPTION3": "Diosdado Nsue Minang",
+    "answer_nr": 2,
+    "explicacion": "Celestino Bacale (1957-2021) fue miembro fundador del CPDS, aunque ostentó carteras Comercio, Transporte y Trabajo con el PDGE."
+  },
+  {
+    "_id": 38,
+    "question": "¿Qué género musical originario de Camerún cuyo significado literal es “pisar la tierra” se popularizó en África Central durante el siglo XX?",
+    "OPTION1": "Bikutsi",
+    "OPTION2": "Kwasa-Kwasa",
+    "OPTION3": "Makossa",
+    "answer_nr": 1,
+    "explicacion": "El Bikutsi, originario de Camerún, significa literalmente 'golpear la tierra' y es muy popular en África Central."
+  },
+  {
+    "_id": 39,
+    "question": "¿Los miembros de qué grupo étnico minoritario son conocidos como 'playeros'?",
+    "OPTION1": "Bubis",
+    "OPTION2": "Bengas",
+    "OPTION3": "Ndowes",
+    "answer_nr": 3,
+    "explicacion": "La etnia Ndowé, también conocidos como Playeros, es uno de los principales grupos étnicos de GE, particularmente asentados a lo largo de la costa continental del país (en la región del Litoral, especialmente en ciudades como Bata, Mbini, y Cogo)."
+  },
+  {
+    "_id": 40,
+    "question": "¿Cuántos obispos conforman normalmente la Conferencia Episcopal de Guinea Ecuatorial?",
+    "OPTION1": "Cinco",
+    "OPTION2": "Cuatro",
+    "OPTION3": "Seis",
+    "answer_nr": 1,
+    "explicacion": "Está compuesta por los obispos de las diócesis de Bata, Mongomo, Evinayong y Ebibeyin, así como el Arzobispado de Malabo."
+  },
+  {
+    "_id": 41,
+    "question": "¿Qué economista ejerció como primer Gobernador del Banco Central de Guinea Ecuatorial?",
+    "OPTION1": "Jesús Ndong Buendi Nanguande",
+    "OPTION2": "Damián Ondo Meñe",
+    "OPTION3": "Antonio Cándido Nnang",
+    "answer_nr": 1,
+    "explicacion": "Ndong Buendi era natural de Hendje, en Mbini y fue parte de una destacada generación de alumnos del Seminario de Banapá ."
+  },
+  {
+    "_id": 42,
+    "question": "¿Qué partido político ganó las elecciones Genreales de septiembre de 1968?",
+    "OPTION1": "MONALIGE",
+    "OPTION2": "MUNGE",
+    "OPTION3": "IPGE",
+    "answer_nr": 3,
+    "explicacion": "Idea Popular de Guinea Ecuatorial, el partido de Macias, recibió 36.176 votos (39'6%) en la primera vuelta, y en la segunda, con el apoyo de Unión Bubi y MONALIGE, obtuvo  68.310 (62'3%)"
+  },
+  {
+    "_id": 43,
+    "question": "¿Quién encabezaba la Delegación guineana en la Conferencia Constitucional de 1967-68?",
+    "OPTION1": "Bonifacio Ondó Edu",
+    "OPTION2": "Federico Ngomo Nandong",
+    "OPTION3": "Andrés Moisés Mbá Adá",
+    "answer_nr": 2,
+    "explicacion": "En su calidad de Presidente de la Asamblea General, Ngomo Nandong fue el portavoz principal en dicha conferencia en Madrid."
+  },
+  {
+    "_id": 44,
+    "question": "¿En qué año tuvo lugar la célebre 'Protesta de los Jefes', acto de valentía política precursora del nacionalismo guineano?",
+    "OPTION1": "1948",
+    "OPTION2": "1960",
+    "OPTION3": "1954",
+    "answer_nr": 1,
+    "explicacion": "En enero de 1948, una comisión de tres ministros españoles  visitó la colonia. Durante la visita, varios jefes de la zona de Mikomeseng entregaron dos escritos de protesta denunciando la situación deplorable de los nativos.Fueron duramente castigados después."
+  },
+  {
+    "_id": 45,
+    "question": "¿De dónde era natural D. Acació Mañé Elá?",
+    "OPTION1": "Ndjiakom-Esambira",
+    "OPTION2": "Ntuba-Esamengón",
+    "OPTION3": "Esasom-Bidjabidjan",
+    "answer_nr": 1,
+    "explicacion": "Acacio Mañé (1904 – 1959) era originario de Ndjiakom-Esambira,, distrito de Bata, Litoral. Héroe nacional, es considerado uno de los primeros y más importantes líderes independentistas"
+  },
+  {
+    "_id": 46,
+    "question": "¿La imagen de qué personalidad histórica aparecía en los billetes de 5000 bipkwele?",
+    "OPTION1": "Rey Uganda",
+    "OPTION2": "Enrique Nvo",
+    "OPTION3": "Tomás Engono Nkogo",
+    "answer_nr": 2,
+    "explicacion": "D. Enrique Nvo Okenve, es la opción correcta. El Rey Uganda era la efigie en los billetes de 500 bipkwele, mientras que era el rostro de Engono Nkogo en los de 100."
+  },
+  {
+    "_id": 47,
+    "question": "¿Quien sustituye a Edmundo Bossio Dioko como Vicepresidente en 1974?",
+    "OPTION1": "Bonifacio Ondo Edu",
+    "OPTION2": "Nadie. El puesto queda vacante hasta 1979",
+    "OPTION3": "Miguel Eyegue Ntutumu",
+    "answer_nr": 3,
+    "explicacion": "Eyegue asumió el cargo de Vicepresidente en funciones el 2 de Marzo de 1974 hasta que fue destituido, encarcelado y torturado tras ser implicado en el intento de golpe de Estado de 1976"
+  },
+  {
+    "_id": 48,
+    "question": "¿Quién sucedió a D. Ángel Serafín Seriche Dougan en el cargo de Primer Ministro?",
+    "OPTION1": "D.Miguel Abia Biteo Boricó",
+    "OPTION2": "D. Silvestre Siale Bileka",
+    "OPTION3": "D.Cándido Muatetema Rivas",
+    "answer_nr": 3,
+    "explicacion": "Seriche Dougan fue PM entre 1996 y 2001. Fue reemplazado por Muatetema Rivas, el cual estuvo en el cargo hasta 2004."
+  },
+  {
+    "_id": 49,
+    "question": "¿Qué sumo pontífice ha sido el unico en visitar nuestro país en el año 1982?",
+    "OPTION1": "Juan XXIII",
+    "OPTION2": "Juan Pablo II",
+    "OPTION3": "Pio XII",
+    "answer_nr": 2,
+    "explicacion": " Karol Wojtila, o sea Juan Pablo II, visitó GE el 18 de febrero de 1982.  Dijo que venía a ...«confirmar vuestra fe de cristianos y alentaros en vuestra fidelidad a Cristo y a la Iglesia"
+  },
+  {
+    "_id": 50,
+    "question": "¿El 17 de noviembre, día de su fiesta Patronal, Malabo rinde homenaje a qué santidad?",
+    "OPTION1": "Santa Isabel de Hungría",
+    "OPTION2": "Santa Isabel de Aragón",
+    "OPTION3": "Santa Isabel de Clarence",
+    "answer_nr": 1,
+    "explicacion": "Santa Isabel de Hungría, princesa de la dinastia Arpad, fue canonizada en 1235 por el papa Gregorio IX. Es patrona de los hospitales, las enfermeras, las viudas, los huérfanos y tambien de los buenos] panaderos."
+  },
+  {
+    "_id": 51,
+    "question": "¿Junto a qué amigo y colaborador cercano compuso Atanasio Ndongo el himno de nuestro país?",
+    "OPTION1": "Rafael M. Nzé Abuy",
+    "OPTION2": "Acacio Mañé",
+    "OPTION3": "Saturnino Ibongo",
+    "answer_nr": 3,
+    "explicacion": "Saturnino Ibongo Iyanga (1936-1969) fue un político ecuatoguineano, diplomático, periodista y el primer representante de GE en la ONU"
+  },
+  {
+    "_id": 52,
+      "question": "¿Qué tratado de 1777 entre las coronas de Portugal y España transfiere a esta última la soberanía de ciertas posesiones en el Golfo de Guinea?",
+    "OPTION1": "El Tratado de Lisboa",
+    "OPTION2": "El Tratado de Tordesillas",
+    "OPTION3": "El Tratado de San Ildefonso",
+    "answer_nr": 3,
+    "explicacion": "El Tratado de San Ildefonso, que buscaba resolver disputas pendientes entre ambas potencias, fue fundamental para definir las fronteras de lo que siglos después serian los limites de nuestro país"
+  },
+  {
+    "_id": 53,
+    "question": "¿Qué significativo suceso de índole política  tuvo lugar el 7 de Julio de 1970 ?",
+    "OPTION1": "La entrada de Guinea Ecuatorial en la UDEAC",
+    "OPTION2": "La fundación del Partido Unico Nacional de Trabajadores",
+    "OPTION3": "La promulgación de la Carta Magna de Aconibe",
+    "answer_nr": 2,
+    "explicacion": "El Partido Único Nacional de los Trabajadores, más conocido por sus siglas (PUNT) fue el partido único de Guinea Ecuatorial entre 1970 y 1979, durante el régimen de Francisco Macías Nguema Biyogo Nandong ."
+  },
+  {
+    "_id": 54,
+    "question": "¿Qué publicación de evidente carácter propagandístico-político fue escrito en 1976 por Daniel Oyono Ayingono, Ministro de Información”?",
+    "OPTION1": "El Baile de los Malditos",
+    "OPTION2": "Macías, Verdugo o Víctima",
+    "OPTION3": "Las Tinieblas de tu Memoria Negra",
+    "answer_nr": 1,
+    "explicacion": "El Baile de los Malditos es probablemente el libro más famoso, pero menos leído de la literatura política guineana. En el se denuncia un intento de golpe de estado  enmascarado como una “Cruzada de Liberación por Cristo”."
+  },
+  {
+    "_id": 55,
+    "question": "¿En qué fecha tuvo lugar el célebre incidente diplomático denominado Crisis de las Banderas?",
+    "OPTION1": "Septiembre de 1968",
+    "OPTION2": "Enero de 1968",
+    "OPTION3": "Marzo de 1969",
+    "answer_nr": 3,
+    "explicacion": "La “Crisis de las Banderas” tuvo lugar en marzo del 69 cuando el gobierno de Macías ordenó la retirada de banderas españolas de edificios y propiedades, desencadenando un conflicto con España y la huida de cientos de españoles."
+  },
+  {
+    "_id": 56,
+    "question": "¿En qué año el navegante portugués Fernando Poo descubrió la isla de Bioko para los europeos?",
+    "OPTION1": "1420",
+    "OPTION2": "1501",
+    "OPTION3": "1472",
+    "answer_nr": 3,
+    "explicacion": "Fernando Poo llamó inicialmente 'Formosa' (hermosa) a la isla por su exuberante vegetación."
+  },
+  {
+    "_id": 57,
+    "question": "Desde Agosto de 1929 fue el primer sacerdote autóctono del Vicariato Apostólico de Fernando Poo",
+    "OPTION1": "William Napoleon Barleycorn",
+    "OPTION2": "Padre Sialó",
+    "OPTION3": "Ildefonso Obama",
+    "answer_nr": 2,
+    "explicacion": "El Padre Joaquin Maria Sialó es recordado como uno las figuras religiosas más importantes de nuestra historia"
+  },
+  {
+    "_id": 58,
+    "question": "Macias rebautizó esta localidad con el nombre de su sobrino y más cercano consejero, Pedro Ela Nguema Andeme",
+    "OPTION1": "San Carlos",
+    "OPTION2": "San Fernando",
+    "OPTION3": "Santiago de Baney",
+    "answer_nr": 2,
+    "explicacion": "San Fernando es comúnmente conocida como Ela Nguema, sitada al sureste de la capital. Es la localidad donde se crió Pedro Ela Nguema Andeme y a la cual da nombre."
+  },
+  {
+    "_id": 59,
+    "question": "¿Qué rango militar ostentaba Obiang Nguema Mbasogo en el momento del Golpe de Libertad?",
+    "OPTION1": "Teniente Coronel",
+    "OPTION2": "Capitán",
+    "OPTION3": "Sargento Primero",
+    "answer_nr": 1,
+    "explicacion": "Era además ViceMinistro de las Fuerzas Armadas y Gobernador Militar de Bioko."
+  },
+  {
+    "_id": 60,
+    "question": "¿Qué importante cargo ejerció D. Abilio Balboa Atkins de manera consecutiva entre 1961 y 1967?",
+    "OPTION1": "Alcalde de Santa Isabel",
+    "OPTION2": "Presidente de la Diputación Provincial de Fernando Poo",
+    "OPTION3": "Delegado de Gobierno",
+    "answer_nr": 1,
+    "explicacion": "Este destacado líder fernandino fue uno de los primeros dirigentes del MONALIGE."
+  },
+  {
+    "_id": 61,
+    "question": "¿Cuál de estos títulos es una obra de Leoncio Evita Enoy?",
+    "OPTION1": "Las Tinieblas de tu Memoria Negra",
+    "OPTION2": "Ekomo",
+    "OPTION3": "Cuando los Combes Luchaban",
+    "answer_nr": 3,
+    "explicacion": "‘Cuando los Combes Luchaban’ (1953), es considerada la primera novela guineana. Narra el conflicto entre los combés  y los hombres leopardo que devastan sus tierras, con el trasfondo de la penetración colonial"
+  },
+  {
+    "_id": 62,
+    "question": "¿Además de Ministro de Enseñanza Popular, Arte y Cultura Tradicional, fue Secretario General del PUNT hasta 1976?",
+    "OPTION1": "Buenaventura Ochaga Ngomo",
+    "OPTION2": "Job Obiang Mba",
+    "OPTION3": "Daniel Mba Oyono",
+    "answer_nr": 1,
+    "explicacion": "Buenaventura Ochaga Ngomo fue uno de los hombres mas cercanos a Macias hasta que cayó en desgracia en 1976"
+  },
+  {
+    "_id": 63,
+    "question": "¿Qué personaje del gran Eyi Muan Ndong era antropófago?",
+    "OPTION1": "Beme",
+    "OPTION2": "Mbuandong",
+    "OPTION3": "Nokonoko",
+    "answer_nr": 2,
+    "explicacion": "Mbuandong, en las historias de Eyi Muan Ndong, era un personaje grotesco conocido por su canibalismo ritual."
+  },
+  {
+    "_id": 64,
+    "question": "¿Qué obra de Trifonia Melibea Obono constituye un poderoso alegato sobre la homosexualidad femenina?",
+    "OPTION1": "La Albina del Dinero",
+    "OPTION2": "La Bastarda",
+    "OPTION3": "El Llanto de la Perra",
+    "answer_nr": 2,
+    "explicacion": "‘La Bastarda’ aborda los conflictos de identidad sexual y de género en la sociedad fang tradicional."
+  },
+  {
+    "_id": 65,
+    "question": "¿Qué escritora natural de San Pedro de Lia es autora de \"Ngulsi\" (2012), \"Biyaare\" (2015) y \"Mayimbo\" (2019)?",
+    "OPTION1": "Angela Nzambi",
+    "OPTION2": "Maria Jose Biong Bill",
+    "OPTION3": "Raquel Ilombé",
+    "answer_nr": 1,
+    "explicacion": "Ángela María Nzambi Bakale (1971) es una autora, feminista y activista de derechos humanos con residencia en Valencia, España"
+  },
+  {
+    "_id": 66,
+    "question": "¿Qué veterano escritor es el autor de la obra “Lenguas y poder en África”, un ensayo que analiza la dominación colonial a través del lenguaje?",
+    "OPTION1": "Donato Ndong",
+    "OPTION2": "Justo Bolekia Boleká",
+    "OPTION3": "Juan Balboa Boneke",
+    "answer_nr": 2,
+    "explicacion": "Este es uno de los ensayos más influyentes de Justo Bolekia Boleká, donde denuncia el uso del idioma como herramienta de control colonial, abogando por la recuperación y promoción de las lenguas africanas, especialmente el bubi."
+  },
+  {
+    "_id": 67,
+    "question": "¿Qué joven religioso es el \"párroco de Niefang\" en la obra homónima de Joaquin Mbomio Bacheng?",
+    "OPTION1": "el Padre Gabriel",
+    "OPTION2": "el Padre Andrés",
+    "OPTION3": "Monseñor Abuy",
+    "answer_nr": 1,
+    "explicacion": "La obra narra la crisis de fé del Padre Gabriel tras su traumático paso por la cárcel en el contexto histórico del antiguo régimen."
+  },
+  {
+    "_id": 68,
+    "question": "¿A qué o a quien hace referencia los Hijos del Gran Buho en la obra mas conocida de Estanislao Medina Huesca”?",
+    "OPTION1": "a Suspeh",
+    "OPTION2": "a Barlock",
+    "OPTION3": "al albino Micó",
+    "answer_nr": 2,
+    "explicacion": "A Barlock. Medina Huesca es conocido por explorar la marginalidad urbana en la GE actual, con personajes jóvenes atrapados entre la violencia y la búsqueda de identidad."
+  },
+  {
+    "_id": 69,
+    "question": "¿Qué le propuso el Fiscal General a quien le acusaba de robarle la mujer en un audio viral?",
+    "OPTION1": "Que se equivocaba de persona",
+    "OPTION2": "Que lo pusiera por escrito",
+    "OPTION3": "Que se enfrentaran como dos hombres",
+    "answer_nr": 2,
+    "explicacion": "El caso del Fiscal General, 'la de litoral' y su marido se hizo viral por alli por 2021."
+  },
+  {
+    "_id": 70,
+    "question": "¿Qué aspecto de la cultura fang exploraba Joaquín Mbana Nchama en su libro de 2004?",
+    "OPTION1": "La Dote o Matrimonio Fang",
+    "OPTION2": "La Gramática Fang",
+    "OPTION3": "La Brujería",
+    "answer_nr": 3,
+    "explicacion": "Joaquin Mbana (Midjimitom-Esanvín, 1957) escritor, teólogo y docente. Es el actual Embajador de GE ante la Santa Sede."
+  },
+  {
+    "_id": 71,
+    "question": "¿Qué canción hizo famoso a Peque Wambo a mediados de los 90, convirtiéndole en el pionero del rap guineano?",
+    "OPTION1": "El sonido de la botella",
+    "OPTION2": "Ambiente de la Calle",
+    "OPTION3": "La Vampira",
+    "answer_nr": 2,
+    "explicacion": "Peque Wambo puso banda sonora a la cultura urbana de los 90 con su música, especialmente con 'Ambiente de la calle', su canción más exitosa"
+  },
+  {
+    "_id": 72,
+    "question": "¿Qué joven wakero, fallecido trágica y prematuramente en 2024 fue el fundador de la marca Chop Di Waka?",
+    "OPTION1": "Egor B",
+    "OPTION2": "Chelito Waté",
+    "OPTION3": "Jul",
+    "answer_nr": 1,
+    "explicacion": " Francisco Ngua Edu Milam, alias Egor B, alias Mr. Broge, alias Brogis wakero, fue un joven emprendedor, muy querido en la sociedad que canalizaba su visiòn a través de su marca, Chop Di Waka, siempre full."
+  },
+  {
+    "_id": 73,
+    "question": "Con qué éxito de Maele se podrían sentir más identificados los guineanos que conforman la diáspora, sobre todo los que viven en Europa? ",
+    "OPTION1": "Chica Ane' Mbeng",
+    "OPTION2": "Nguan Bilombo",
+    "OPTION3": "Ssi Mitangan",
+    "answer_nr": 3,
+    "explicacion": "‘Ssi Mitangan’ o 'Tierra de Blancos' es un excelente testimonio sobre la dureza de tener que buscarse la vida en Europa siendo negro."
+  },
+  {
+    "_id": 74,
+    "question": "¿Qué artista se llevó el galardón al mejor album de 2023 en la edición 2024 de los premios Joncham?",
+    "OPTION1": "Johnson Killer por Rescate",
+    "OPTION2": "José Blasky por Soy Hood",
+    "OPTION3": "Los Hermanos Maga por Historia de Dos",
+    "answer_nr": 3,
+    "explicacion": "Los Hermanos Maga, Elpidio y Leoncio, llevan años en el panorama músical guineano. Su premiado trabajo, Historia de Dos, contiene exitos como Que Bonita Eres, Beautiful y Name Dambo "
+  },
+  {
+    "_id": 75,
+    "question": "Quien nos cantó, la historia de un señor muy rico llamado Francisco Akono, funcionario del Estado",
+    "OPTION1": "Nene Bantú",
+    "OPTION2": "Betty Akna",
+    "OPTION3": "Jay Nvok",
+    "answer_nr": 1,
+    "explicacion": "Ramon Monsuy Andeme, más conocido como Nene Bantú, el rey del djebol, es uno de los artistas nacionales con mayor trayectoria; sobre sus hombros  carga la esencia de la música fang, heredada del mismisimo Eyi Muan Ndong."
+  },
+  {
+    "_id": 76,
+    "question": "¿Qué coro de animación nos redescubrió el rito de la “Toalla de Flores” o 'Tawola Mesam'?",
+    "OPTION1": "Coro Bicomsua de Mongomo",
+    "OPTION2": "Coro Antorcha de Zaragoza",
+    "OPTION3": "Coro Bibulseng de Niefang",
+    "answer_nr": 1,
+    "explicacion": "Tawola Mesam, del Coro Bicomusua de Mongomo, dominó las listas de éxitos locales desde el momento que fue lanzada en 2007."
+  },
+  {
+    "_id": 77,
+    "question": "¿Con qué otro nombre más popular se conoce al artista Baltasar Nsue Ndong?",
+    "OPTION1": "Selin Samurai",
+    "OPTION2": "Bompe Ro",
+    "OPTION3": "Besoso",
+    "answer_nr": 3,
+    "explicacion": "Besoso es uno de los artistas más importantes y con mayor transcendencia internacional del panorama musical guineano'."
+  },
+  {
+    "_id": 78,
+    "question": "¿Qué simpática cantante ha irrumpido recientemente  con un popular single en que se queja que la dejaron sola?",
+    "OPTION1": "Mami La Bichota",
+    "OPTION2": "Sara Baby",
+    "OPTION3": "Anguesomo",
+    "answer_nr": 2,
+    "explicacion": "Sara Baby se hizo popular en 2024 no solo por su música sino tambien por su cándida personalidad."
+  },
+  {
+    "_id": 79,
+    "question": "Juan Maria Ngomo Evuy es una especie de trovador fang moderno afincado en España. Es más conocido como...",
+    "OPTION1": "Norberto de Noah",
+    "OPTION2": "Baron Ya Buk-Lu",
+    "OPTION3": "Mastho Ribocho",
+    "answer_nr": 2,
+    "explicacion": "Juan Maria Ngomo Evuy es el nombre ya casi olvidado del gran Baron Ya Buk-Lu. Este cantautor nació el 14 de 1960 en Micomeseng."
+  },
+  {
+    "_id": 80,
+    "question": "¿Cuál es el título de la canción que Chuku Nene y Sita Richi convirtieron en un gran éxito a mediados de los 90?",
+    "OPTION1": "Wala Rioko",
+    "OPTION2": "Oberi",
+    "OPTION3": "Bweko Lele",
+    "answer_nr": 1,
+    "explicacion": "'Wala Rioko' fue un gran éxito que acercó la música tradicional bubi a todo el país, convirtiéndose en símbolo de una generación musical."
+  },
+  {
+    "_id": 81,
+    "question": "¿Cuál de estas localidades de la isla de Bioko se encuentra más al sur?",
+    "OPTION1": "Bococo",
+    "OPTION2": "Bantabaré",
+    "OPTION3": "Musola",
+    "answer_nr": 1,
+    "explicacion": "Bococo está situada al suroeste de la isla, justo por debajo de Luba y más cerca del extremo sur, en las proximidades del paralelo 3°15’ N"
+  },
+  {
+    "_id": 82,
+    "question": "En términos de extensión, ¿cuál es la provincia más grande de Guinea Ecuatorial?",
+    "OPTION1": "Wele-Nzas",
+    "OPTION2": "Kie-Ntem",
+    "OPTION3": "Centro Sur",
+    "answer_nr": 3,
+    "explicacion": "Con una superficie de 9931 km2, CS es la provincia más extensa del país aunque ocupa el 5 puesto en términos de población."
+  },
+  {
+    "_id": 83,
+    "question": "De acuerdo con los últimos datos del INEGE, ¿cuál es la población de la región insular?",
+    "OPTION1": "425.762",
+    "OPTION2": "340.362",
+    "OPTION3": "525.702",
+    "answer_nr": 2,
+    "explicacion": "INEGE publicó en 2023, Guinea Ecuatorial en Cifras, estimando que la región insular cuenta con una población aproximada de 340.362 habitantes."
+  },
+  {
+    "_id": 84,
+    "question": "¿En qué provincia de Guinea Ecuatorial ubicarias Punta Santiago?",
+    "OPTION1": "Djibloho",
+    "OPTION2": "Annobon",
+    "OPTION3": "Bioko Sur",
+    "answer_nr": 3,
+    "explicacion": "Punta Santiago es un premonitorio en el extremo sur de Bioko, entre Punta Dolores y San Antonio de Ureca"
+  },
+  {
+    "_id": 85,
+    "question": "¿Cuál de estas localidades de Rio Muni, la region Continental, es más centrica?",
+    "OPTION1": "Evinayong",
+    "OPTION2": "Micomeseng",
+    "OPTION3": "Acurenam",
+    "answer_nr": 1,
+    "explicacion": "Evinayong por supuesto. Aunque las tres están prácticamente en linea de norte a sur, la capital de CS se sitúa en el centro del mapa."
+  },
+  {
+    "_id": 86,
+    "question": "¿Qué reconocida escritora y activista guineana es la autora de 'La Bastarda'?",
+    "OPTION1": "Maria Nsue Angue",
+    "OPTION2": "Trifonia Melibea Obono",
+    "OPTION3": "Raquel Ilombé",
+    "answer_nr": 2,
+    "explicacion": "'La Bastarda' es una controversial novela de Trifonia Melibea Obono de 2016 que explora temas sensibles de género y sexualidad."
+  },
+  {
+    "_id": 87,
+    "question": "¿Cuál de estos lugares públicos se encuentra en el barrio Santa Cruz de la ciudad de Bata?",
+    "OPTION1": "Estadio de fútbol",
+    "OPTION2": "Cementerio municipal",
+    "OPTION3": "Mercado municipal",
+    "answer_nr": 2,
+    "explicacion": "En agosto de 2023 el cementerio municipal de Santa Cruz sufrió un feroz incendio, al parecer provocado, durante un entierro."
+  },
+{
+  "_id": 88,
+  "question": "¿Cuál es el nombre completo de Jesusín, archiconocido por su faceta como Director General de Tráfico?",
+  "OPTION1": "Jesús Nguema Tomo",
+  "OPTION2": "Jesús Ngomo Nvono",
+  "OPTION3": "Jesús Nvono Engonga",
+  "answer_nr": 2,
+  "explicacion": "Jesús Ngomo Nvono fue DGT hasta agosto de 2023, cuando fue sustituido en el cargo por Silverio Beka Beka."
+},
+  {
+    "_id": 89,
+    "question": "¿Temudis y Mogue son agencias privadas que operan en que sector?",
+    "OPTION1": "Telecomunicaciones",
+    "OPTION2": "Moda",
+    "OPTION3": "Deporte",
+    "answer_nr": 2,
+    "explicacion": "Son agencias de moda y provison de azafatas para eventos que han contribuido al desarrollo de esta industria."
+  },
+  {
+    "_id": 90,
+    "question": "¿A qué distrito representan las mujeres del coro de animación Las Bonkoristas?",
+    "OPTION1": "Kogo",
+    "OPTION2": "Evinayong",
+    "OPTION3": "Malabo",
+    "answer_nr": 1,
+    "explicacion": "Los oriundos de Kogo se hacen llamar cariñosamente bonkoristas y están muy orgullosos de su coro de animación"
+  },
+  {
+    "_id": 91,
+    "question": "¿Además de su trayectoria en la alta Administración Pública, que cargo inaugural ocupó Federico Messa Bill Conqüe entre 1982-84?",
+    "OPTION1": "Presidente del Comité Olímpico",
+    "OPTION2": "Embajador de GE en Nigeria",
+    "OPTION3": "Delegado Nacional de INSESO",
+    "answer_nr": 1,
+    "explicacion": "(1929-2022).Trabajó de funcionario colonial y tras la independencia ocupó altos cargos en la Presidencia con Macias primero y con Obiang después."
+  },
+  {
+    "_id": 92,
+    "question": "¿Qué barrio de Bata se llama igual que un sureño estado Americano cuya capital es Tallahassee?",
+    "OPTION1": "California",
+    "OPTION2": "Covadonga",
+    "OPTION3": "Florida",
+    "answer_nr": 3,
+    "explicacion": "El barrio de Florida se encuentra en la carretera de Nkolombong, de camino a Nkoantoma"
+  },
+  {
+    "_id": 93,
+    "question": "¿Cuál es el cambio aproximado del FCFA con respecto al dólar americano?",
+    "OPTION1": "1 USD equivale a 577 FCFA",
+    "OPTION2": " 1 USD equivale a 2500 FCFA",
+    "OPTION3": "1 USD equivale a 7200 FCFA",
+    "answer_nr": 1,
+    "explicacion": "Aunque el FCFA tiene paridad fija con el euro, fluctúa ligeramente respecto al dólar. 577 por 1USD es la opción correcta."
+  },
+  {
+    "_id": 94,
+    "question": "¿Qué le dijo el barquero a la niña bonita al pasar la barca?",
+    "OPTION1": "Que no quedaba sitio",
+    "OPTION2": "Que no pagaban dinero",
+    "OPTION3": "Que debían tener cuidado",
+    "answer_nr": 2,
+    "explicacion": "Esta canción tradicional infantil española se popularizó en los juegos de niños guineanos de los años 80 y 90."
+  },
+  {
+    "_id": 95,
+    "question": "¿Según el dicho popular crió 'doti water...?",
+    "OPTION1": "de smel fine",
+    "OPTION2": "de hot fire",
+    "OPTION3": "no de kil posing",
+    "answer_nr": 2,
+    "explicacion": "Doti Water de Hot Fire, literalmente 'agua sucia apaga fuego'. Significa que no de debe menospreciar algo o alguien por su apariencia."
+  },
+  {
+    "_id": 96,
+    "question": "¿Como se llama la madre de Lamine Yamal?",
+    "OPTION1": "Kelly Ebana",
+    "OPTION2": "Aida Ebana",
+    "OPTION3": "Sheila Ebana",
+    "answer_nr": 3,
+    "explicacion": "Sheila Ebana tuvo a su hijo mayor Lamine con tan solo 16 años y ha sido y sigue siendo un pilar fundamental para el éxito de su hijo."
+  },
+  {
+    "_id": 97,
+    "question": "¿El egombegombe o almendro malabar de playa es una fruta tropical conocida comúnmente en nuestro país como...?",
+    "OPTION1": "Sawa-sawa",
+    "OPTION2": "Papaya",
+    "OPTION3": "Mendrugo",
+    "answer_nr": 3,
+    "explicacion": "El nombre científico del mendrugo es Terminalia catappa.Tanto el fruto seco como la semilla son comestibles, con un sabor similar a la almendra."
+  },
+  {
+    "_id": 98,
+    "question": "¿Mari Cocoteros es esposa de...?",
+    "OPTION1": "Bitaga",
+    "OPTION2": "Ale Nvoro",
+    "OPTION3": "Epkua Osa",
+    "answer_nr": 2,
+    "explicacion": "Maria Cristina Mikue Obiang, alias Mari Cocoteros, es mujer del senador Ale Nvoro y propietaria de Punta Europa Aviación y el Hotel Nacional Angue Ondo"
+  },
+  {
+    "_id": 99,
+    "question": "¿Dentro de la cultura fang, a que práctica prohibida hace referencia el concepto de 'zama dulu'?",
+    "OPTION1": "al canibalismo a antropofagia",
+    "OPTION2": "a la exhumación de cadáveres",
+    "OPTION3": "al incesto",
+    "answer_nr": 3,
+    "explicacion": "La tradición fang mantiene una definición amplia del incesto que prohibe relaciones intimas entre personas de la misma tribu."
+  },
+  {
+    "_id": 100,
+    "question": "¿A qué hace referencia el artículo 2 de la vigente Constitución de nuestro país?",
+    "OPTION1": "A los valores supremos del Estado",
+    "OPTION2": "A la composición del territorio nacional",
+    "OPTION3": "A la soberanía nacional",
+    "answer_nr": 2,
+    "explicacion": "El artículo 2 de la actual Constitucion, promulgada en 2012, establece que la soberania pertence al pueblo y que de ella emanan todos los poderes públicos."
+  }
+]
