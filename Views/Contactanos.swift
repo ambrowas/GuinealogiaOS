@@ -9,23 +9,27 @@ struct ContactanosView: View {
     
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
-            VStack(alignment: .center, spacing: 70) {
+            VStack(alignment: .center, spacing: 35) {
                 Image("logotrivial")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .padding(.top, -180)
+                    .padding(.top, -80)
                     .frame(width: 200, height: 150)
                 
-                Text("Para ruegos, preguntas, propuestas, sugerencias, correciones, quejas, insultos amenazas o intimidaciones, contáctanos a través del botón de Whatsapp más abajo intentaremos arreglarlo. Gracias por apoyarnos, saludos.")
-                    .font(.system(size: 16))
-                    .foregroundColor(.black)
-                    .multilineTextAlignment(.leading)
-                    .padding(.horizontal)
-                    .padding(.vertical, -150)
+                Text("""
+                ¿Tienes preguntas, sugerencias, alguna corrección o idea genial?
+                Estamos aquí para escucharte. Pulsa el icono de WhatsApp para contactarnos directamente.
+                Ya sea para mejorar, agradecer o simplemente saludar, ¡nos encantará leerte!
+                Gracias por ser parte de esta comunidad. 🌍✨
+                """)
+                .font(.custom("MarkerFelt-Thin", size: 16))
+                .foregroundColor(.black)
+                .multilineTextAlignment(.leading) // Cleanest option for now
+                .padding(.horizontal)
                 
                 Button(action: {
                     SoundManager.shared.playTransitionSound()
@@ -43,7 +47,7 @@ struct ContactanosView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 150.0, height: 150.0)
                         .cornerRadius(150)
-                        .padding(.top, -100)
+                        
                         .scaleEffect(isAnimating ? 1.1 : 1.0)
                         .animation(
                             Animation.easeInOut(duration: 0.5)
@@ -56,16 +60,16 @@ struct ContactanosView: View {
                     
                 } label: {
                     Text("VOLVER")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 16))
+                        .foregroundColor(.black)
                         .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.black, lineWidth: 3)
                         )
-                        .padding(.top, -60)
+                        .padding(.top, -20)
                 }
             }
         }

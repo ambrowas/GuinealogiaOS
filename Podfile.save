@@ -1,0 +1,62 @@
+platform :ios, '15.0'
+
+target 'Guinealogia' do
+  use_frameworks!
+  use_modular_headers!
+
+  pod 'Firebase/InAppMessaging'
+  pod 'Firebase/Analytics'
+
+  target 'GuinealogiaTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'GuinealogiaUITests' do
+    inherit! :search_paths
+    # Pods for UI testing
+  end
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    # Fix double-quoted includes in PromisesObjC and nanopb
+    if ['PromisesObjC', 'nanopb'].include? target.name
+      target.source_build_phase.files.each do |file|
+        file_path = file.file_ref.real_path.to_s
+        if file_path.end_with?('.h')
+          text = File.read(file_path)
+          text.gsub!(/#import\s+"([^"]+)"/, "#import <#{target.name}/\\1>")
+          text.gsub!(/#include\s+"([^"]+)"/, "#include <#{target.name}/\\1>")
+          File.open(file_path, 'w') { |f| f.write(text) }
+        end
+      end
+    end
+
+    # Ensure Pods build settings use latest recommended settings
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+    end
+  end
+end# Define the platform for your project
+platform :ios, '15.0'
+
+target 'Guinealogia' do
+  use_frameworks!
+
+  # 🚩 Add Firebase pods here
+  pod 'Firebase/Core'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/InAppMessaging'
+
+  target 'GuinealogiaTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'GuinealogiaUITests' do
+    # Pods for testing
+  end
+
+end

@@ -7,6 +7,8 @@ struct JugarModoLibre: View {
     @State private var isShowingResultadoView = false
     @Binding var player: AVAudioPlayer?
     @State private static var playerName = ""
+    @State private var explicacion: String = ""
+    @State private var animateScale = false
     
     
     
@@ -14,117 +16,121 @@ struct JugarModoLibre: View {
         _player = player
     }
     
-    
-    
     var body: some View {
         
         ZStack {
-            Image("coolbackground")
+            Image("dosyy")
                 .resizable()
-                .edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 5) {
-                HStack {
+                .ignoresSafeArea()
+
+            VStack(spacing: 20) {
+                // Score and question number
+                VStack(alignment: .leading, spacing: 5) {
                     Text("ACIERTOS: \(quizState.score)")
-                        .foregroundColor(.black)
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding([.top, .leading], 50)
-                    
-                }
-                
-                HStack {
                     Text("PUNTUACION: \(quizState.totalScore)")
-                        .foregroundColor(.black)
-                        .fontWeight(.bold)
-                        .padding(.leading, 21.0)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                
-                HStack {
                     Text("PREGUNTA: \(quizState.preguntaCounter)/\(quizState.randomQuestions.count)")
-                        .foregroundColor(.black)
-                        .fontWeight(.bold)
-                        .padding(.leading, 20)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                
-                Spacer()
-                
+                .foregroundColor(.black)
+                .font(.custom("MarkerFelt-Thin", size: 18))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
+                .padding(.top, 40)
+
+                // Timer
                 HStack {
                     Spacer()
-                    
                     Text("\(quizState.timeRemaining)")
-                        .foregroundColor(quizState.timeRemaining <= 5 ? .red : .black)
-                        .fontWeight(.bold)
-                        .font(.system(size: 60))
-                        .padding(.trailing, 20.0)
-                        .shadow(color: .black, radius: 1, x: 1, y: 1)
+                        .foregroundColor(quizState.timeRemaining <= 5 ? .darkRed : .black)
+                        .font(.custom("MarkerFelt-Thin", size: 50))
+                        .shadow(radius: 1)
+                        .padding(.trailing, 20)
                 }
-                .padding(.top, -250)
-                
-                Text(quizState.isAnswered ? quizState.answerStatusMessage : quizState.currentQuestion.question)
-                    .foregroundColor(quizState.questionTextColor)
-                    .font(.headline)
-                    .padding(.horizontal, 20)
-                    .padding(.top, -120)
-                
-                
-                VStack(alignment: .leading, spacing: 10) {
-                    RadioButton(text: quizState.currentQuestion.option1, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
-                    RadioButton(text: quizState.currentQuestion.option2, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
-                    RadioButton(text: quizState.currentQuestion.option3, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
-                    
+
+                // Question or explanation (in the same fixed location)
+                if quizState.isAnswered {
+                    VStack(spacing: 10) {
+                        Text(quizState.answerStatusMessage) // RESPUESTA CORRECTA / INCORRECTA
+                            .font(.custom("MarkerFelt-Thin", size: 20))
+                            .foregroundColor(quizState.questionTextColor)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 20)
+
+                        Text(quizState.currentQuestion.explicacion ?? "Sin explicación disponible.")
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 20)
+                    }
+                    .padding(.top, 20)
+                } else {
+                    Text(quizState.currentQuestion.question)
+                        .foregroundColor(.black)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 20)
                 }
-                .padding(.bottom, 200)
-                
+
+                // Options only if not answered
+                if !quizState.isAnswered {
+                    VStack(spacing: 10) {
+                        RadioButton(text: quizState.currentQuestion.option1, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
+                        RadioButton(text: quizState.currentQuestion.option2, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
+                        RadioButton(text: quizState.currentQuestion.option3, selectedOptionIndex: $quizState.selectedOptionIndex, currentQuestion: quizState.currentQuestion, quizState: quizState)
+                    }
+                }
+
+                // Main action button
                 Button(action: {
                     switch quizState.buttonText {
+                        
                     case "CONFIRMAR":
+                        if quizState.selectedOptionIndex == -1 {
+                            SoundManager.shared.playError()
+                            showAlert = true  // show the "Sin miedo..." alert
+                            return
+                        }
+                        quizState.StopCountdownSound()
                         quizState.checkAnswer()
                         if quizState.currentQuestionIndex < quizState.randomQuestions.count - 1 {
                             quizState.buttonText = "SIGUIENTE"
                         } else {
-                            // This will handle the last question
                             quizState.buttonText = "TERMINAR"
                         }
+
                     case "SIGUIENTE":
+                        SoundManager.shared.playTransitionSound()
                         if quizState.currentQuestionIndex < quizState.randomQuestions.count - 1 {
                             quizState.showNextQuestion()
-                        } else {
-                            print("Last question already answered.")
                         }
+
                     case "TERMINAR":
                         quizState.finishQuiz()
                         isShowingResultadoView = true
+
                     default:
                         break
                     }
-                })
-                    {
+                }) {
                     Text(quizState.buttonText)
-                        .font(.headline)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
                         .foregroundColor(.black)
-                        .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color(.white))
+                        .background(Color.white)
                         .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 3))
                 }
-                .padding(.top, -180)
+                .padding(.top, 10)
                 .fullScreenCover(isPresented: $isShowingResultadoView) {
                     ResultadoView(aciertos: quizState.score, puntuacion: quizState.totalScore, errores: quizState.mistakes)
                 }
-                
+
+                Spacer()
             }
-            .padding(.horizontal, 12)
         }
         .onAppear {
             quizState.startCountdownTimer()
-           
+            
             
         }
         .alert(isPresented: $quizState.showAlert) {
@@ -154,7 +160,7 @@ struct JugarModoLibre: View {
             showAlert = true
         } else {
             quizState.checkAnswer()
-        
+            
         }
     }
     
@@ -189,26 +195,36 @@ struct JugarModoLibre: View {
         @ObservedObject var quizState: QuizState
         @State private var isFlashing = false
         @State private var flashCount = 0
-        
+        @State private var optionBackground: Color = .pastelSilver
+        @State private var animateScale = false
+
         var body: some View {
             Button(action: {
                 selectedOptionIndex = optionIndex
+                SoundManager.shared.playPick()
+                updateOptionBackground()
+                triggerBounceAnimation()
             }) {
                 Text(text.uppercased())
-                    .font(.headline)
-                    .foregroundColor(.white)
+                    .font(.custom("MarkerFelt-Thin", size: 18))
+                    .foregroundColor(optionIndex == selectedOptionIndex ? .deepBlue : .black)
                     .padding()
                     .frame(width: 300, height: 75)
                     .background(optionBackground)
                     .cornerRadius(10)
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 3))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: 3)
+                    )
+                    .scaleEffect(optionIndex == selectedOptionIndex && animateScale ? 1.08 : 1.0)
+                    .animation(.easeInOut(duration: 0.2), value: animateScale)
             }
-            .opacity(isFlashing ? 0.5 : 1) // Properly chained modifier
-            .animation(isFlashing ? .easeInOut(duration: 0.5).repeatForever(autoreverses: true) : nil, value: isFlashing)  // Properly chained modifier
-            .onChange(of: selectedOptionIndex) { _ in
+            .opacity(isFlashing ? 0.5 : 1)
+            .animation(isFlashing ? .easeInOut(duration: 0.5).repeatForever(autoreverses: true) : nil, value: isFlashing)
+            .onAppear {
                 updateOptionBackground()
             }
-            .onAppear {
+            .onChange(of: selectedOptionIndex) { _ in
                 updateOptionBackground()
             }
             .onChange(of: isFlashing) { newValue in
@@ -219,44 +235,45 @@ struct JugarModoLibre: View {
             .onReceive(quizState.$resetFlashingSignal) { resetSignal in
                 if resetSignal {
                     resetFlashingState()
-                    quizState.resetFlashingSignal = false // Reset the signal to avoid repeated resets
+                    quizState.resetFlashingSignal = false
                 }
             }
             .onReceive(quizState.$shouldFlashCorrectAnswer) { shouldFlash in
                 if shouldFlash && shouldFlashCondition {
-                    startFlashing()  // Start the animation if the condition is met
+                    startFlashing()
                 }
             }
         }
-        
-        private func startFlashing() {
-            guard !isFlashing else { return } // Avoid re-entering while flashing
-            isFlashing = true
-            flashCount = 0
-            
-            let flashDuration = 0.5  // The duration of a single fade out/in
-            
-            withAnimation(Animation.easeInOut(duration: flashDuration).repeatCount(6, autoreverses: true)) { // This will create six animations of half a second each (three flashes)
-                self.flashCount = 3 // or any other way you use to decide when to stop blinking
-            }
-            
-            // Wait for the total duration of the flashes before setting isFlashing back to false
-            let totalFlashingDuration = flashDuration * 6 // Three flashes, each requiring two half-second animations (fade out and back in)
-            DispatchQueue.main.asyncAfter(deadline: .now() + totalFlashingDuration) {
-                self.isFlashing = false // Make sure to stop flashing
+
+        private func triggerBounceAnimation() {
+            animateScale = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                animateScale = false
             }
         }
-        
+
+        private func startFlashing() {
+            guard !isFlashing else { return }
+            isFlashing = true
+            flashCount = 0
+            let flashDuration = 0.5
+            withAnimation(Animation.easeInOut(duration: flashDuration).repeatCount(6, autoreverses: true)) {
+                self.flashCount = 3
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + flashDuration * 6) {
+                self.isFlashing = false
+            }
+        }
+
         private var shouldFlashCondition: Bool {
             optionIndex == currentQuestion.correctAnswerIndex && quizState.selectedIncorrectAnswer
         }
-        
+
         func resetFlashingState() {
             isFlashing = false
             flashCount = 0
         }
-        
-        
+
         private var optionIndex: Int {
             switch text {
             case currentQuestion.option1: return 0
@@ -265,15 +282,9 @@ struct JugarModoLibre: View {
             default: return -1
             }
         }
-        
-        @State private var optionBackground: Color = Color(hue: 0.663, saturation: 0.811, brightness: 0.631)
-        
+
         private func updateOptionBackground() {
-            if optionIndex == selectedOptionIndex {
-                optionBackground = Color(hue: 0.315, saturation: 0.953, brightness: 0.335)
-            } else {
-                optionBackground = Color(hue: 0.663, saturation: 0.811, brightness: 0.631)
-            }
+            optionBackground = (optionIndex == selectedOptionIndex) ? .white : .pastelSilver
         }
     }
 }

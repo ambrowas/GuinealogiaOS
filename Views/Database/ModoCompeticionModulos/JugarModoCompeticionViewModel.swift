@@ -62,7 +62,10 @@ class JugarModoCompeticionViewModel: ObservableObject {
     var currentQuestionNumber: String? { // Computed property to get the question number
         return currentQuestion?.number // Or however you access the number in your Question type
         }
-    
+    @Published var shouldShowEndGameAlert: Bool = false
+    private var hasTriggeredEndGameAlert = false
+    @Published var hasShownEndGameAlert: Bool = false
+    @Published var isEndGameAlertPresented: Bool = false
     
         
         enum ActiveAlert: Identifiable {
@@ -102,7 +105,7 @@ class JugarModoCompeticionViewModel: ObservableObject {
         self.questionManager = QuestionManager(realTimeDatabaseReference: self.dbRef, firestore: self.firestore, userID: self.userId)
 
         // Load and prepare the sound players
-        if let countdownURL = Bundle.main.url(forResource: "countdown", withExtension: "wav"),
+        if let countdownURL = Bundle.main.url(forResource: "countdown", withExtension: "mp3"),
            let rightURL = Bundle.main.url(forResource: "right", withExtension: "wav"),
            let wrongURL = Bundle.main.url(forResource: "notright", withExtension: "wav") {
             do {
@@ -122,7 +125,12 @@ class JugarModoCompeticionViewModel: ObservableObject {
         }
     }
     
-    
+    func resetEndGameAlertState() {
+        activeAlert = nil
+        isAlertBeingDisplayed = false
+        hasTriggeredEndGameAlert = false
+    }
+
            
             func fetchNextQuestion() {
             let unusedQuestionsCount = DatabaseManager.shared.countUnusedQuestions()
@@ -244,10 +252,13 @@ self.options = [question.optionA, question.optionB, question.optionC]
 self.correctAnswer = question.answer
 self.category = question.category
 self.image = question.image
+    self.hasShownEndGameAlert = false
 self.startTimer()
+    self.playCountdownSound()
 }
 }
 }
+    
     
             private func presentRandomQuestionAndUpdateUI() {
         presentRandomQuestion()
@@ -360,9 +371,7 @@ self.startTimer()
 
     timeRemaining -= 1
 
-    if timeRemaining <= 5 && timeRemaining > 0 {
-        playCountdownSound()
-    }
+    
 
     if timeRemaining == 0 {
         handleTimeExpiry()
@@ -376,7 +385,7 @@ self.startTimer()
 
         timer?.invalidate()
         timerIsActive = false // Timer is no longer active
-
+        StopCountdownSound()
         playWrongSoundEffect()
         answerChecked = true
         answerIsCorrect = false
@@ -419,17 +428,25 @@ self.startTimer()
                 objectWillChange.send() // If needed, trigger a manual view update
             }
             
-            func triggerEndGameAlert() {
-                print("Triggering end game alert...")
-                isAlertBeingDisplayed = true
-                activeAlert = .showEndGameAlert
-                objectWillChange.send() // If needed, trigger a manual view update
-            }
+    func triggerEndGameAlert() {
+        guard !isEndGameAlertPresented else { return }
+        print("Triggering End Game Alert...")
+        isEndGameAlertPresented = true
+        activeAlert = .showEndGameAlert
+    }
+    
+    func testShowEndGameAlert() {
+        print("TEST: Triggering test end game alert")
+        isEndGameAlertPresented = true
+    }
+    
+    
     
             func triggerReturnToAppAlert() {
         print("Triggering Return to App Alert...")
         isAlertBeingDisplayed = true
         activeAlert = .showReturnToAppAlert
+        hasTriggeredEndGameAlert = true
         objectWillChange.send() // If needed, trigger a manual view update
     }
     
@@ -444,12 +461,19 @@ self.startTimer()
         }
     }
 
-            func playCountdownSound() {
-                countdownSound?.play()
-            }
+    func playCountdownSound() {
+        countdownSound?.stop()
+        countdownSound?.currentTime = 0
+        countdownSound?.play()
+    }
+    
+                func StopCountdownSound() {
+                    countdownSound?.stop()
+                    }
+    
             
             func prepareCountdownSound() {
-                guard let url = Bundle.main.url(forResource: "countdown", withExtension: "wav") else {
+                guard let url = Bundle.main.url(forResource: "countdown", withExtension: "mp3") else {
                     print("Countdown sound file not found")
                     return
                 }
@@ -502,7 +526,7 @@ self.startTimer()
                     if index == selectedOptionIndex {
                         colors.append(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
                     } else {
-                        colors.append(Color(hue: 0.664, saturation: 0.935, brightness: 0.604))
+                        colors.append(.pastelSilver)
                     }
                 }
                 buttonBackgroundColors = colors

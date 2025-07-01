@@ -13,8 +13,8 @@
     "question": "¿Juan Eyimi se destacó en los 90 por su faceta como...?",
     "OPTION1": "Futbolista",
     "OPTION2": "Cantante",
-    "OPTION3": "Fotógrafo",
-    "answer_nr": 3,
+    "OPTION3": "Escultor",
+    "answer_nr": 2,
     "explicacion": "Juan Eyimi fue un respetado cantautor, precursor del ritmo 'aziko meñeksé'. Tambíen fue reconocido por su labor como fotógrafo. Falleció en 2025"
   },
   {
@@ -136,7 +136,7 @@
   },
   {
     "_id": 16,
-    "question": "En términos de extensión que provincia es más grande, Bioko Norte o Bioko Sur",
+    "question": "¿En términos de extensión que provincia es más grande, Bioko Norte o Bioko Sur?",
     "OPTION1": "Bioko Norte",
     "OPTION2": "Bioko Sur",
     "OPTION3": "Su extensión es la misma",
@@ -694,7 +694,7 @@
   },
   {
     "_id": 78,
-    "question": "¿Qué simpática cantante ha irrumpido recientemente  con un popular single en que se queja que la dejaron sola?",
+    "question": "¿Qué peculiar jóven ha irrumpido recientemente en el escenario músical con un popular single en que se queja que la dejaron sola?",
     "OPTION1": "Mami La Bichota",
     "OPTION2": "Sara Baby",
     "OPTION3": "Anguesomo",
@@ -884,7 +884,7 @@
   {
     "_id": 99,
     "question": "¿Dentro de la cultura fang, a que práctica prohibida hace referencia el concepto de 'zama dulu'?",
-    "OPTION1": "al canibalismo a antropofagia",
+    "OPTION1": "al canibalismo o antropofagia",
     "OPTION2": "a la exhumación de cadáveres",
     "OPTION3": "al incesto",
     "answer_nr": 3,
@@ -896,7 +896,7 @@
     "OPTION1": "A los valores supremos del Estado",
     "OPTION2": "A la composición del territorio nacional",
     "OPTION3": "A la soberanía nacional",
-    "answer_nr": 2,
+    "answer_nr": 3,
     "explicacion": "El artículo 2 de la actual Constitucion, promulgada en 2012, establece que la soberania pertence al pueblo y que de ella emanan todos los poderes públicos."
   }
 ]

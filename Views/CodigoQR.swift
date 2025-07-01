@@ -45,7 +45,7 @@ struct CodigoQR: View {
     
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
@@ -54,22 +54,24 @@ struct CodigoQR: View {
                     QRCodeView(data: qrData)
                 } else {
                     Text("Generando Códio QR...")
+                        .font(.custom("MarkerFelt-Thin", size: 18))
+                        .foregroundColor(.black)
                 }
                 
                 Text(qrCodeKey)
                     .foregroundColor(.black)
-                    .font(.subheadline)
+                    .font(.custom("MarkerFelt-Thin", size: 18))
                     .fontWeight(.bold)
                 
                 VStack(spacing: 10) {
                     Button(action:
                             guardarButtonPressed) {
                         Text("GUARDAR")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 55)
-                            .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
+                            .background(Color.pastelSilver)
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -82,11 +84,11 @@ struct CodigoQR: View {
                         presentationMode.wrappedValue.dismiss()
                     } label: {
                         Text("VOLVER")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 55)
-                            .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                            .background(Color.pastelSilver)
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -129,6 +131,7 @@ struct CodigoQR: View {
             DispatchQueue.main.async {
                 switch result {
                 case .success():
+                    SoundManager.shared.playMagic()
                     // Handle successful fetch and update relevant properties or UI here:
                     // e.g., generate QR code based on fetched user data:
                     self.qrCodeKey = self.generateQRCodeKey()
@@ -168,6 +171,7 @@ struct CodigoQR: View {
         func guardarButtonPressed() {
         
             if isGuardarButtonDisabled {
+                SoundManager.shared.playNo()
                    isShowingAlert = true
                    alertMessage = "Ya guardaste este código."
                    return
@@ -193,9 +197,10 @@ struct CodigoQR: View {
         ref.setValue(qrCodeData) { error, _ in
             if error == nil {
                 isShowingAlert = true
-                SoundManager.shared.playTransitionSound()
+                SoundManager.shared.playMagic()
                 alertMessage = "Codigo QR Guardado. Ya puedes ir a cobrar."
             } else {
+                SoundManager.shared.playNo()
                 isShowingAlert = true
                 alertMessage = "Error al guardar código."
             }

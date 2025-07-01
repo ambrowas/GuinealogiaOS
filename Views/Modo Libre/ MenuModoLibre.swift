@@ -15,6 +15,10 @@ struct MenuModoLibre: View {
     @State private var isShowingMenuPrincipal = false
     @State private var showNoQuestionsLeftAlert = false
     @State private var  dbHelper = QuizDBHelper.shared
+    @State private var didPlayMagic = false
+
+    
+    
     
     
     
@@ -28,7 +32,7 @@ struct MenuModoLibre: View {
     
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("dosyy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
@@ -60,7 +64,7 @@ struct MenuModoLibre: View {
                 if jugadorGuardado.isEmpty {
                     TextField("INTRODUCE TU NOMBRE", text: $playerName)
                         .foregroundColor(.black)
-                        .font(.system(size: 18))
+                        .font(.custom("MarkerFelt-Thin", size: 16))
                         .frame(width: 220, height: 50)
                         .multilineTextAlignment(.center)
                         .background(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.black, lineWidth: 2))
@@ -69,14 +73,14 @@ struct MenuModoLibre: View {
                 } else {
                     Text("¡Mbolan \(jugadorGuardado)! ")
                         .foregroundColor(.black)
-                        .font(.headline)
+                        .font(.custom("MarkerFelt-Thin", size: 20))
                         .padding(.horizontal, 20)
                         .padding(.top, 200)
                 }
                 
                 Text("El record actual es de \(highScore) puntos")
-                    .foregroundColor(getFlashingColor())
-                    .font(.headline)
+                    .foregroundColor(Color.deepBlue)
+                    .font(.custom("MarkerFelt-Thin", size: 16))
                     .padding(.horizontal, 20)
                     .padding(.top, -10)
                     .onAppear {
@@ -90,13 +94,14 @@ struct MenuModoLibre: View {
                     savePlayerName()
                     jugadorGuardado = playerName
                     playerName = ""
+                   
                 }) {
                     Text(jugadorGuardado.isEmpty ? "GUARDAR" : "CAMBIAR JUGADOR")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 16))
+                        .foregroundColor(.black)
                         .frame(width: 200, height: 50)
                         .multilineTextAlignment(.center)
-                        .background(Color(hue: 0.664, saturation: 0.935, brightness: 0.604))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -105,15 +110,18 @@ struct MenuModoLibre: View {
                 }
                 
                 Button(action: {
+                    print("JUGAR button tapped from MenuModoLibre")
                     SoundManager.shared.playTransitionSound()
-                    checkForQuestionsBeforePlaying()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        checkForQuestionsBeforePlaying()
+                    }
                 }) {
                     Text("JUGAR")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 16))
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -127,11 +135,11 @@ struct MenuModoLibre: View {
                     isShowingMenuPrincipal = true
                 }) {
                     Text("SALIR")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 16))
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -148,32 +156,42 @@ struct MenuModoLibre: View {
             .fullScreenCover(isPresented: $jugarModoLibreActive) {
                         JugarModoLibre(player: .constant(nil))
                     }
-                       .alert(isPresented: $showNoQuestionsLeftAlert) {
-                           Alert(
-                               title: Text("Felicidades campeon@"),
-                               message: Text("Has completado el Modo Libre. Deberías probar el Modo Competición."),
-                               dismissButton: .default(Text("OK"), action: {
-                                   dbHelper.resetShownQuestions()
+            .alert(isPresented: $showNoQuestionsLeftAlert) {
+                        return Alert(
+                            title: Text("Felicidades campeon@"),
+                            message: Text("Has completado el Modo Libre. Deberías probar el Modo Competición."),
+                            dismissButton: .default(Text("OK"), action: {
+                                dbHelper.resetShownQuestions()
+                                didPlayMagic = false
                                })
                            )
                        }
                        .navigationBarBackButtonHidden(true)
                        .onAppear {
+                        
                            loadPlayerName()
                            loadHighScore()
+                       }
+                       .onChange(of: showNoQuestionsLeftAlert) { newValue in
+                           if newValue {
+                               SoundManager.shared.playMagic() // 🔊 Play once
+                           }
                        }
                    }
 
     private func checkForQuestionsBeforePlaying() {
         if let unusedQuestions = dbHelper.getRandomQuestions(count: 10), !unusedQuestions.isEmpty {
+            print("✅ Starting round with \(unusedQuestions.count) questions.")
             jugarModoLibreActive = true
         } else {
+            print("❌ No questions left! Showing alert.")
             showNoQuestionsLeftAlert = true
         }
     }
 
     private func savePlayerName() {
         UserDefaults.standard.set(playerName, forKey: playerNameKey)
+        SoundManager.shared.playMagic()
     }
     
     private func loadPlayerName() {

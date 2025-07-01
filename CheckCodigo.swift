@@ -129,7 +129,7 @@ struct CheckCodigo: View {
     
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
@@ -144,7 +144,7 @@ struct CheckCodigo: View {
                 
                 Text("INTRODUCE TU CODIGO DE JUEGO")
                     .foregroundColor(.black)
-                    .font(.subheadline)
+                    .font(.custom("MarkerFelt-Thin", size: 18))
                     .fontWeight(.bold)
                 
                 HStack {
@@ -194,11 +194,11 @@ struct CheckCodigo: View {
                     checkCodigo()
                 }) {
                     Text("VALIDAR")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -212,11 +212,11 @@ struct CheckCodigo: View {
                     goToMenuCompeticion = true
                 }) {
                     Text("VOLVER")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 55)
-                        .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -235,6 +235,7 @@ struct CheckCodigo: View {
         }
         .alert(isPresented: $showAlert) {
             if showAlert1 {
+                SoundManager.shared.playMagic()
                 return Alert(
                     title: Text("Código validado"),
                     message: Text("Buena suerte."),
@@ -249,6 +250,7 @@ struct CheckCodigo: View {
                     }
                 )
             } else if showAlert2 {
+                SoundManager.shared.playError()
                 return Alert(
                     title: Text("Este código ya ha sido usado"),
                     message: Text("Intentalo otra vez."),
@@ -260,6 +262,7 @@ struct CheckCodigo: View {
                     }
                 )
             } else if showAlert3 {
+                SoundManager.shared.playError()
                 return Alert(
                     title: Text("Este código no existe"),
                     message: Text("Intentalo otra vez."),
@@ -271,6 +274,7 @@ struct CheckCodigo: View {
                     }
                 )
             } else if showAlert4 {
+                SoundManager.shared.playError()
                 return Alert(
                     title: Text("Error"),
                     message: Text("Introduce los 15 digitos del código de validación."),
@@ -282,6 +286,7 @@ struct CheckCodigo: View {
                     }
                 )
             } else if showAlertPromotionValid {
+                SoundManager.shared.playMagic()
                 return Alert(
                     title: Text("Código promocional validado. Suerte"),
                     dismissButton: .default(Text("OK")) {
@@ -293,6 +298,7 @@ struct CheckCodigo: View {
                 )
             } else {
                 // Default alert
+                SoundManager.shared.playError()
                 return Alert(
                     title: Text("Unknown error"),
                     message: Text("An unknown error occurred.")
@@ -306,7 +312,7 @@ struct CheckCodigo: View {
             content
                 .multilineTextAlignment(.center)
                 .keyboardType(.numberPad)
-                .font(.system(size: 30, weight: .light, design: .monospaced))
+                .font(.custom("MarkerFelt-Thin", size: 18))
                 .frame(width: 85, height: 60)
                 .border(Color.black, width: 2)
         }

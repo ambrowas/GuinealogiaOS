@@ -45,15 +45,15 @@ struct Profile: View {
     }
     
     
-    
+
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 10) {
-                Group {
+                ZStack(alignment: .bottomLeading) {
                     if let profileImage = profileViewModel.profileImage {
                         Image(uiImage: profileImage)
                             .resizable()
@@ -76,10 +76,15 @@ struct Profile: View {
                                 }
                             )
                     }
-                }
-                .onTapGesture {
-                    self.isImagePickerDisplayed = true
-                }
+
+                    glowingMedalView(for: profileViewModel.positionInLeaderboard)
+                          .offset(x: -10, y: 10)
+                  }
+                  .contentShape(Rectangle()) // 🔹 Makes entire ZStack tappable
+                  .onTapGesture {
+                      SoundManager.shared.playPick()
+                      isImagePickerDisplayed = true
+                  }
                 
                 
                 Circle()
@@ -96,22 +101,10 @@ struct Profile: View {
                             .padding(.leading, 200)
                             .padding(.top, -40)
                     )
-                
-                ScrollView {
-                    VStack {
-                        TextRowView(title: "NOMBRE:", content: profileViewModel.fullname)
-                        TextRowView(title: "EMAIL:", content: profileViewModel.email)
-                        TextRowView(title: "TELEFONO:", content: profileViewModel.telefono)
-                        TextRowView(title: "CIUDAD:", content: profileViewModel.ciudad)
-                        TextRowView(title: "PAIS:", content: profileViewModel.pais)
-                        TextRowView(title: "RECORD:", content: "\(profileViewModel.highestScore)")
-                        TextRowView(title: "PUNTUACION ACUMULADA:", content: "\(profileViewModel.accumulatedPuntuacion)")
-                        TextRowView(title: "ACIERTOS ACUMULADOS:", content: "\(profileViewModel.accumulatedAciertos)")
-                        TextRowView(title: "FALLOS ACUMULADOS:", content: "\(profileViewModel.accumulatedFallos)")
-                    }
-                }
-                .frame(width: 300, height: 400)
-                .padding(.horizontal, 3)
+ 
+                ProfileInfoTable(profileViewModel: profileViewModel)
+                    .padding(.horizontal, 3)
+                    .id(profileViewModel.refreshID)
                 
                 Button(action: {
                     if profileViewModel.profileImage == nil {
@@ -126,10 +119,10 @@ struct Profile: View {
                 }) {
                     Text("VOLVER")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 55)
-                        .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -138,12 +131,13 @@ struct Profile: View {
                 }
                 
                 Button(action: {
+                   
                     profileViewModel.alertType = .deleteConfirmation
                     showAlert = true
                 }) {
                     Text("BORRAR USUARIO")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 55)
                         .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
@@ -157,6 +151,7 @@ struct Profile: View {
                 .alert(item: $profileViewModel.alertType) { alertType in
                     switch alertType {
                     case .deleteConfirmation:
+                        SoundManager.shared.playNo()
                         return Alert(
                             title: Text("Confirmación"),
                             message: Text("¿Seguro de que quieres borrar esta cuenta? Esta acción no se puede deshacer."),
@@ -167,6 +162,7 @@ struct Profile: View {
                             secondaryButton: .cancel()
                         )
                     case .deletionSuccess:
+                        SoundManager.shared.playMagic()
                         return Alert(
                             title: Text("Usuario Borrado"),
                             message: Text("La cuenta y los datos serán borrados antes de 48 horas"),
@@ -177,6 +173,7 @@ struct Profile: View {
                         )
                         
                     case .deletionFailure(let errorMessage):
+                        SoundManager.shared.playError()
                         return Alert(
                             title: Text("Error"),
                             message: Text("Reinicia la sesión para poder borrar la cuenta"),
@@ -187,6 +184,7 @@ struct Profile: View {
                         )
                         
                     case .imageChangeSuccess:
+                        SoundManager.shared.playMagic()
                         return Alert(
                             title: Text("Exito"),
                             message: Text("¡Foto de pefilf actualizada!"),
@@ -196,12 +194,14 @@ struct Profile: View {
                             }
                         )
                     case .imageChangeError(let errorMessage):
+                        SoundManager.shared.playError()
                         return Alert(
                             title: Text("Error"),
                             message: Text(errorMessage),
                             dismissButton: .default(Text("OK"))
                         )
                     case .volveratras:
+                        SoundManager.shared.playNo()
                         return Alert(
                             title: Text(""),
                             message: Text("¿Seguro que quieres volver sin poner una foto?"),
@@ -249,37 +249,97 @@ struct Profile: View {
             
             
             .onAppear {
-                profileViewModel.fetchProfileData()
+                print("👁 Profile view appeared, fetching profile data.")
+                  profileViewModel.fetchProfileData()
             }
+            .overlay(
+                Group {
+                    if profileViewModel.isLoading {
+                        ProgressView("Cargando perfil...")
+                            .progressViewStyle(CircularProgressViewStyle())
+                    }
+                }
+            )
+        }
+    }
+    
+    @ViewBuilder
+    func glowingMedalView(for position: Int) -> some View {
+        switch position {
+        case 1:
+            Image("medallaoro")
+                .resizable()
+                .frame(width: 40, height: 40)
+                .glowingMedalEffect(for: .oro)
+        case 2:
+            Image("medallaplata")
+                .resizable()
+                .frame(width: 40, height: 40)
+                .glowingMedalEffect(for: .plata)
+        case 3:
+            Image("medallabronce")
+                .resizable()
+                .frame(width: 40, height: 40)
+                .glowingMedalEffect(for: .bronce)
+        default:
+            EmptyView() // <-- display nothing
+        }
+    }
+    
+    struct ProfileInfoTable: View {
+        let profileViewModel: ProfileViewModel // or however it's passed in
+
+        var body: some View {
+            VStack(spacing: 0) {
+                TableStyleTextRowView(title: "NOMBRE:", content: profileViewModel.fullname)
+                Divider().background(Color.black)
+                TableStyleTextRowView(title: "EMAIL:", content: profileViewModel.email)
+                Divider().background(Color.black)
+                TableStyleTextRowView(title: "TELEFONO:", content: profileViewModel.telefono)
+                Divider().background(Color.black)
+                TableStyleTextRowView(title: "CIUDAD:", content: profileViewModel.ciudad)
+                Divider().background(Color.black)
+                TableStyleTextRowView(title: "PAIS:", content: profileViewModel.pais)
+                Divider().background(Color.black)
+                TableStyleTextRowView(title: "RECORD:", content: "\(profileViewModel.highestScore)")
+                Divider().background(Color.black)
+                TableStyleTextRowView(title: "PUNTUACIÓN ACUMULADA:", content: "\(profileViewModel.accumulatedPuntuacion)")
+                Divider().background(Color.black)
+                TableStyleTextRowView(title: "ACIERTOS ACUMULADOS:", content: "\(profileViewModel.accumulatedAciertos)")
+                Divider().background(Color.black)
+                TableStyleTextRowView(title: "FALLOS ACUMULADOS:", content: "\(profileViewModel.accumulatedFallos)")
+            }
+            .background(Color.white)
+            .cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.black, lineWidth: 2)
+            )
+            .frame(width: 300)
         }
     }
         
-        struct TextRowView: View {
-            let title: String
-            let content: String
-            
-            var body: some View {
-                HStack(alignment: .center, spacing: 10) {
-                    Text(title)
-                        .font(.subheadline)
-                        .bold()
-                        .foregroundColor(.black)
-                    
-                    Text(content)
-                        .font(.system(size: 14))
-                        .padding(3)
-                        .foregroundColor(.black)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
-                    Spacer()
-                }
-                .padding([.leading, .trailing])
-                .environment(\.colorScheme, .light)
-            }
-        }
+    struct TableStyleTextRowView: View {
+        let title: String
+        let content: String
         
+        var body: some View {
+            HStack {
+                Text(title)
+                    .font(.custom("MarkerFelt-Thin", size: 14))
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Text(content)
+                    .font(.custom("MarkerFelt-Thin", size: 14))
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 10)
+            .background(Color.white)
+        }
+    }
         struct Profile_Previews: PreviewProvider {
             static var previews: some View {
                 Profile()

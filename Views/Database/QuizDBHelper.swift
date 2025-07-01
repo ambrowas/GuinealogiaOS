@@ -118,4 +118,10 @@ class QuizDBHelper {
     func printShownQuestionIds() {
         print("Current shownQuestionIds: \(shownQuestionIds)")
     }
+    
+    func markAllQuestionsAsUsed() {
+        let allIDs = Array(1...100)
+        markQuestionsAsShown(with: allIDs)
+        print("✅ Todas las preguntas han sido marcadas como jugadas (used).")
+    }
 }

@@ -13,7 +13,7 @@ class QuizState: ObservableObject {
     @Published var alertMessage = "Atención"
     @Published var currentQuestionIndex = 0
     @Published var selectedOptionIndex = -1
-    @Published var timeRemaining = 15
+    @Published var timeRemaining = 20
     @Published var isAnswered = false
     @Published var score = 0
     @Published var totalScore = 0
@@ -56,16 +56,17 @@ class QuizState: ObservableObject {
     
     func startCountdownTimer() {
         timer?.invalidate()
+        
         if currentQuestionIndex < randomQuestions.count {
-            timeRemaining = 15
+            timeRemaining = 20
+            
+            // 🔊 Play countdown sound immediately when timer starts
+            playCountdownSound()
+            
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                 if self.timeRemaining > 0 {
                     self.timeRemaining -= 1
-                    if [5, 4, 3, 2, 1].contains(self.timeRemaining) {
-                        DispatchQueue.main.async {
-                            self.playCountdownSound()
-                        }
-                    }
+                    
                 } else {
                     self.timer?.invalidate()
                     self.timer = nil
@@ -75,14 +76,20 @@ class QuizState: ObservableObject {
         }
     }
     
-    
-    
+   
     
     func playCountdownSound() {
+        countdownSound?.stop()
+        countdownSound?.currentTime = 0
+        countdownSound?.numberOfLoops = -1
         countdownSound?.play()
     }
     
-
+    func StopCountdownSound() {
+         countdownSound?.stop()
+       }
+    
+            
     private func updateButtonTextForNextAction() {
         buttonText = preguntaCounter < randomQuestions.count ? "SIGUIENTE" : "TERMINAR"
     }
@@ -94,7 +101,7 @@ class QuizState: ObservableObject {
         answerStatusMessage = "RESPUESTA CORRECTA"
         answerIsCorrect = true
         selectedIncorrectAnswer = false
-        questionTextColor = Color(hue: 0.315, saturation: 0.953, brightness: 0.335)
+        questionTextColor = Color.darkGreen
     }
 
     
@@ -106,7 +113,7 @@ class QuizState: ObservableObject {
         selectedIncorrectAnswer = true
         selectedAnswerIsIncorrect = true
         shouldFlashCorrectAnswer = true
-        questionTextColor = Color(hue: 1.0, saturation: 0.984, brightness: 0.699)
+        questionTextColor = Color.darkRed
     }
 
     func checkAnswer() {
@@ -122,8 +129,7 @@ class QuizState: ObservableObject {
         } else {
             handleIncorrectAnswer()
         }
-
-        // Update the button text after checking the answer
+    
         updateButtonTextPostAnswer()
     }
     
@@ -153,7 +159,7 @@ class QuizState: ObservableObject {
         isAnswered = false
         selectedOptionIndex = -1
         answerStatusMessage = "" // Reset the answer status message
-        questionTextColor = .black // Reset the question text color
+        questionTextColor = .white // Reset the question text color
 
         // No need to assign currentQuestion, it's computed based on currentQuestionIndex
 
@@ -176,6 +182,7 @@ class QuizState: ObservableObject {
     }
     
     private func showAlertCompletedQuestions() {
+        SoundManager.shared.playMagic()
         print("All questions completed. Showing completion alert.")
         alertMessage = "Atención."
         displayMessage = "Felicidades campeón. Has completado el Modo Libre. Prueba el Modo Competición"
@@ -196,28 +203,32 @@ class QuizState: ObservableObject {
     }
 
     private func loadSoundEffects(player: Binding<AVAudioPlayer?>) {
-        rightSoundEffect = loadSoundEffect(named: "right")
-        wrongSoundEffect = loadSoundEffect(named: "notright")
-        countdownSound = loadSoundEffect(named: "countdown")
+        rightSoundEffect = loadSoundEffect(named: "right", fileExtension: "wav")
+        wrongSoundEffect = loadSoundEffect(named: "notright", fileExtension: "wav")
+        countdownSound = loadSoundEffect(named: "countdown1", fileExtension: "mp3")
         self.player = player.wrappedValue
     }
 
-    private func loadSoundEffect(named name: String) -> AVAudioPlayer? {
-        if let path = Bundle.main.path(forResource: name, ofType: "wav") {
+    private func loadSoundEffect(named name: String, fileExtension: String) -> AVAudioPlayer? {
+        if let path = Bundle.main.path(forResource: name, ofType: fileExtension) {
             let url = URL(fileURLWithPath: path)
             do {
                 let soundEffect = try AVAudioPlayer(contentsOf: url)
                 soundEffect.prepareToPlay()
                 return soundEffect
             } catch {
-                print("Error loading sound effect: \(error.localizedDescription)")
+                print("Error loading sound effect '\(name).\(fileExtension)': \(error.localizedDescription)")
             }
+        } else {
+            print("Sound file \(name).\(fileExtension) not found in bundle.")
         }
         return nil
     }
+    
+    
 
     private func prepareCountdownSound() {
-        guard let url = Bundle.main.url(forResource: "countdown", withExtension: "wav") else {
+        guard let url = Bundle.main.url(forResource: "countdown1", withExtension: "mp3") else {
             fatalError("Countdown sound file not found")
         }
         do {

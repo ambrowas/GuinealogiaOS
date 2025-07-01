@@ -6,12 +6,12 @@ struct Proverbio: Codable, Identifiable {
     let numero: Int
     let idioma: String
     let texto: String
+    let traduccion: String?
 }
 
 struct ProverbiosWrapper: Codable {
     let proverbios: [Proverbio]
 }
-
 
 struct FlashView: View {
     @State private var scale: CGFloat = 1.0
@@ -21,23 +21,18 @@ struct FlashView: View {
     @State private var shouldNavigate = false
     @State private var showTextView = false
     @State private var proverbioTexto = ""
+    @State private var proverbioTraduccion = ""
 
     private var audioURL: URL? {
-        Bundle.main.url(forResource: "intro", withExtension: "mp3")
+        Bundle.main.url(forResource: "intro", withExtension: "wav")
     }
-#if DEBUG
-var isPreview: Bool {
-    ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
-}
-#endif
-
 
     var body: some View {
         ZStack {
             Color.white
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
+            VStack(spacing: 50) {
                 Image("logotrivial")
                     .resizable()
                     .scaledToFit()
@@ -51,32 +46,50 @@ var isPreview: Bool {
                     }
 
                 if !proverbioTexto.isEmpty {
-                    Text(proverbioTexto)
-                        .font(.body)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
+                    VStack(spacing: 6) {
+                        Text("“\(proverbioTexto)”")
+                            .font(.custom("TheBomb", size: 12))
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+
+                        if !proverbioTraduccion.isEmpty {
+                            Text("→ \(proverbioTraduccion)")
+                                .font(.custom("TheBomb", size: 12))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                        }
+                    }
                 }
 
                 if showTextView {
                     Text("PULSA AQUI PARA CONTINUAR")
-                        .font(.subheadline)
+                        .font(.custom("MarkerFelt-Thin", size: 16))
                         .foregroundColor(.black)
                         .padding()
                         .onTapGesture {
                             SoundManager.shared.playTransitionSound()
-                            shouldNavigate = true
+                            fadeOutAudioAndNavigate()
                         }
                 }
             }
-            .offset(y: -50)
+            .offset(y: -100)
         }
         .fullScreenCover(isPresented: $shouldNavigate) {
             MenuPrincipal(player: .constant(nil))
         }
         .onAppear {
-            if isPreview { return } 
             startAudio()
             runAnimations()
+        }
+    }
+    
+    private func fadeOutAudioAndNavigate() {
+        player?.setVolume(0, fadeDuration: 1.5)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            player?.stop()
+            player = nil  // 🔄 Reset the player
+            shouldNavigate = true
         }
     }
 
@@ -126,7 +139,10 @@ var isPreview: Bool {
 
                         // Show proverb
                         let proverbios = loadProverbios()
-                        proverbioTexto = proverbios.randomElement()?.texto ?? ""
+                        if let random = proverbios.randomElement() {
+                            proverbioTexto = random.texto
+                            proverbioTraduccion = random.traduccion ?? ""
+                        }
 
                         // Show "Pulsa aquí" after 0.5s
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -143,10 +159,6 @@ var isPreview: Bool {
 
 struct FlashView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            Text("Preview Placeholder")
-                .font(.title)
-                .foregroundColor(.gray)
-        }
+        FlashView()
     }
 }

@@ -16,7 +16,7 @@ struct GestionarSesion: View {
 
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
 
@@ -72,11 +72,11 @@ struct GestionarSesion: View {
                         viewModel.loginUsuario(correoElectronico: correoelectronico, contrasena: contrasena)
                     }) {
                         Text("INICIAR SESION")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 16))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 75)
-                            .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
+                            .background(Color.pastelSilver)
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -90,11 +90,11 @@ struct GestionarSesion: View {
                         self.isShowingNuevoUsuario = true
                     }) {
                         Text("REGISTRAR NUEVO USUARIO")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 16))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 75)
-                            .background(Color(hue: 0.664, saturation: 0.935, brightness: 0.604))
+                            .background(Color.pastelSilver)
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -111,11 +111,11 @@ struct GestionarSesion: View {
                         self.navegarMenuModoCompeticion = true 
                     }) {
                         Text("VOLVER")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 16))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 75)
-                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                            .background(Color.pastelSilver) 
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)

@@ -23,7 +23,7 @@ import FirebaseDatabase
     func fetchUsers() {
         db.child("user")
             .queryOrdered(byChild: "accumulatedPuntuacion")
-            .queryLimited(toLast: 20)
+            .queryLimited(toLast: 50)
             .observe(.value) { (snapshot) in
                 //print("Number of snapshots fetched: \(snapshot.childrenCount)")
                 var newUsers = [User]()
@@ -127,89 +127,118 @@ struct ClasificacionView: View {
     @StateObject private var viewModel = LeadersProfileViewModel(userId: "yourUserIdHere")
     @State private var selectedUser: User? = nil
     @State private var isShowingLeadersProfile = false
-
+    
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 10) {
                 Spacer()
                 
-                VStack(spacing: 10) {
-                    Text("CLASIFICACION GLOBAL DE SABELOTODOS")
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
-                        .padding(.bottom, 10)
-                        .foregroundColor(.black)
-                        .padding(.top, 15)
+                Text("CLASIFICACION GLOBAL DE SABELOTODOS")
+                    .font(.custom("MarkerFelt-Thin", size: 18))
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 10)
+                    .foregroundColor(.deepBlue)
+                    .padding(.top, 15)
                 
-                    List {
-                        Section(header: HStack {}) {
-                            ForEach(userData.users) { user in
-                                Button(action: {
-                                    SoundManager.shared.playTransitionSound()
-                                    self.selectedUser = user
-                                    self.isShowingLeadersProfile = true
-                                }) {
-                                    HStack {
-                                        FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.black)
-                                        
-                                        Spacer()
-                                        FlashingText(text: user.fullname, shouldFlash: user.id == userId)
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.black)
+                // ✅ BORDER wrapping only the table
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.black, lineWidth: 4)
+                    .background(
+                        ScrollView {
+                            LazyVStack(spacing: 0) {
+                                ForEach(Array(userData.users.enumerated()), id: \.element.id) { index, user in
+                                    Button(action: {
+                                        SoundManager.shared.playTransitionSound()
+                                        self.selectedUser = user
+                                        self.isShowingLeadersProfile = true
+                                    }) {
+                                        HStack {
+                                            FlashingText(text: "\(user.leaderboardPosition)", shouldFlash: user.id == userId)
+                                                .font(.custom("MarkerFelt-Thin", size: 18))
+                                                .foregroundColor(.black)
+                                            Spacer()
+                                            HStack(spacing: 5) {
+                                                if index == 0 {
+                                                    Image("medallaoro")
+                                                        .resizable()
+                                                        .frame(width: 20, height: 20)
+                                                        .glowingMedalEffect(for: .oro)
+                                                } else if index == 1 {
+                                                    Image("medallaplata")
+                                                        .resizable()
+                                                        .frame(width: 20, height: 20)
+                                                        .glowingMedalEffect(for: .plata)
+                                                } else if index == 2 {
+                                                    Image("medallabronce")
+                                                        .resizable()
+                                                        .frame(width: 20, height: 20)
+                                                        .glowingMedalEffect(for: .bronce)
+                                                }
+                                                
+                                                FlashingText(text: user.fullname, shouldFlash: user.id == userId)
+                                                    .font(.custom("MarkerFelt-Thin", size: 14))
+                                                    .foregroundColor(.black)
+                                            }
                                             .frame(maxWidth: .infinity, alignment: .leading)
+                                            Spacer()
+                                            FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
+                                                .font(.custom("MarkerFelt-Thin", size: 14))
+                                                .foregroundColor(.black)
+                                        }
+                                        .padding(.horizontal)
+                                        .padding(.vertical, 8)
+                                        .background(index % 2 == 0 ? Color.white : Color(.systemGray6))
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 6)
+                                                        .stroke(Color.black.opacity(0.3), lineWidth: 1)
+                                                )
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
                                         
-                                        Spacer()
-                                        FlashingText(text: "\(user.accumulatedPuntuacion)", shouldFlash: user.id == userId)
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.black)
-                                    }
                                 }
                             }
+                            .padding(.horizontal, 4) // or 0 for edge-to-edge
                         }
-                    }
-                    .id(userData.refreshID)
-                    .environment(\.colorScheme, .light)
-                }
-                .fullScreenCover(item: $selectedUser) { user in
-                    LeadersProfile(userId: user.id)
-                }
-                .onAppear {
-                    self.viewModel.fetchUserDataFromRealtimeDatabase()
-                }
-
-                // Button moved outside the List
+                            .frame(height: UIScreen.main.bounds.height * 0.65)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    )
+                    .padding(.horizontal, 20)
+                
+                // ✅ VOLVER button placed *below* the leaderboard
                 Button(action: {
                     SoundManager.shared.playTransitionSound()
                     self.presentationMode.wrappedValue.dismiss()
                 }) {
                     Text("VOLVER")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 50)
-                        .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.black, lineWidth: 3)
                         )
                 }
+                .padding(.top, 10)
                 .padding(.bottom, 20)
-
+                
                 Spacer()
+            }
+            .fullScreenCover(item: $selectedUser) { user in
+                LeadersProfile(userId: user.id)
             }
         }
     }
-}
-
+    
+    
     
     struct ClasificacionView_Previews: PreviewProvider {
         static var previews: some View {
@@ -217,5 +246,5 @@ struct ClasificacionView: View {
         }
     }
     
-
+}
 

@@ -15,14 +15,14 @@ struct NuevoUsuario: View {
     
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 10) {
                 
                 Text("REGISTRAR NUEVO USUARIO")
-                               .font(.headline)
+                    .font(.custom("MarkerFelt-Thin", size: 16))
                                .foregroundColor(.black)
                                .padding(.top, 0)
                                .padding(.bottom, 20)
@@ -42,11 +42,11 @@ struct NuevoUsuario: View {
                     viewModel.crearUsuario()
                 }) {
                     Text("REGISTRAR")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 16))
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -64,11 +64,11 @@ struct NuevoUsuario: View {
                     isShowingMenuModoCompeticion.toggle()
                 }) {
                     Text("VOLVER")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 16))
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -93,6 +93,7 @@ struct NuevoUsuario: View {
                     dismissButton: .default(Text("OK"), action: {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                             SoundManager.shared.playTransitionSound()
+                            ProfileViewModel.shared.fetchProfileData()
                             isShowingProfile = true
                         }
                     })

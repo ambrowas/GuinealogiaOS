@@ -9,6 +9,7 @@ struct QuizQuestion: Decodable, Equatable {
     var option3: String
     var answerNr: Int
     var textColor: Color = .black
+    var explicacion: String? 
 
     var correctAnswerIndex: Int {
         return answerNr - 1 // Adjust to zero-based index
@@ -21,6 +22,7 @@ struct QuizQuestion: Decodable, Equatable {
         case option2 = "OPTION2"
         case option3 = "OPTION3"
         case answerNr = "answer_nr"
+        case explicacion
         // textColor is not included in the JSON
     }
 }

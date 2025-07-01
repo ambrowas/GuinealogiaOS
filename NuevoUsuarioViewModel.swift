@@ -56,16 +56,22 @@ class NuevoUsuarioViewModel: ObservableObject {
         var localizedDescription: String {
             switch self {
             case .emptyField(let fieldName):
+                SoundManager.shared.playError()
                 return "\(fieldName) no debe estar vacío."
             case .invalidEmailFormat:
+                SoundManager.shared.playError()
                 return "Formato de email incorrecto."
             case .shortPassword:
+                SoundManager.shared.playError()
                 return "La contraseña debe tener al menos 6 caracteres."
             case .invalidPhoneNumber:
+                SoundManager.shared.playError()
                 return "Número de teléfono inválido."
             case .invalidCharacters(let fieldName):
+                SoundManager.shared.playError()
                 return "\(fieldName) contiene caracteres no permitidos."
             case .signInError(let description):
+                SoundManager.shared.playError()
                 return "Error al intentar ingresar: \(description)"
             }
         }
@@ -100,6 +106,7 @@ class NuevoUsuarioViewModel: ObservableObject {
             guard let strongSelf = self else { return }
             
             if let error = error {
+                SoundManager.shared.playError()
                 print("Error al crear usuario en Firebase Auth: \(error.localizedDescription)")
                 strongSelf.alertaTipo = .error(message: error.localizedDescription)
                 strongSelf.mostrarAlerta = true
@@ -107,6 +114,7 @@ class NuevoUsuarioViewModel: ObservableObject {
             }
             
             guard let userID = authResult?.user.uid else {
+                SoundManager.shared.playError()
                 print("Error: Failed to obtain a valid user ID from Firebase Auth.")
                 strongSelf.alertaTipo = .error(message: "Error: Failed to obtain a valid user ID.")
                 strongSelf.mostrarAlerta = true
@@ -118,6 +126,7 @@ class NuevoUsuarioViewModel: ObservableObject {
             strongSelf.guardarUsuario(userId: userID)
 
             // Show success alert and navigate to profile setup
+            SoundManager.shared.playMagic()
             strongSelf.alertaTipo = .exito(message: "Usuario creado correctamente. Establece una foto de perfil")
             strongSelf.mostrarAlerta = true
             strongSelf.navegarAlPerfil = true
@@ -143,7 +152,8 @@ class NuevoUsuarioViewModel: ObservableObject {
             "accumulatedFallos": 0,
             "accumulatedPuntuacion": 0,
             "highestScore": 0,
-            "FechadeCreacion": formattedDate
+            "FechadeCreacion": formattedDate,
+            "positionInLeaderboard": 0 
         ]
 
         // Reference to Firebase database
@@ -183,10 +193,32 @@ class NuevoUsuarioViewModel: ObservableObject {
                 if success {
                     print("Batch number successfully set for user.")
                     // Handle successful batch number assignment
-                    
+                    self.uploadStoredFCMTokenIfNeeded()
                     self.updateUserDeviceTokenInDatabase()
+                    
                 }
             }
+        }
+    }
+    
+    func uploadStoredFCMTokenIfNeeded() {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("⚠️ User not logged in, skipping FCM token upload")
+            return
+        }
+
+        if let fcmToken = UserDefaults.standard.string(forKey: "fcmTokenForDebug") {
+            let ref = Database.database().reference()
+            ref.child("user").child(userID).updateChildValues(["FCMToken": fcmToken]) { error, _ in
+                if let error = error {
+                    print("❌ Error saving FCM token to database: \(error.localizedDescription)")
+                } else {
+                    print("✅ Stored FCM token successfully saved to database for user ID: \(userID)")
+                    UserDefaults.standard.removeObject(forKey: "fcmTokenForDebug")
+                }
+            }
+        } else {
+            print("⚠️ No stored FCM token found to upload")
         }
     }
  
@@ -309,9 +341,7 @@ class NuevoUsuarioViewModel: ObservableObject {
         let filteredComponents = input.components(separatedBy: allowedCharacters.inverted)
         return filteredComponents.joined()
     }
-    
 }
-    
     
    extension String {
     var isValidEmail: Bool {

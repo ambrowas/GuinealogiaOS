@@ -1,9 +1,6 @@
 import SwiftUI
 import AVFoundation
 
-import SwiftUI
-import AVFoundation
-
 struct GameOver: View {
     @State private var scale: CGFloat = 1.0
     @State private var rotation: Double = 0.0
@@ -16,14 +13,14 @@ struct GameOver: View {
     @State private var audioPlayer: AVAudioPlayer?
 
     var audioURL: URL? {
-        return Bundle.main.url(forResource: "gameover", withExtension: "mp3")
+        return Bundle.main.url(forResource: "game-over", withExtension: "mp3")
     }
 
     var body: some View {
         ZStack {
-            Image("mimosa")
+            // Background Image
+            Image("tresy")
                 .resizable()
-                .aspectRatio(contentMode: .fill)
                 .edgesIgnoringSafeArea(.all)
 
             VStack {
@@ -34,6 +31,7 @@ struct GameOver: View {
                 }) {
                     Text("GAME OVER")
                         .scaledToFit()
+                        .font(.custom("MarkerFelt-Thin", size: 18))
                         .foregroundColor(Color.black)
                         .frame(width: 100, height: 100)
                         .scaleEffect(scale)
@@ -43,7 +41,7 @@ struct GameOver: View {
 
                 if showTextView {
                     Text("PULSA AQUI PARA CONTINUAR")
-                        .font(.subheadline)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
                         .foregroundColor(.black)
                         .padding()
                         .cornerRadius(10)
@@ -117,6 +115,3 @@ struct GameOver: View {
         }
     }
 }
-
-
-

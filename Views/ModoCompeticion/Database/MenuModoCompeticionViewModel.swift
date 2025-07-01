@@ -30,6 +30,9 @@ class MenuModoCompeticionViewModel: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var currentBatchNumber: Int = 0
     @Published var questionManager: QuestionManager?
+    var isUserLoggedIn: Bool {
+        return Auth.auth().currentUser != nil
+    }
 
 
     

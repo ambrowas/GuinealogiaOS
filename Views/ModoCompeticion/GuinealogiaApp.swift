@@ -35,10 +35,14 @@ struct GuinealogiaApp: App {
             }
         }
     }
+    
 
     var body: some Scene {
         WindowGroup {
             FlashView().environmentObject(authService)
+            .font(.custom("MarkerFelt-Thin", size: 16))
+            
+            
         }
     }
 }

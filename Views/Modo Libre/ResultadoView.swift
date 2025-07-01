@@ -29,107 +29,53 @@ struct ResultadoView: View {
     
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("dosyy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
+                // 🏆 Trophy image with animation
+                // 🏆 Trophy image with fade-in and pulse animation
                 Image(imageName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .padding(.top, -100.0)
                     .frame(width: 300, height: 250)
                     .opacity(isShowingImage ? 1 : 0)
-                    .scaleEffect(isAnimating ? 1.1 : 1.0) // Pulse animation
+                    .scaleEffect(isAnimating ? 1.1 : 1.0)
                     .onAppear {
                         withAnimation(.easeIn(duration: 2.0)) {
                             isShowingImage = true
                         }
-                        // Pulse Animation
                         withAnimation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
                             isAnimating = true
                         }
                     }
-                
-                
                 Text(textFieldText)
                     .foregroundColor(.black)
-                    .font(.subheadline)
+                    .font(.custom("MarkerFelt-Thin", size: 18))
                     .fontWeight(.bold)
-                    .padding(.top, -50)
-                    .opacity(isTextVisible ? 1 : 0)
-                    .onAppear {
-                        withAnimation(Animation.easeInOut(duration: 0.5).repeatForever(autoreverses: true)) {
-                            self.isTextVisible.toggle()
-                        }
-                    }
-                
-                TextField("", text: $playerName)
-                    .font(.title)
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
+                    .padding(.bottom, 10)
                     .multilineTextAlignment(.center)
-                    .frame(width: 300, height: 65)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.black, lineWidth: 3)
-                    )
-                    .overlay(
-                        Text("PREGUNTAS ACERTADAS: \(aciertos)")
-                            .font(.headline)
-                            .foregroundColor(Color(hue: 0.617, saturation: 0.831, brightness: 0.591))
-                            .padding(.horizontal)
-                    )
-                
-                TextField("", text: .constant(""))
-                    .font(.title)
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 300, height: 65)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.black, lineWidth: 3)
-                    )
-                    .overlay(
-                        Text("ERRORES COMETIDOS: \(errores)")
-                            .font(.headline)
-                            .foregroundColor(Color(hue: 0.994, saturation: 0.963, brightness: 0.695))
-                            .padding(.horizontal)
-                    )
-                
-                TextField("", text: .constant(""))
-                    .font(.title)
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 300, height: 65)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.black, lineWidth: 3)
-                    )
-                    .overlay(
-                        Text("PUNTUACION OBTENIDA: \(puntuacion)")
-                            .font(.headline)
-                            .foregroundColor(Color(hue: 0.404, saturation: 0.934, brightness: 0.334))
-                            .padding(.horizontal)
-                    )
+
+                StatTable(stats: [
+                    ("PREGUNTAS ACERTADAS", "\(aciertos)", Color(hue: 0.617, saturation: 0.831, brightness: 0.591)),
+                    ("ERRORES COMETIDOS", "\(errores)", Color(hue: 0.994, saturation: 0.963, brightness: 0.695)),
+                    ("PUNTUACIÓN OBTENIDA", "\(puntuacion)", Color(hue: 0.404, saturation: 0.934, brightness: 0.334))
+                ])
                 HStack {
                     Button(action: {
                         SoundManager.shared.playTransitionSound()
-                        print("JUGAR button tapped")
+                        print("JUGAR button tapped from Resultado")
                         checkForQuestionsBeforePlaying()
                         
                     }) {
                         Text("JUGAR")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 180, height: 60)
-                            .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                            .background(Color.pastelSilver)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 5)
                                     .stroke(Color.black, lineWidth: 3)
@@ -146,11 +92,11 @@ struct ResultadoView: View {
                         
                     }) {
                         Text("SALIR")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 180, height: 60)
-                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                            .background(Color.pastelSilver)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 5)
                                     .stroke(Color.black, lineWidth: 3)
@@ -161,7 +107,11 @@ struct ResultadoView: View {
                         MenuModoLibre()
                     }
                     .alert(isPresented: $showNoQuestionsLeftAlert) {
-                        print("Showing No Questions Left Alert")
+                        // Asegurarte que suene solo una vez:
+                        DispatchQueue.main.async {
+                            SoundManager.shared.playMagic()
+                        }
+
                         return Alert(
                             title: Text("Atención"),
                             message: Text("Felicidades campeón@, has completado el Modo Libre. Deberías probar el Modo Competición."),
@@ -192,6 +142,7 @@ struct ResultadoView: View {
         if let unusedQuestions = dbHelper.getRandomQuestions(count: 10), !unusedQuestions.isEmpty {
             jugarModoLibreActive = true
         } else {
+            SoundManager.shared.playMagic() // 🔊 Play the sound ONCE here
             showNoQuestionsLeftAlert = true
         }
     }
@@ -214,38 +165,58 @@ struct ResultadoView: View {
     
     
     private func handleAciertos() {
-        var audioFileName = ""
-        var imageName = ""
-        var textFieldText = ""
-        
         if aciertos >= 9 {
-            audioFileName = "hallelujah.mp3"
             imageName = "guinealogoexperto"
-            textFieldText = "NECESITAMOS MÁS GUINEANOS COMO TÚ"
-        } else if aciertos >= 5 && aciertos <= 8 {
-            audioFileName = "mixkit.wav"
+            textFieldText = ResultSentences.highPerformance.randomElement() ?? "¡Excelente!"
+            SoundManager.shared.playRandomHigh()
+
+        } else if aciertos >= 5 {
             imageName = "guinealogo_intermedio"
-            textFieldText = "NO ESTÁ MAL, PERO PODRÍAS HACERLO MEJOR"
+            textFieldText = ResultSentences.mediumPerformance.randomElement() ?? "¡Buen trabajo!"
+            SoundManager.shared.playRandomMedium()
+
         } else {
-            audioFileName = "noluck.mp3"
             imageName = "guinealogo_mediocre"
-            textFieldText = "POR GENTE COMO TÚ GUINEA NO AVANZA"
+            textFieldText = ResultSentences.lowPerformance.randomElement() ?? "¡Inténtalo de nuevo!"
+            SoundManager.shared.playRandomLow()
         }
-        
-        if let soundURL = Bundle.main.url(forResource: audioFileName, withExtension: nil) {
-            do {
-                self.player = try AVAudioPlayer(contentsOf: soundURL)
-                self.player?.play()
-            } catch {
-                print("Could not create AVAudioPlayer: \(error)")
+    }
+  
+    
+    struct StatTable: View {
+        let stats: [(label: String, value: String, color: Color)]
+
+        var body: some View {
+            VStack(spacing: 0) {
+                ForEach(0..<stats.count, id: \.self) { index in
+                    HStack {
+                        Text(stats[index].label)
+                            .font(.custom("MarkerFelt-Thin", size: 16))
+                            .foregroundColor(stats[index].color)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Text(stats[index].value)
+                            .font(.custom("MarkerFelt-Thin", size: 20))
+                            .foregroundColor(.black)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 10)
+                    .background(Color.pastelSilver)
+                    
+                    if index < stats.count - 1 {
+                        Divider().background(Color.black)
+                    }
+                }
             }
-        } else {
-            print("Could not find URL for audio file: \(audioFileName)")
+            .background(Color.white)
+            .cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.black, lineWidth: 2)
+            )
+            .padding(.horizontal, 20)
         }
-        
-        // Set the image and text based on the conditions
-        self.imageName = imageName
-        self.textFieldText = textFieldText
     }
     
     struct ResultadoView_Previews: PreviewProvider {

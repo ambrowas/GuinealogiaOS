@@ -18,9 +18,13 @@ struct JugarModoCompeticion: View {
     @State private var scale: CGFloat = 1.0
     @State private var isGrowing = true
     @State private var showAnswerStatusForMistakes: Bool = false
-    
-    
     let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+    @State private var selectedButtonScale: CGFloat = 1.0
+    @State private var selectedButtonIsGrowing = true
+    @State private var timerScale: CGFloat = 1.0
+    @State private var isTimerGrowing = true
+    @State private var showTerminarButton = true
+    @State private var endGameButtonPressed = false
     
     enum ActiveAlert: Identifiable {
         case showAlert, showEndGameAlert, showGameOverAlert, showManyMistakesAlert
@@ -47,7 +51,7 @@ struct JugarModoCompeticion: View {
     
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
@@ -78,7 +82,7 @@ struct JugarModoCompeticion: View {
                             .padding(.leading, 20)
                         
                         Text("\(viewModel.mistakes)")
-                            .foregroundColor(viewModel.mistakes >= 4 ? .red : .black)
+                            .foregroundColor(viewModel.mistakes >= 4 ? .darkRed : .black)
                             .fontWeight(.bold)
                             .padding(.leading, 20)
                         
@@ -92,61 +96,94 @@ struct JugarModoCompeticion: View {
                     Spacer()
                     
                     Text("\(viewModel.timeRemaining)")
-                        .foregroundColor(viewModel.timeRemaining <= 10 ? .red : .black)
+                        .foregroundColor(viewModel.timeRemaining <= 10 ? .darkRed : .black)
+                        .font(.custom("MarkerFelt-Thin", size: 50))
                         .fontWeight(.bold)
-                        .font(.system(size: 60))
                         .padding(.trailing, 20)
                         .shadow(color: .black, radius: 1, x: 1, y: 1)
                         .padding(.top, -20)
                 }
                 
-                if let imageURL = URL(string: viewModel.image) {
-                    AsyncImage(url: imageURL) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 80)
-                            .padding(.top, -25)
-                    } placeholder: {
-                        Image("logotrivial")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 80)
-                            .padding(.top, -25)
+                if viewModel.answerChecked && viewModel.mistakes < 4 {
+                    let answerStatus = viewModel.answerIsCorrect ?? false
+                    
+                    Image(systemName: answerStatus ? "checkmark" : "xmark")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(answerStatus ? .darkGreen : .darkRed)
+                        .frame(width: 120, height: 120)
+                        .scaleEffect(scale)
+                        .onReceive(timer) { _ in
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                if isGrowing {
+                                    scale = 1.2
+                                } else {
+                                    scale = 1.0
+                                }
+                                isGrowing.toggle()
+                            }
+                        }
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.4), value: viewModel.answerChecked)
+                } else {
+                    if let imageURL = URL(string: viewModel.image) {
+                        AsyncImage(url: imageURL) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 80, height: 80)
+                        } placeholder: {
+                            Image("logotrivial")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 80, height: 80)
+                        }
                     }
+                    
+                    Text(viewModel.category)
+                        .foregroundColor(.black)
+                        .font(.custom("MarkerFelt-Thin", size: 16))
+                        .fontWeight(.bold)
                 }
-                
-                Text(viewModel.category)
-                    .foregroundColor(.black)
-                    .fontWeight(.bold)
-                    .padding(.top, -20)
                 
                 Text(viewModel.currentQuestion?.questionText ?? "Loading question...")
                     .foregroundColor(.black)
-                    .font(.headline)
+                    .font(.custom("MarkerFelt-Thin", size: 20))
                     .padding(.horizontal, 20)
+                    .multilineTextAlignment(.center)
                     .lineLimit(nil)
-                
+                    .fixedSize(horizontal: false, vertical: true)
                 VStack(alignment: .leading, spacing: 10) {
                     ForEach(viewModel.options.indices, id: \.self) { index in
                         Button(action: {
+                            SoundManager.shared.playPick()
                             if !viewModel.questionProcessed {
                                 viewModel.selectedOptionIndex = index
                                 viewModel.resetButtonColors()
                                 viewModel.buttonBackgroundColors[index] = Color(hue: 0.315, saturation: 0.953, brightness: 0.335)
+                                selectedButtonIsGrowing = true
                             }
                         }) {
                             Text(viewModel.options[index])
-                                .font(.headline)
-                                .foregroundColor(.white)
+                                .font(.custom("MarkerFelt-Thin", size: 16))
+                                .foregroundColor(viewModel.selectedOptionIndex == index ? .deepBlue : .black)
                                 .padding()
                                 .frame(width: 300, height: 75)
-                                .background(viewModel.buttonBackgroundColors.indices.contains(index) ? viewModel.buttonBackgroundColors[index] : Color.clear)
+                                .background(viewModel.selectedOptionIndex == index ? Color.white : Color.pastelSilver)
                                 .cornerRadius(10)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.black, lineWidth: 3)
                                 )
+                                .scaleEffect(viewModel.selectedOptionIndex == index ? selectedButtonScale : 1.0)
+                                .onReceive(timer) { _ in
+                                    if viewModel.selectedOptionIndex == index {
+                                        withAnimation(.easeInOut(duration: 0.5)) {
+                                            selectedButtonScale = selectedButtonIsGrowing ? 1.08 : 1.0
+                                            selectedButtonIsGrowing.toggle()
+                                        }
+                                    }
+                                }
                         }
                     }
                 }
@@ -156,6 +193,7 @@ struct JugarModoCompeticion: View {
                         if viewModel.selectedOptionIndex == nil {
                             viewModel.activeAlert = .showAlert
                         } else {
+                            viewModel.StopCountdownSound()
                             viewModel.checkAnswer()
                             showAnswerStatus = true
                             if viewModel.mistakes == 4 && !hasShownManyMistakesAlert {
@@ -171,11 +209,12 @@ struct JugarModoCompeticion: View {
                         viewModel.questionProcessed = false
                         viewModel.fetchNextQuestion()
                         viewModel.answerChecked = false
+                        SoundManager.shared.playTransitionSound()
                         print("After setting activeAlert: \($viewModel.activeAlert)")
                     }
                 }) {
                     Text(viewModel.buttonConfirmar)
-                        .font(.headline)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
                         .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
@@ -187,138 +226,156 @@ struct JugarModoCompeticion: View {
                         )
                 }
                 
-                
-                if viewModel.buttonConfirmar == "SIGUIENTE"{
+                if viewModel.buttonConfirmar == "SIGUIENTE" && !viewModel.isEndGameAlertPresented {
                     Button(action: {
-                        viewModel.triggerEndGameAlert()
+                        endGameButtonPressed = true
                     }) {
                         Text("TERMINAR")
-                            .font(.headline)
+                            .font(.custom("MarkerFelt-Thin", size: 18))
                             .foregroundColor(.white)
                             .padding()
                             .frame(width: 300, height: 75)
-                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                            .background(Color.darkRed)
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.black, lineWidth: 3)
                             )
                     }
-                    
+                
+                
                 }
             }
-            if viewModel.answerChecked && viewModel.mistakes < 4 {
-                let answerStatus = viewModel.answerIsCorrect ?? false
-                Image(systemName: answerStatus ? "checkmark" : "xmark")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(answerStatus ? .green : .red)
-                    .frame(width: 120, height: 120)
-                    .scaleEffect(scale)
-                    .onReceive(timer) { _ in
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            if isGrowing {
-                                scale = 1.2
-                            } else {
-                                scale = 1.0
+            .onAppear {
+                NotificationCenter.default.addObserver(
+                    forName: UIApplication.didEnterBackgroundNotification,
+                    object: nil, queue: .main) { _ in
+                        viewModel.appMovedToBackground()
+                    }
+                
+                NotificationCenter.default.addObserver(
+                    forName: UIApplication.willEnterForegroundNotification,
+                    object: nil, queue: .main) { _ in
+                        viewModel.appReturnsToForeground()
+                    }
+                
+                viewModel.resetButtonColors()
+                viewModel.fetchNextQuestion()
+            }
+            
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
+            .alert(item: $viewModel.activeAlert) { item -> Alert in
+                switch item {
+                    
+                case .showAlert:
+                    SoundManager.shared.playError()
+                    return Alert(
+                        title: Text("ATENCIÓN"),
+                        message: Text("Sin miedo, escoge una opción."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                    
+                case .showEndGameAlert:
+                    print("TEST: Show End Game Alert triggered")
+                    return Alert(
+                        title: Text("Confirmación"),
+                        message: Text("¿Seguro que quieres terminar la partida?"),
+                        primaryButton: .destructive(Text("SI")) {
+                            viewModel.terminar {
+                                SoundManager.shared.playTransitionSound()
+                                shouldPresentGameOver = true
                             }
-                            isGrowing.toggle()
+                            viewModel.isEndGameAlertPresented = false
+                            viewModel.activeAlert = nil
+                            showTerminarButton = true  // ✅ re-enable after dismiss
+                        },
+                        secondaryButton: .cancel {
+                            viewModel.isEndGameAlertPresented = false
+                            viewModel.activeAlert = nil
+                            showTerminarButton = true  // ✅ re-enable after cancel
                         }
-                    }
-                    .transition(.asymmetric(insertion: .scale, removal: .opacity))
-            }
-        }
-        .onAppear {
-            NotificationCenter.default.addObserver(
-                forName: UIApplication.didEnterBackgroundNotification,
-                object: nil, queue: .main) { _ in
-                    viewModel.appMovedToBackground()
-            }
-
-            NotificationCenter.default.addObserver(
-                forName: UIApplication.willEnterForegroundNotification,
-                object: nil, queue: .main) { _ in
-                    viewModel.appReturnsToForeground()
-            }
-
-            viewModel.resetButtonColors()
-            viewModel.fetchNextQuestion()
-        }
-        
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
-        .alert(item: $viewModel.activeAlert) { item -> Alert in
-            switch item {
-            case .showAlert:
-                return Alert(title: Text("ATENCION"), message: Text("Sin miedo, escoge una opción."), dismissButton: .default(Text("OK")))
-                
-            case .showEndGameAlert:
-                print("Show End Game Alert")
-                return Alert(
-                    title: Text("Confirmación"),
-                    message: Text("¿Seguro que quieres terminar la partida?"),
-                    primaryButton: .destructive(Text("SI")) {
-                        viewModel.terminar {
-                            shouldPresentGameOver = true
-                        }
-                    },
-                    secondaryButton: .cancel(Text("NO"))
                 )
-                
-            case .showGameOverAlert:
-                return Alert(
-                    title: Text("Game Over"),
-                    message: Text("Has cometido 5 errores. Fin de la partida."),
-                    dismissButton: .default(Text("OK")) {
-                        viewModel.terminar {
-                            shouldPresentGameOver = true
+                case .showGameOverAlert:
+                    SoundManager.shared.playError()
+                    return Alert(
+                        title: Text("Game Over"),
+                        message: Text("Has cometido 5 errores. Fin de la partida."),
+                        dismissButton: .default(Text("OK")) {
+                            viewModel.terminar {
+                                SoundManager.shared.playTransitionSound()
+                                shouldPresentGameOver = true
+                            }
                         }
+                    )
+                    
+                case .showManyMistakesAlert:
+                    SoundManager.shared.playError()
+                    return Alert(
+                        title: Text("Cuidado"),
+                        message: Text("Llevas 4 fallos. Uno más y la partida se acaba."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                    
+                case .showReturnToAppAlert:
+                    SoundManager.shared.playError()
+                    return Alert(
+                        title: Text("Aviso"),
+                        message: Text("No debes salir mientras haya una pregunta activa."),
+                        dismissButton: .default(Text("OK")) {
+                            viewModel.penalizeForLeavingApp()
+                        }
+                    )
+                }
+            }
+            .fullScreenCover(isPresented: $shouldPresentGameOver){
+                GameOver(userId: userId)
+                    .onDisappear{
+                        presentationMode.wrappedValue.dismiss()
                     }
+            }
+            .onChange(of: endGameButtonPressed) { pressed in
+                if pressed {
+                    viewModel.triggerEndGameAlert()
+                    endGameButtonPressed = false
+                }
+            }
+            .onChange(of: viewModel.activeAlert) { newAlert in
+                viewModel.isAlertBeingDisplayed = (newAlert != nil)
+
+                // 🔊 Play sound once depending on the alert type
+                switch newAlert {
+                case .showAlert, .showGameOverAlert, .showManyMistakesAlert, .showReturnToAppAlert:
+                    SoundManager.shared.playError()
+                case .showEndGameAlert:
+                    // Optional: play a different sound if needed
+                    SoundManager.shared.playError()
+                case .none:
+                    break
+                }
+            }
+            .onDisappear {
+                NotificationCenter.default.removeObserver(
+                    self,
+                    name: UIApplication.didEnterBackgroundNotification,
+                    object: nil
                 )
-                
-            case .showManyMistakesAlert:
-                return Alert(title: Text("Cuidado"), message: Text("Llevas 4 fallos. Uno más y la partida se acaba."), dismissButton: .default(Text("OK")))
-                
-            case .showReturnToAppAlert:
-                return Alert(
-                    title: Text("Aviso"),
-                    message: Text("No debes salir mientras haya una pregunta activa"),
-                    dismissButton: .default(Text("OK")) {
-                        viewModel.penalizeForLeavingApp() // Process as a wrong answer after dismissing the alert
-                    }
+                NotificationCenter.default.removeObserver(
+                    self,
+                    name: UIApplication.willEnterForegroundNotification,
+                    object: nil
                 )
             }
             
-        }
-                .fullScreenCover(isPresented: $shouldPresentGameOver){
-                    GameOver(userId: userId)
-                        .onDisappear{
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                }
-                .onChange(of: viewModel.activeAlert) { newAlert in
-                    viewModel.isAlertBeingDisplayed = (newAlert != nil)
-                }
-                .onDisappear {
-                    NotificationCenter.default.removeObserver(
-                        self,
-                        name: UIApplication.didEnterBackgroundNotification,
-                        object: nil
-                    )
-                    NotificationCenter.default.removeObserver(
-                        self,
-                        name: UIApplication.willEnterForegroundNotification,
-                        object: nil
-                    )
-                }
-
-                .onReceive(viewModel.timeExpired, perform: { newValue in
-                    showAnswerStatusForMistakes = newValue
-                    
-                })
+            .onReceive(viewModel.timeExpired, perform: { newValue in
+                showAnswerStatusForMistakes = newValue
                 
-            }
+            })
+            
         }
+    }
+    
+  
     
     
     struct GameOverPresented: Identifiable {
@@ -331,4 +388,4 @@ struct JugarModoCompeticion: View {
         }
     }
     
-
+}

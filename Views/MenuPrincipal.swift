@@ -18,9 +18,10 @@ struct MenuPrincipal: View {
     
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
+            
             
             VStack(spacing: 10) {
                 Image("logotrivial")
@@ -37,10 +38,10 @@ struct MenuPrincipal: View {
                     showMenuModoLibre = true
                     SoundManager.shared.playTransitionSound()
                 }
-                .font(.headline)
-                .foregroundColor(.white)
+                .font(.custom("MarkerFelt-Thin", size: 16))
+                .foregroundColor(.black)
                 .frame(width: 280, height: 75)
-                .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335)) // Specific background color for this button
+                .background(Color.pastelSilver)
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
@@ -51,10 +52,10 @@ struct MenuPrincipal: View {
                     showMenuModoCompeticion = true
                     SoundManager.shared.playTransitionSound()
                 }
-                .font(.headline)
-                .foregroundColor(.white)
+                .font(.custom("MarkerFelt-Thin", size: 16))
+                .foregroundColor(.black)
                 .frame(width: 280, height: 75)
-                .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706)) // Specific background color for this button
+                .background(Color.pastelSilver)
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
@@ -65,10 +66,10 @@ struct MenuPrincipal: View {
                     showContactanosView = true
                     SoundManager.shared.playTransitionSound()
                 }
-                .font(.headline)
-                .foregroundColor(.white)
+                .font(.custom("MarkerFelt-Thin", size: 16))
+                .foregroundColor(.black)
                 .frame(width: 280, height: 75)
-                .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699)) // Specific background color for this button
+                .background(Color.pastelSilver)
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
@@ -78,13 +79,12 @@ struct MenuPrincipal: View {
                 
                 Text("2023.INICIATIVAS ELEBI")
                     .foregroundColor(.black)
-                    .font(.subheadline)
-                    .fontWeight(.bold)
+                    .font(.custom("MarkerFelt-Thin", size: 16))
+                
                 
                 Text("TODOS LOS DERECHOS RESERVADOS")
                     .foregroundColor(.black)
-                    .font(.subheadline)
-                    .fontWeight(.bold)
+                    .font(.custom("MarkerFelt-Thin", size: 16))
                     .padding(.top, -10.0)
             }
             .padding()
@@ -106,7 +106,7 @@ struct MenuPrincipal: View {
         }
         .alert(isPresented: $showingUpdateAlert) {
             Alert(
-                title: Text("Actualización Disponible"),
+                title: Text("Actualización Obligatoria"),
                 message: Text(updateAlertMessage),
                 dismissButton: .default(Text("Actualizar"), action: {
                     if let url = URL(string: "itms-apps://itunes.apple.com/app/6468170941"),
@@ -121,7 +121,7 @@ struct MenuPrincipal: View {
     func checkAppVersionAndUpdate() {
         let appID = "6468170941" // Replace with your actual App ID
         guard let url = URL(string: "https://itunes.apple.com/lookup?id=\(appID)") else {
-            print("Invalid URL")
+            print("Invalid URL for App Store version check.")
             return
         }
 
@@ -136,12 +136,15 @@ struct MenuPrincipal: View {
                    let results = json["results"] as? [[String: Any]],
                    let appStoreInfo = results.first,
                    let latestVersion = appStoreInfo["version"] as? String,
-                   let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-                   currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending {
-                    
-                    DispatchQueue.main.async {
-                        self.updateAlertMessage = "Actualización Disponible. Por favor instalate la última versión."
-                        self.showingUpdateAlert = true
+                   let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+
+                    if currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending {
+                        DispatchQueue.main.async {
+                            self.updateAlertMessage = "Nueva versión disponible. Debes actualizar para continuar usando la aplicación."
+                            self.showingUpdateAlert = true
+                        }
+                    } else {
+                        print("No update needed: current version \(currentVersion) vs latest \(latestVersion)")
                     }
                 }
             } catch {
@@ -150,8 +153,6 @@ struct MenuPrincipal: View {
         }.resume()
     }
 
-    
-    
     
     struct MenuPrincipal_Previews: PreviewProvider {
         static var previews: some View {

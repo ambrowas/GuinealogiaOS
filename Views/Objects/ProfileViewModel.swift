@@ -29,6 +29,8 @@ class ProfileViewModel: ObservableObject {
     @Published var alertMessage: String = ""
     @Published var showAlert: Bool = false
     @Published var alertType: AlertType?
+    @Published var isLoading: Bool = false
+    @Published var refreshID = UUID()
    
     
     enum AlertType: Identifiable, Equatable {
@@ -115,13 +117,20 @@ class ProfileViewModel: ObservableObject {
     
     
     func fetchProfileData() {
-        guard let currentUserID = Auth.auth().currentUser?.uid else {
-            print("Failed to fetch current user ID")
-            self.alertMessage = "Failed to fetch current user ID"
-            self.showAlert = true
-            return
+        DispatchQueue.main.async {
+            self.isLoading = true
         }
         
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("❌ Failed to fetch current user ID")
+            DispatchQueue.main.async {
+                self.alertMessage = "Failed to fetch current user ID"
+                self.showAlert = true
+                self.isLoading = false
+            }
+            return
+        }
+
         let userRef = ref.child("user").child(currentUserID)
         userRef.observeSingleEvent(of: .value) { [weak self] snapshot in
             guard let self = self else { return }
@@ -146,14 +155,24 @@ class ProfileViewModel: ObservableObject {
                         self.profileImage = nil
                         self.profileFetchStatus = .noImage
                     }
+                    
+                    print("✅ Successfully fetched and updated profile data")
+                    print("Fetched fullname: \(self.fullname)")
+                    print("Fetched email: \(self.email)")
+                    print("Fetched ciudad: \(self.ciudad)")
+                    print("Fetched pais: \(self.pais)")
+                    self.refreshID = UUID() // ✅ Force UI refresh after successful fetch
+                    self.isLoading = false
                 }
-                
-                print("Successfully fetched and updated profile data")
             } else {
-                print("Error fetching profile data from Realtime Database")
-                self.alertMessage = "Error fetching profile data"
-                self.showAlert = true
-                self.profileFetchStatus = .failure("Error fetching profile data")
+                print("❌ Error fetching profile data from Realtime Database")
+                DispatchQueue.main.async {
+                    self.alertMessage = "Error fetching profile data"
+                    self.showAlert = true
+                    self.profileFetchStatus = .failure("Error fetching profile data")
+                    self.refreshID = UUID() // ✅ Force UI refresh even on error
+                    self.isLoading = false
+                }
             }
         }
     }

@@ -28,82 +28,91 @@ struct MenuModoCompeticion: View {
     @State private var shouldPresentProfile = false
     @State private var showMenuPrincipalSheet = false
     @State private var isFlashing = false
+    @State private var timer: Timer?
     
     
 
     var body: some View {
         ZStack {
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 15) {
-                Text(viewModel.userFullName)
-                    .foregroundColor(.black)
-                    .font(.headline)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 60)
-                
-                if !viewModel.userFullName.isEmpty {
+                if viewModel.isUserLoggedIn {
+                    Text("Mbolo, \(viewModel.userFullName)")
+                        
+                        .foregroundColor(.deepBlue)
                     Text("Tu record es de \(viewModel.highestScore) puntos")
-                        .foregroundColor(viewModel.getFlashingColor())
-                        .font(.headline)
+                        .font(.custom("MarkerFelt-Thin", size: 20))
+                        .foregroundColor(.darkRed)
                         .padding(.horizontal, 20)
-                        .padding(.top, -10)
+                        .padding(.top, 20)
+                } else {
+                    Text("INICIAR SESION / REGISTRAR USUARIO")
+                        .font(.custom("MarkerFelt-Thin", size: 18))
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 20)
                 }
                 
-                    if viewModel.validateCurrentGameFallos() {
-                        
-                        Button(action: {
-                            SoundManager.shared.playTransitionSound()
-                                   showCheckCodigo = true
-                               }) {
-                                   Text("VALIDAR CODIGO")
-                                       .font(.headline)
-                                       .foregroundColor(.black)
-                                       .padding()
-                                       .frame(width: 300, height: 75)
-                                       .background(isFlashing ? Color.white : Color.red)
-                                       .cornerRadius(10)
-                                       .overlay(
-                                           RoundedRectangle(cornerRadius: 10)
-                                               .stroke(Color.black, lineWidth: 3)
-                                       )
-                               }
-                               .fullScreenCover(isPresented: $showCheckCodigo) {
-                                   CheckCodigo()
-                               }
-                               .onAppear {
-                        // Start a timer to toggle the flashing effect repeatedly
-                            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
-                            withAnimation {
-                            isFlashing.toggle()
-                              }
-                                }
-                        }
-                        
-                   
-                } else {
+                
+                if viewModel.isUserLoggedIn && viewModel.validateCurrentGameFallos() {
                     Button(action: {
-                        if Auth.auth().currentUser != nil {
-                            SoundManager.shared.playTransitionSound()
-                            jugarModoCompeticionActive = true
-                        } else {
-                            alertMessage = "Debes iniciar sesión para poder jugar."
-                            showAlert = true
-                        }
+                        SoundManager.shared.playTransitionSound()
+                        showCheckCodigo = true
                     }) {
-                        Text("JUGAR")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                        Text("VALIDAR CODIGO")
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 75)
-                            .background(isFlashing ? Color.white : Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                            .background(isFlashing ? Color.red : Color.pastelSilver)
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.black, lineWidth: 3)
                             )
+                    }
+                    .fullScreenCover(isPresented: $showCheckCodigo) {
+                        CheckCodigo()
+                    }
+                    .onAppear {
+                        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                            withAnimation {
+                                isFlashing.toggle()
+                            }
+                        }
+                    }
+                    .onDisappear {
+                        timer?.invalidate()
+                        timer = nil
+                    }
+                
+                        
+                } else {
+                    Button(action: {
+                        if viewModel.isUserLoggedIn {
+                            SoundManager.shared.playTransitionSound()
+                            jugarModoCompeticionActive = true
+                        } else {
+                            SoundManager.shared.playError()
+                            alertMessage = "Debes iniciar sesión para poder jugar."
+                            showAlert = true
+                        }
+                    }) {
+                        Text("JUGAR")
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
+                            .padding()
+                            .frame(width: 300, height: 75)
+                            .background(Color.pastelSilver) // Not affected by flashing
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 3)
+                            )
+                    
                     }
                     .alert(isPresented: $showAlert) {
                         Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -115,20 +124,21 @@ struct MenuModoCompeticion: View {
                 }
                 
                 Button(action: {
-                    if Auth.auth().currentUser != nil {
+                    if viewModel.isUserLoggedIn {
                         SoundManager.shared.playTransitionSound()
                         showClasificacion = true
                     } else {
+                        SoundManager.shared.playError()
                         alertMessage = "Debes iniciar sesión para poder acceder a la clasificación."
                         showAlert = true
                     }
                 }) {
                     Text("CLASIFICACION")
-                        .font(.headline)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
                         .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color.white)
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -144,20 +154,21 @@ struct MenuModoCompeticion: View {
                 }
                 
                 Button(action: {
-                    if Auth.auth().currentUser != nil {
+                    if viewModel.isUserLoggedIn {
                         SoundManager.shared.playTransitionSound()
                         showProfile = true
                     } else {
+                        SoundManager.shared.playError()
                         alertMessage = "Debes iniciar sesión para poder acceder a tu perfil."
                         showAlert = true
                     }
                 }) {
                     Text("PERFIL")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
+                        .foregroundColor(.black)
                         .padding()
                         .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.315, saturation: 0.953, brightness: 0.335))
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -169,7 +180,7 @@ struct MenuModoCompeticion: View {
                 }
                 
                 Button(action: {
-                    if viewModel.userFullName.isEmpty {
+                    if viewModel.isUserLoggedIn {
                         SoundManager.shared.playTransitionSound()
                         showIniciarSesion = true
                     } else {
@@ -184,38 +195,46 @@ struct MenuModoCompeticion: View {
                         }
                     }
                 }) {
-                    Text(viewModel.userFullName.isEmpty ? "INICIAR SESION" : "CERRAR SESION")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 300, height: 75)
-                        .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 3)
-                        )
+                    Button(action: {
+                        SoundManager.shared.playTransitionSound()
+                        showIniciarSesion = true
+                    }) {
+                        Text(viewModel.userFullName.isEmpty ? "INICIAR SESION" : "CERRAR SESION")
+                            .font(.custom("MarkerFelt-Thin", size: 16))
+                            .foregroundColor(.black)
+                            .padding()
+                            .frame(width: 300, height: 75)
+                            .background(Color.pastelSilver)
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 3)
+                            )
+                    }
+                    .fullScreenCover(isPresented: $showIniciarSesion) {
+                        GestionarSesion()
+                            .onDisappear {
+                                viewModel.fetchCurrentUserData()
+                            }
+                    }
                 }
-                .fullScreenCover(isPresented: $showIniciarSesion) {
-                    GestionarSesion()
-                        .onDisappear{
-                            viewModel.fetchCurrentUserData()
-                        }
-                }
-             
-                
                 Button {
                     SoundManager.shared.playTransitionSound()
                     self.showMenuPrincipalSheet = true
                 } label: {
                     Text("VOLVER")
-                        .font(.headline)
+                        .font(.custom("MarkerFelt-Thin", size: 18))
                         .foregroundColor(.black)
                         .padding()
-                        .frame(width: 300, height: 55)
+                        .frame(width: 300, height: 75)
+                        .background(Color.pastelSilver)
                         .cornerRadius(10)
-                    
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.black, lineWidth: 3)
+                    )
                 }
+                .padding(.top, 60)
              
                 .fullScreenCover(isPresented: $showMenuPrincipalSheet) {
                     MenuPrincipal(player: .constant(nil))

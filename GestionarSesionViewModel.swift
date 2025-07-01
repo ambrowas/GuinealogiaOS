@@ -40,6 +40,8 @@ class GestionarSesionViewModel: ObservableObject {
             }
         }
     }
+    
+    
 
     
     
@@ -58,16 +60,21 @@ class GestionarSesionViewModel: ObservableObject {
                 self?.errorDeAutenticacion = error
                 
                 if error.code == AuthErrorCode.userNotFound.rawValue {
+                    SoundManager.shared.playError()
                     self?.ensenarAlerta(type: .mistake(SessionError.emailNotFound.localizedDescription))
+                    SoundManager.shared.playError()
                 } else if error.code == AuthErrorCode.wrongPassword.rawValue {
+                    SoundManager.shared.playError()
                     self?.ensenarAlerta(type: .mistake(SessionError.wrongPassword.localizedDescription))
                 } else {
+                    SoundManager.shared.playError()
                     self?.ensenarAlerta(type: .mistake("Error de login. Comprueba email/contraseña"))
                 }
                 
             } else {
                 self?.usuario = authResult?.user
                 self?.estaAutenticado = true
+                SoundManager.shared.playMagic()
                 self?.ensenarAlerta(type: .success("Usuario Conectado"))
                 
   
@@ -80,6 +87,7 @@ class GestionarSesionViewModel: ObservableObject {
     func validarInputs(correoElectronico: String, contrasena: String) -> Bool {
         // Validate that inputs are not empty
         guard !correoElectronico.isEmpty, !contrasena.isEmpty else {
+            SoundManager.shared.playError()
             self.errorDeAutenticacion = SessionError.emptyFields
             self.ensenarAlerta(type: .mistake(SessionError.emptyFields.localizedDescription))
             return false

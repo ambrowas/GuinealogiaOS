@@ -3,9 +3,12 @@ import UserNotifications
 import Firebase
 import FirebaseInAppMessaging
 import FirebaseDatabase
-import FirebaseAuth 
+import FirebaseAuth
+import FirebaseAnalytics
+import FirebaseMessaging
 
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, InAppMessagingDisplayDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, InAppMessagingDisplayDelegate, MessagingDelegate {
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Initialize Firebase
@@ -13,19 +16,55 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             FirebaseApp.configure()
         }
 
+        // Set Messaging delegate for FCM token retrieval
+        Messaging.messaging().delegate = self
+
         // Set UNUserNotificationCenter delegate
         UNUserNotificationCenter.current().delegate = self
 
-        // Request permission for notifications and register for remote notifications
+        // Request notification permissions
         requestNotificationPermission()
 
+        // Fetch Firebase Installation ID
         fetchAndStoreFirebaseInstallationID()
         
+        // In-App Messaging delegate
         InAppMessaging.inAppMessaging().delegate = self
+        
+        // Analytics
+        Analytics.logEvent(AnalyticsEventScreenView, parameters: [
+            AnalyticsParameterScreenName: "MainScreen"
+        ])
+        
+        if Auth.auth().currentUser != nil {
+            uploadStoredFCMTokenIfNeeded()
+        }
 
         return true
     }
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard let fcmToken = fcmToken else {
+            print("Failed to fetch FCM token")
+            return
+        }
+        print("✅ FCM Token: \(fcmToken)")
 
+        UserDefaults.standard.set(fcmToken, forKey: "fcmTokenForDebug")
+
+        if let userID = Auth.auth().currentUser?.uid {
+            let ref = Database.database().reference()
+            ref.child("user").child(userID).updateChildValues(["FCMToken": fcmToken]) { error, _ in
+                if let error = error {
+                    print("Error saving FCM token to database: \(error.localizedDescription)")
+                } else {
+                    print("✅ FCM token successfully saved to database for user ID: \(userID)")
+                }
+            }
+        } else {
+            print("User not logged in, deferring FCM token upload")
+        }
+    }
 
     func requestNotificationPermission() {
         print("Requesting notification permission")
@@ -137,6 +176,27 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             }
         }
     }
+    
+    func uploadStoredFCMTokenIfNeeded() {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("⚠️ User not logged in, skipping FCM token upload")
+            return
+        }
+
+        if let fcmToken = UserDefaults.standard.string(forKey: "fcmTokenForDebug") {
+            let ref = Database.database().reference()
+            ref.child("user").child(userID).updateChildValues(["FCMToken": fcmToken]) { error, _ in
+                if let error = error {
+                    print("❌ Error saving FCM token to database: \(error.localizedDescription)")
+                } else {
+                    print("✅ Stored FCM token successfully saved to database for user ID: \(userID)")
+                    UserDefaults.standard.removeObject(forKey: "fcmTokenForDebug")
+                }
+            }
+        } else {
+            print("⚠️ No stored FCM token found to upload")
+        }
+    }
 
 
     func updateUserDeviceTokenInDatabase(token: String) {
@@ -162,27 +222,25 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // Convert token to string
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
         print("Device Token: \(token)")
-
-        // Save the token in UserDefaults
         UserDefaults.standard.set(token, forKey: "deviceToken")
 
-        // If the user is already logged in, update the token in the database
+        // Link APNs token to FCM
+        Messaging.messaging().apnsToken = deviceToken
+
         if Auth.auth().currentUser != nil {
             updateUserDeviceTokenInDatabase(token: token)
         }
     }
 
-    
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Failed to register for remote notifications: \(error)")
     }
 
-    
+
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
             print("Will present notification: \(notification)")
             completionHandler([.banner, .sound])

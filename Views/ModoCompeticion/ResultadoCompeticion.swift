@@ -44,7 +44,7 @@ struct ResultadoCompeticion: View {
     var body: some View {
         ZStack {
             // Background Image
-            Image("coolbackground")
+            Image("tresy")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
 
@@ -60,7 +60,7 @@ struct ResultadoCompeticion: View {
                 // Title
                 Text("Resultados de \(userViewModel.fullname)")
                     .foregroundColor(.black)
-                    .font(.subheadline)
+                    .font(.custom("MarkerFelt-Thin", size: 18))
                     .fontWeight(.bold)
                     .padding(.top, -20)
 
@@ -76,7 +76,7 @@ struct ResultadoCompeticion: View {
                 }
                 .listStyle(PlainListStyle())
                 .frame(width: 300, height: 310)
-                .background(Color.white)
+                .background(Color.pastelSilver)
                 .cornerRadius(5)
                 .overlay(
                     RoundedRectangle(cornerRadius: 5)
@@ -89,7 +89,7 @@ struct ResultadoCompeticion: View {
                     Button(action: {
                         // Check if the button is actively cooling down.
                         if isButtonCoolingDown {
-                            // If it's cooling down, trigger the alert and do nothing else.
+                            SoundManager.shared.playError()
                             activeAlert = .esperaNecesaria
                         } else {
                             // If it's not cooling down, proceed with the GENERAR COBRO action.
@@ -97,9 +97,10 @@ struct ResultadoCompeticion: View {
 
                             // Check the user's points.
                             if userViewModel.currentGamePuntuacion >= 2500 {
+                                SoundManager.shared.playTransitionSound()
                                 showCodigo = true
                             } else {
-                                // If user doesn't have enough points, show the appropriate alert.
+                                SoundManager.shared.playError()
                                 activeAlert = .minimoCobro
                             }
                             
@@ -108,7 +109,7 @@ struct ResultadoCompeticion: View {
                         }
                     }) {
                         Text("GENERAR COBRO")
-                            .font(.headline)
+                            .font(.custom("MarkerFelt-Thin", size: 18))
                             .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 55)
@@ -121,6 +122,7 @@ struct ResultadoCompeticion: View {
                     }
                     .disabled(isButtonDisabled)
                     .fullScreenCover(isPresented: $showCodigo) {
+                        
                         // Present the full-screen cover view to display the QR code or cobro details
                         // Make sure to define this view or replace with the correct view you have for QR/cobro
                         CodigoQR()
@@ -136,11 +138,11 @@ struct ResultadoCompeticion: View {
                         }
                     }) {
                         Text("CLASIFICACION")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 75)
-                            .background(Color(hue: 0.69, saturation: 0.89, brightness: 0.706))
+                            .background(Color.pastelSilver)
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -152,16 +154,16 @@ struct ResultadoCompeticion: View {
                                             }
                     // MENU PRINCIPAL Button
                     Button(action: {
-                        SoundManager.shared.playTransitionSound()
+                        SoundManager.shared.playNo()
                             activeAlert = .confirmarSalida
                  
                     }) {
                         Text("MENU PRINCIPAL")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(.custom("MarkerFelt-Thin", size: 18))
+                            .foregroundColor(.black)
                             .padding()
                             .frame(width: 300, height: 75)
-                            .background(Color(hue: 1.0, saturation: 0.984, brightness: 0.699))
+                            .background(Color.pastelSilver)
                             .cornerRadius(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -178,26 +180,39 @@ struct ResultadoCompeticion: View {
                 .alert(item: $activeAlert) { alertType in
                     switch alertType {
                     case .minimoCobro:
+                        SoundManager.shared.playError()
                         return Alert(
                             title: Text(""),
-                            message: Text("Debes generar un  mínimo de 2500 FCFA"),
-                            dismissButton: .default(Text("OK"))
+                            message: Text("Debes generar un mínimo de 2500 FCFA"),
+                            dismissButton: .default(Text("OK")) {
+                                SoundManager.shared.playTransitionSound()
+                            }
                         )
+                        
                     case .esperaNecesaria:
+                        SoundManager.shared.playError()
                         return Alert(
                             title: Text(""),
                             message: Text("Ya generaste este código."),
-                            dismissButton: .default(Text("OK"))
+                            dismissButton: .default(Text("OK")) {
+                                SoundManager.shared.playTransitionSound()
+                            }
                         )
+                
                     case .confirmarSalida:
+                        SoundManager.shared.playNo()
                         return Alert(
                             title: Text("Confirmar"),
                             message: Text("¿Seguro que quieres salir?"),
                             primaryButton: .default(Text("Si")) {
+                                SoundManager.shared.playTransitionSound()
                                 goToMenuPrincipal = true
                             },
-                            secondaryButton: .cancel()
-                        )
+                            secondaryButton: .cancel(Text("Cancelar")) {
+                                SoundManager.shared.playTransitionSound()
+                            }
+                        )}
+                        
                     }
                 }
             }
@@ -216,7 +231,7 @@ struct ResultadoCompeticion: View {
                 }
             }
         }
-    }
+    
 
     // Helper View for Text Rows
 struct TextRowView: View {
@@ -226,7 +241,7 @@ struct TextRowView: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.subheadline) // Smaller font for title
+                .font(.custom("MarkerFelt-Thin", size: 18))
                 .foregroundColor(Color.black)
                 .frame(maxWidth: .infinity, alignment: .leading) // Align text to the leading edge
                 .lineLimit(1) // Ensure title is in a single line
@@ -235,8 +250,8 @@ struct TextRowView: View {
             Spacer() // Use a spacer to push content to opposite ends
 
             Text(value)
-                .font(.subheadline) // Smaller font for value
-                .foregroundColor(Color.blue)
+                .font(.custom("MarkerFelt-Thin", size: 18))
+                .foregroundColor(Color.deepBlue)
                 .frame(maxWidth: .infinity, alignment: .trailing) // Align text to the trailing edge
                 .padding(.vertical, 4) // Adjust padding for smaller content
         }

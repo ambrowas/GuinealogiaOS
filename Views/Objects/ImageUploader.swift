@@ -30,6 +30,7 @@ import FirebaseAuth
               imageService.updateUserProfileImage(downloadURL: downloadURL) { result in
                   switch result {
                   case .success:
+                      SoundManager.shared.playMagic()
                       print("Profile image updated successfully")
                       DispatchQueue.main.async {
                           self.alertMessage = "Foto de perfil actualizada"
@@ -39,6 +40,7 @@ import FirebaseAuth
                   case .failure(let error):
                       print("Error updating data: \(error)")
                       DispatchQueue.main.async {
+                          SoundManager.shared.playError()
                           self.alertMessage = "Failed to update profile image"
                           self.currentAlertType = .error("Failed to update profile image")
                           self.showAlert = true
